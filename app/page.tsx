@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
+import { Icons } from "@/components/icons"
 
 export default function IndexPage() {
   const [showDialog, setShowDialog] = useState(false)
@@ -80,6 +81,7 @@ export default function IndexPage() {
           onChange={handleDataChange}
         ></Input>
         <Button disabled={!imageData} type="submit">
+          <Icons.SolarEraserBoldDuotone className="mr-2 size-5"></Icons.SolarEraserBoldDuotone>
           Process
         </Button>
       </form>
@@ -96,7 +98,7 @@ export default function IndexPage() {
           />
         ) : (
           <div className="flex h-48 w-96 items-center justify-center rounded-xl bg-neutral-200 dark:bg-neutral-900">
-            <ImageIcon className="size-16 text-neutral-500"></ImageIcon>
+            <Icons.SolarGalleryBoldDuotone className="size-16 text-neutral-500"></Icons.SolarGalleryBoldDuotone>
           </div>
         )}
         {resultData ? (
@@ -111,7 +113,7 @@ export default function IndexPage() {
           </div>
         ) : (
           <div className="flex h-48  w-96 items-center justify-center rounded-xl bg-neutral-200 dark:bg-neutral-900">
-            <ImageIcon className="size-16 text-neutral-500"></ImageIcon>
+            <Icons.SolarGalleryBoldDuotone className="size-16 text-neutral-500"></Icons.SolarGalleryBoldDuotone>
           </div>
         )}
       </div>
@@ -123,7 +125,8 @@ export default function IndexPage() {
           className="font-bold"
           onClick={handleDownload}
         >
-          <Download className="mr-2"></Download> Download
+          <Icons.SolarDownloadMinimalisticBoldDuotone className="mr-2 size-5"></Icons.SolarDownloadMinimalisticBoldDuotone>
+          Download
         </Button>
       </div>
 
