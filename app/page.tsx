@@ -111,18 +111,20 @@ export default function IndexPage() {
           itemTwo={
             <>
               {resultData ? (
-                <div className="flex bg-slate-200 flex-col items-center justify-center gap-2 rounded-xl ">
+                <div className="flex flex-col items-center justify-center gap-2 rounded-xl bg-neutral-200 dark:bg-neutral-900">
                   <Image
                     width={300}
                     height={150}
-                    className="grid-pattern flex max-h-80 w-full  rounded-xl bg-neutral-200"
+                    className="grid-pattern flex max-h-80 w-full rounded-xl "
                     src={resultData}
                     alt="Processed image"
                   />
                 </div>
               ) : (
-                <div className="grid-pattern flex size-full items-center justify-center rounded-xl bg-neutral-200 dark:bg-neutral-900">
-                  <Icons.SolarGalleryBoldDuotone className="size-16 text-neutral-500"></Icons.SolarGalleryBoldDuotone>
+                <div className="flex size-full items-center justify-center rounded-xl bg-neutral-200 dark:bg-neutral-900">
+                  <div className="grid-pattern flex size-full items-center justify-center">
+                    <Icons.SolarGalleryBoldDuotone className="size-16 text-neutral-500"></Icons.SolarGalleryBoldDuotone>
+                  </div>
                 </div>
               )}
             </>
