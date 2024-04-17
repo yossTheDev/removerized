@@ -90,7 +90,9 @@ export const Editor = () => {
           dropzoneOptions={{
             multiple: false,
             accept: {
-              "image/*": [".jpg", ".jpeg", ".png"],
+              "image/png": [".png"],
+              "image/jpg": [".jpg", ".jpeg"],
+              "image/webp": [".webp"],
             },
           }}
           onValueChange={handleDataChange}
@@ -104,7 +106,7 @@ export const Editor = () => {
                 &nbsp; or drag and drop
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                SVG, PNG, JPG or GIF
+                PNG, JPG or WEBP file
               </p>
             </div>
           </FileInput>
