@@ -3,23 +3,20 @@
 import { FormEvent, useState } from "react"
 import Image from "next/image"
 import imglyRemoveBackground, { Config } from "@imgly/background-removal"
-import { Download, ImageIcon } from "lucide-react"
-import {
-  ReactCompareSlider,
-  ReactCompareSliderImage,
-} from "react-compare-slider"
+import { ImageIcon } from "lucide-react"
+import { ReactCompareSlider } from "react-compare-slider"
 
-import { Button } from "@/components/ui/button"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Progress } from "@/components/ui/progress"
 import { Icons } from "@/components/icons"
+import { Loader } from "@/components/loader"
 
 export default function IndexPage() {
   const [showDialog, setShowDialog] = useState(false)
@@ -145,17 +142,17 @@ export default function IndexPage() {
         </Button>
       </div>
 
-      <Dialog open={showDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Are you absolutely sure?</DialogTitle>
-            <DialogDescription>
-              <p>{dialogText}</p>
-              <Progress max={dialogTotal} value={dialogProgress}></Progress>
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
+      <AlertDialog open={showDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Processing...</AlertDialogTitle>
+            <AlertDialogDescription className="flex flex-col gap-2">
+              <p>Task: {dialogText}</p>
+              <Loader></Loader>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+        </AlertDialogContent>
+      </AlertDialog>
     </section>
   )
 }
