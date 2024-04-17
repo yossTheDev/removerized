@@ -72,9 +72,12 @@ export default function IndexPage() {
   return (
     <section className="container flex h-full flex-col gap-2  pb-8">
       {/* Form */}
-      <form className="flex items-center gap-4" onSubmit={remove}>
-        <p>Select Image</p>
-        <ImageIcon></ImageIcon>
+      <form
+        className="mt-2 flex items-center gap-4 px-2 md:px-28"
+        onSubmit={remove}
+      >
+        <p className="hidden font-bold md:block">Select Image</p>
+        <ImageIcon className="hidden md:block"></ImageIcon>
         <Input
           accept="image/*"
           required
@@ -92,7 +95,6 @@ export default function IndexPage() {
         <ReactCompareSlider
           itemOne={
             <>
-              {" "}
               {imageData ? (
                 <Image
                   width={300}
