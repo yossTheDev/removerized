@@ -4,6 +4,7 @@ import { Metadata } from "next"
 import { siteConfig } from "@/config/site"
 import { fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
+import { Toaster } from "@/components/ui/sonner"
 import { Footer } from "@/components/footer"
 import { SiteHeader } from "@/components/site-header"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
@@ -49,13 +50,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
           )}
         >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <div className="relative flex h-screen min-h-screen flex-col background-pattern">
+            <main className="relative flex h-screen min-h-screen flex-col">
               <SiteHeader />
 
               <div className="flex-1">{children}</div>
-
+              <Toaster></Toaster>
               <Footer></Footer>
-            </div>
+            </main>
             <TailwindIndicator />
           </ThemeProvider>
         </body>
