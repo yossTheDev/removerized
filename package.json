@@ -16,6 +16,7 @@
   "dependencies": {
     "@imgly/background-removal": "^1.4.5",
     "@imgly/background-removal-data": "^1.4.5",
+    "@midudev/tailwind-animations": "^0.0.7",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-label": "^2.0.2",

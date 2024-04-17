@@ -159,12 +159,18 @@ export const Editor = () => {
 
       {/* Tools */}
       <div className="flex items-center justify-center gap-2">
-        <Button className="font-bold" onClick={remove} disabled={!imageData}>
+        <Button
+          variant={"ringHover"}
+          className="font-bold"
+          onClick={remove}
+          disabled={!imageData}
+        >
           <Icons.SolarGalleryRemoveLineDuotone className="mr-2 size-5"></Icons.SolarGalleryRemoveLineDuotone>
           Process
         </Button>
 
         <Button
+          variant={"linkHover2"}
           disabled={!resultData}
           className="font-bold"
           onClick={handleDownload}
