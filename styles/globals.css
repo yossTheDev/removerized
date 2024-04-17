@@ -62,3 +62,8 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+.grid-pattern {
+  background: url("../public/assets/background.svg");
+  background-repeat: repeat;
+}

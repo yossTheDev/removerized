@@ -4,6 +4,10 @@ import { FormEvent, useState } from "react"
 import Image from "next/image"
 import imglyRemoveBackground, { Config } from "@imgly/background-removal"
 import { Download, ImageIcon } from "lucide-react"
+import {
+  ReactCompareSlider,
+  ReactCompareSliderImage,
+} from "react-compare-slider"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -69,7 +73,7 @@ export default function IndexPage() {
   }
 
   return (
-    <section className="container flex h-full flex-col gap-2 pb-8">
+    <section className="container flex h-full flex-col gap-2  pb-8">
       {/* Form */}
       <form className="flex items-center gap-4" onSubmit={remove}>
         <p>Select Image</p>
@@ -88,34 +92,45 @@ export default function IndexPage() {
 
       {/* Images */}
       <div className="flex size-full items-center justify-center gap-16  p-4">
-        {imageData ? (
-          <Image
-            width={300}
-            height={150}
-            className="max-w-96 rounded-xl transition-all hover:ring-4 hover:ring-primary"
-            src={imageData}
-            alt="Selected image"
-          />
-        ) : (
-          <div className="flex h-48 w-96 items-center justify-center rounded-xl bg-neutral-200 dark:bg-neutral-900">
-            <Icons.SolarGalleryBoldDuotone className="size-16 text-neutral-500"></Icons.SolarGalleryBoldDuotone>
-          </div>
-        )}
-        {resultData ? (
-          <div className="flex flex-col items-center justify-center gap-2">
-            <Image
-              width={300}
-              height={150}
-              className="max-w-96 rounded-xl transition-all hover:ring-4 hover:ring-primary"
-              src={resultData}
-              alt="Processed image"
-            />
-          </div>
-        ) : (
-          <div className="flex h-48  w-96 items-center justify-center rounded-xl bg-neutral-200 dark:bg-neutral-900">
-            <Icons.SolarGalleryBoldDuotone className="size-16 text-neutral-500"></Icons.SolarGalleryBoldDuotone>
-          </div>
-        )}
+        <ReactCompareSlider
+          itemOne={
+            <>
+              {" "}
+              {imageData ? (
+                <Image
+                  width={300}
+                  height={150}
+                  className="flex max-h-80 w-full rounded-xl"
+                  src={imageData}
+                  alt="Selected image"
+                />
+              ) : (
+                <div className="flex h-48 w-96 items-center justify-center rounded-xl bg-neutral-200 dark:bg-neutral-900">
+                  <Icons.SolarGalleryBoldDuotone className="size-16 text-neutral-500"></Icons.SolarGalleryBoldDuotone>
+                </div>
+              )}
+            </>
+          }
+          itemTwo={
+            <>
+              {resultData ? (
+                <div className="flex bg-slate-200 flex-col items-center justify-center gap-2 rounded-xl ">
+                  <Image
+                    width={300}
+                    height={150}
+                    className="grid-pattern flex max-h-80 w-full  rounded-xl bg-neutral-200"
+                    src={resultData}
+                    alt="Processed image"
+                  />
+                </div>
+              ) : (
+                <div className="grid-pattern flex size-full items-center justify-center rounded-xl bg-neutral-200 dark:bg-neutral-900">
+                  <Icons.SolarGalleryBoldDuotone className="size-16 text-neutral-500"></Icons.SolarGalleryBoldDuotone>
+                </div>
+              )}
+            </>
+          }
+        ></ReactCompareSlider>
       </div>
 
       {/* Tools */}
