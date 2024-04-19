@@ -31,15 +31,15 @@
 ![GPLv3](https://www.gnu.org/graphics/gplv3-with-text-136x68.png)
 
 ```monospace
-Yala is free software: you can redistribute it and/or modify
+Removerized is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, version 3 of the License
 
-Yala is distributed in the hope that it will be useful,
+Removerized is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Yala. If not, see <https://www.gnu.org/licenses/>.
+along with Removerized. If not, see <https://www.gnu.org/licenses/>.
 ```
