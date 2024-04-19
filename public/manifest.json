@@ -462,7 +462,6 @@
   "background_color": "#FFFFFF",
   "start_url": "/",
   "display": "standalone",
-  "display_override": ["window-controls-overlay"],
   "orientation": "portrait",
   "theme_color": "#ffffff"
 }
