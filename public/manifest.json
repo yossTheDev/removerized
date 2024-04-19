@@ -456,5 +456,7 @@
   "background_color": "#FFFFFF",
   "start_url": "/",
   "display": "standalone",
-  "orientation": "portrait"
+  "display_override": ["window-controls-overlay"],
+  "orientation": "portrait",
+  "theme_color": "rgb(255 218 185)"
 }
