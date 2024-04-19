@@ -464,5 +464,5 @@
   "display": "standalone",
   "display_override": ["window-controls-overlay"],
   "orientation": "portrait",
-  "theme_color": "rgb(255 218 185)"
+  "theme_color": "#ffffff"
 }
