@@ -26,6 +26,7 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     // startUpImage: [],
   },
+  manifest: "/manifest.json",
   openGraph: {
     images: [
       {

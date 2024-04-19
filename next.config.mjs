@@ -1,17 +1,11 @@
 /**
  * @type {import('next').Config}
  */
+import withPWAInit from '@ducanh2912/next-pwa';
 
-import withSerwistInit from "@serwist/next";
+const withPWA = withPWAInit();
 
-const withSerwist = withSerwistInit({
-  // Note: This is only an example. If you use Pages Router,
-  // use something else that works, such as "service-worker/index.ts".
-  swSrc: "app/sw.ts",
-  swDest: "public/sw.js",
-});
-
-export default withSerwist({
+export default withPWA({
   reactStrictMode: true,
   serverRuntimeConfig: {
     runtime: "edge"
