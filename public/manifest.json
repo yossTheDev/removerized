@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/web-manifest-combined.json",
   "name": "Removerized - Free AI Background Remover Tool",
   "short_name": "Removerized",
-  "description": "Free AI Background Remover Tool",
+  "description": "Effortlessly Remove Image Backgrounds with AI - Free & Limitless with Offline Support",
   "icons": [
     {
       "src": "icons/logo.png",
