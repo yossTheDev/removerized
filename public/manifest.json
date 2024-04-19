@@ -465,6 +465,15 @@
       "sizes": "1024x1024"
     }
   ],
+  "screenshots" : [
+    {
+      "src": "screen/screenshot.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Homescreen of Awesome App"
+    }
+  ],
   "background_color": "#FFFFFF",
   "start_url": "/",
   "display": "standalone",
