@@ -20,6 +20,12 @@ export const metadata: Metadata = {
     { media: "(prefers-color-scheme: light)", color: "white" },
     { media: "(prefers-color-scheme: dark)", color: "black" },
   ],
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: siteConfig.name,
+    // startUpImage: [],
+  },
   openGraph: {
     images: [
       {
