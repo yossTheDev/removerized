@@ -1,11 +1,11 @@
-<h1 align="center">Year Progress 📅</h1>
+<h1 align="center">✨ Removerized - Free AI Background Remover Tool</h1>
 
 <p align="center">
-📅 New Year Countdown.  It shows the remaining days, hours, minutes, and seconds until the new year arrives. 🥳🎉
+🖼️ Effortlessly Remove Image Backgrounds with AI - 🆓 Free & Limitless with 🛩️ Offline Support
 </p>
 
 <p align="center">
-<a href="https://year-progress.vercel.app/" target="_blank">year-progress.pages.dev</a>
+<a href="https://removerized.pages.dev/" target="_blank">removerized.pages.dev</a>
 </p>
 
 ![blog](docs/banner.png)
@@ -17,6 +17,29 @@
 <img src="https://img.shields.io/badge/Tailwind%20CSS-06B6D4?logo=tailwindcss&logoColor=fff&style=for-the-badge" alt="Tailwind CSS Badge">
 </div>
 
+## ✨ Features
+
+* 🌟 Effortlessly Remove Image Backgrounds with AI! 🤖
+* 💡 Free & Limitless: No hidden costs or usage limits!
+* 🔌 Offline Support: No internet connection needed!
+* 🚀 Fast & Accurate: AI-powered technology for quick and precise background removal.
+* 🛠️ Easy-to-Use: User-friendly interface for a seamless experience.
+* 🌈 Versatile: Perfect for any image, any occasion!
+
 ## ⚖️ License
 
-Licensed under the [MIT license](https://github.com/shadcn/ui/blob/main/LICENSE.md).
+![GPLv3](https://www.gnu.org/graphics/gplv3-with-text-136x68.png)
+
+```monospace
+Yala is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, version 3 of the License
+
+Yala is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Yala. If not, see <https://www.gnu.org/licenses/>.
+```
