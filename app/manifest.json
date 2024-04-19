@@ -2,6 +2,7 @@
   "$schema": "https://json.schemastore.org/web-manifest-combined.json",
   "name": "Removerized - Free AI Background Remover Tool",
   "short_name": "Removerized",
+  "description": "Free AI Background Remover Tool",
   "icons": [
     {
       "src": "windows11/SmallTile.scale-100.png",
