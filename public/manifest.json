@@ -5,6 +5,12 @@
   "description": "Free AI Background Remover Tool",
   "icons": [
     {
+      "src": "icons/logo.svg",
+      "sizes": "512x512",
+      "type": "image/svg",
+      "purpose": "any"
+    },
+    {
       "src": "icons/maskable_icon_x512.png",
       "sizes": "512x512",
       "type": "image/png",
