@@ -79,7 +79,7 @@ export const Editor = () => {
   }
 
   return (
-    <div className="flex w-2/4 flex-col gap-2">
+    <div className="flex flex-col gap-2 md:w-2/4">
       {/* Input */}
       <div
         className="mt-2 flex items-center justify-center gap-4 px-2 md:px-28"

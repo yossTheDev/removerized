@@ -1,6 +1,6 @@
 export const Footer = () => {
   return (
-    <span className="p-2 text-sm text-neutral-600">
+    <span className="mx-20 p-4 text-center text-xs text-neutral-600 md:mx-0 md:p-2 md:text-start">
       Built by{" "}
       <a
         className="hover:underline"
