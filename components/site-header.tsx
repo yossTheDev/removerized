@@ -41,8 +41,23 @@ export function SiteHeader() {
                   variant: "ghost",
                 })}
               >
-                <Icons.twitter className="size-5 fill-current" />
+                <Icons.X className="size-5 fill-current" />
                 <span className="sr-only">Twitter</span>
+              </div>
+            </Link>
+            <Link
+              href={siteConfig.links.telegram}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <div
+                className={buttonVariants({
+                  size: "icon",
+                  variant: "ghost",
+                })}
+              >
+                <Icons.Telegram className="size-5 fill-current" />
+                <span className="sr-only">Telegram</span>
               </div>
             </Link>
             <ThemeToggle />
