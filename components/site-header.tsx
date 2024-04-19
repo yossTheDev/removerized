@@ -1,5 +1,3 @@
-"use client"
-
 import Link from "next/link"
 
 import { siteConfig } from "@/config/site"
@@ -42,7 +40,7 @@ export function SiteHeader() {
                 })}
               >
                 <Icons.X className="size-5 fill-current" />
-                <span className="sr-only">Twitter</span>
+                <span className="sr-only">X</span>
               </div>
             </Link>
             <Link

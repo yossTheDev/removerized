@@ -49,12 +49,12 @@ export const Editor = () => {
 
   const remove = (ev: FormEvent) => {
     ev.preventDefault()
+
     let config: Config = {
       debug: true,
-      // publicPath: "http://localhost:3000/ai-data/", // path to the wasm files
+      publicPath: "http://localhost:3000/ai-data/", // path to the wasm files
       progress: (key, current, total) => {
         console.log(`Downloading ${key}: ${current} of ${total}`)
-        setShowDialog(true)
         setDialogProgress(current)
         setDialogTotal(total)
         setDialogText(key)
@@ -68,6 +68,8 @@ export const Editor = () => {
     }
 
     if (imageData) {
+      setShowDialog(true)
+
       imglyRemoveBackground(imageData!, config).then((blob: Blob) => {
         // result is a blob encoded as PNG.
         // It can be converted to an URL to be used as HTMLImage.src
