@@ -51,7 +51,7 @@ export const Editor = () => {
     ev.preventDefault()
     let config: Config = {
       debug: true,
-      publicPath: "http://localhost:3000/ai-data/", // path to the wasm files
+      // publicPath: "http://localhost:3000/ai-data/", // path to the wasm files
       progress: (key, current, total) => {
         console.log(`Downloading ${key}: ${current} of ${total}`)
         setShowDialog(true)
