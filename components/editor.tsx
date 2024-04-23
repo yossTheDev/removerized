@@ -37,6 +37,7 @@ export const Editor = () => {
       const url = URL.createObjectURL(file[0])
 
       setImageData(url)
+      setResultData("")
     }
   }
 
