@@ -23,11 +23,9 @@ export default async function IndexPage() {
       {/* Content */}
       <Suspense
         fallback={
-          <>
-            <div className="flex w-2/4 flex-col items-center justify-center">
-              <p>Loading...</p>
-            </div>
-          </>
+          <div className="flex w-2/4 flex-col items-center justify-center">
+            <p>Loading...</p>
+          </div>
         }
       >
         <Editor></Editor>
