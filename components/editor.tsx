@@ -53,17 +53,12 @@ export const Editor = () => {
     ev.preventDefault()
 
     let config: Config = {
+      model: "small",
       debug: true,
-      publicPath: "http://localhost:3000/ai-data/", // path to the wasm files
+      // publicPath: "http://localhost:3000/ai-data/", // path to the wasm files
       progress: (key, current, total) => {
         setDialogProgress(current)
         setDialogTotal(total)
-
-        if (current === total && key === "compute:inference") {
-          setShowDialog(false)
-          toast.success("🚀 Successful operation")
-        }
-
         setDialogText(key)
 
         if (key.includes("fetch:"))
@@ -75,6 +70,8 @@ export const Editor = () => {
     }
 
     if (imageData) {
+      const start = performance.now()
+
       setDialogText("Starting...")
       setShowDialog(true)
 
@@ -82,6 +79,13 @@ export const Editor = () => {
         // result is a blob encoded as PNG.
         // It can be converted to an URL to be used as HTMLImage.src
         const url = URL.createObjectURL(blob)
+
+        setShowDialog(false)
+        const end = performance.now()
+        const time = end - start
+        toast.success(
+          `🚀 Successful operation in  ${Math.floor(time / 1000)} s`
+        )
 
         setResultData(url)
       })
