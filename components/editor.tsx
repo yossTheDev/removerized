@@ -19,6 +19,7 @@ import {
   FileUploader,
   FileUploaderContent,
 } from "@/components/ui/file-uploader"
+import { Progress } from "@/components/ui/progress"
 import { Icons } from "@/components/icons"
 import { Loader } from "@/components/loader"
 
@@ -55,20 +56,26 @@ export const Editor = () => {
       debug: true,
       publicPath: "http://localhost:3000/ai-data/", // path to the wasm files
       progress: (key, current, total) => {
-        console.log(`Downloading ${key}: ${current} of ${total}`)
         setDialogProgress(current)
         setDialogTotal(total)
-        setDialogText(key)
 
         if (current === total && key === "compute:inference") {
           setShowDialog(false)
-
           toast.success("🚀 Successful operation")
         }
+
+        setDialogText(key)
+
+        if (key.includes("fetch:"))
+          setDialogText(
+            "Downloading AI models. This was a little while ago the first time..."
+          )
+        if (key === "compute:inference") setDialogText("Processing image...")
       },
     }
 
     if (imageData) {
+      setDialogText("Starting...")
       setShowDialog(true)
 
       imglyRemoveBackground(imageData!, config).then((blob: Blob) => {
@@ -188,10 +195,16 @@ export const Editor = () => {
       <AlertDialog open={showDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Processing...</AlertDialogTitle>
+            <AlertDialogTitle>Processing</AlertDialogTitle>
             <AlertDialogDescription className="flex flex-col gap-2">
-              <p>Task: {dialogText}</p>
-              <Loader></Loader>
+              <p>{dialogText}</p>
+              {dialogText.includes("Downloading") ? (
+                <Progress
+                  value={(dialogProgress * 100) / dialogTotal}
+                ></Progress>
+              ) : (
+                <Loader></Loader>
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
         </AlertDialogContent>
