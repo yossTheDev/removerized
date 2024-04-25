@@ -45,7 +45,7 @@ export const Editor = () => {
   const handleDownload = () => {
     const link = document.createElement("a")
     link.href = resultData!
-    link.download = resultData!
+    link.download = `removerized-${Date.now()}.png`
     link.click()
   }
 
