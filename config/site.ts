@@ -5,6 +5,7 @@ export const siteConfig = {
   description:
     "Effortlessly Remove Image Backgrounds with AI - Free & Limitless with Offline Support",
   mainNav: [
+
   ],
   links: {
     twitter: "https://twitter.com/yossthedev",

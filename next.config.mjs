@@ -16,6 +16,7 @@ export default withSerwist({
     runtime: "edge"
   },
   images: {
+    dangerouslyAllowSVG: true,
     remotePatterns: [
       {
         protocol: "https",
