@@ -17,6 +17,7 @@
     "@imgly/background-removal": "^1.4.5",
     "@imgly/background-removal-data": "^1.4.5",
     "@midudev/tailwind-animations": "^0.0.7",
+    "@next/third-parties": "^14.2.3",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-label": "^2.0.2",
@@ -38,7 +39,7 @@
     "react-compare-slider": "^3.1.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
-    "sharp": "^0.31.3",
+    "sharp": "^0.32.6",
     "sonner": "^1.4.41",
     "tailwind-merge": "^1.13.2",
     "tailwindcss-animate": "^1.0.6"
