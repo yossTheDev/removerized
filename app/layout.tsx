@@ -1,5 +1,6 @@
 import "@/styles/globals.css"
 import { Metadata, type Viewport } from "next"
+import Script from "next/script"
 import { GoogleAnalytics } from "@next/third-parties/google"
 
 import { siteConfig } from "@/config/site"
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <>
       <html lang="en" suppressHydrationWarning>
         <head />
+        <script async src="https://tally.so/widgets/embed.js"></script>
         <body
           className={cn(
             "min-h-screen bg-background font-sans antialiased",
@@ -77,6 +79,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           </ThemeProvider>
         </body>
         <GoogleAnalytics gaId="G-20G8R0K6W9" />
+        <Script src="https://tally.so/widgets/embed.js" />
       </html>
     </>
   )
