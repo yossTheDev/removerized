@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react"
 import Image from "next/image"
 import imglyRemoveBackground, { Config } from "@imgly/background-removal"
+import { sendGAEvent } from "@next/third-parties/google"
 import { ReactCompareSlider } from "react-compare-slider"
 import { toast } from "sonner"
 
@@ -87,6 +88,7 @@ export const Editor = () => {
           `🚀 Successful operation in  ${Math.floor(time / 1000)} s`
         )
 
+        sendGAEvent({ event: "removeBackground", value: "success" })
         setResultData(url)
       })
     }

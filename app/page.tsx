@@ -19,7 +19,7 @@ export default async function IndexPage() {
               src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=454170&theme=dark"
               alt="removerized - Free&#0032;AI&#0045;Powered&#0032;Background&#0032;Remover&#0032;Tool | Product Hunt"
               style={{ width: "170px", height: "34px" }}
-              width="230"
+              width="170"
               height="34"
             />
           </a>
