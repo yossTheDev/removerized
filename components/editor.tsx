@@ -56,7 +56,7 @@ export const Editor = () => {
     let config: Config = {
       model: "small",
       debug: true,
-      // publicPath: "http://localhost:3000/ai-data/", // path to the wasm files
+      publicPath: "http://localhost:3000/ai-data/", // path to the wasm files
       progress: (key, current, total) => {
         setDialogProgress(current)
         setDialogTotal(total)

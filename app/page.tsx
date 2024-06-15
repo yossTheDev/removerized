@@ -35,18 +35,6 @@ export default async function IndexPage() {
         </div>
       </div>
 
-      <a href="#tally-open=nrlKdM&tally-layout=modal&tally-auto-close=0">
-        Click me
-      </a>
-
-      <button
-        data-tally-open="nrlKdM"
-        data-tally-layout="modal"
-        data-tally-auto-close="0"
-      >
-        Click me
-      </button>
-
       {/* Content */}
       <Suspense
         fallback={

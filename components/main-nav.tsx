@@ -1,5 +1,6 @@
 import * as React from "react"
 import Link from "next/link"
+import { ArrowUpRightIcon } from "lucide-react"
 
 import { NavItem } from "@/types/nav"
 import { siteConfig } from "@/config/site"
@@ -22,16 +23,22 @@ export function MainNav({ items }: MainNavProps) {
           {items?.map(
             (item, index) =>
               item.href && (
-                <Link
-                  key={index}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center text-sm font-medium text-muted-foreground",
-                    item.disabled && "cursor-not-allowed opacity-80"
-                  )}
-                >
-                  {item.title}
-                </Link>
+                <>
+                  <Link
+                    target={item.external ? "_blank" : ""}
+                    key={index}
+                    href={item.href}
+                    className={cn(
+                      "flex items-center text-sm font-medium text-muted-foreground",
+                      item.disabled && "cursor-not-allowed opacity-80"
+                    )}
+                  >
+                    {item.title}
+                    {item.external && (
+                      <ArrowUpRightIcon className="ml-1 size-4"></ArrowUpRightIcon>
+                    )}
+                  </Link>
+                </>
               )
           )}
         </nav>

@@ -66,5 +66,6 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.4.3",
     "webpack": "^5.91.0"
-  }
+  },
+  "packageManager": "yarn@4.0.2+sha512.4e502bea682e7d8004561f916f1da2dfbe6f718024f6aa50bf8cd86f38ea3a94a7f1bf854a9ca666dd8eafcfb8d44baaa91bf5c7876e79a7aeac952c332f0e88"
 }

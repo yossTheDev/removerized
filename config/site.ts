@@ -19,9 +19,9 @@ export const siteConfig = {
     },
     {
       title: "Send Feedback",
-      href: "#tally-open=nrlKdM&tally-layout=modal&tally-auto-close=0",
+      href: "https://tally.so/r/nrlKdM",
+      external: true,
     },
-
   ],
   links: {
     twitter: "https://twitter.com/yossthedev",
