@@ -5,6 +5,7 @@ import Image from "next/image"
 import imglyRemoveBackground, { Config } from "@imgly/background-removal"
 import { sendGAEvent } from "@next/third-parties/google"
 import { ReactCompareSlider } from "react-compare-slider"
+import DustEffect from "react-dust-effect"
 import { toast } from "sonner"
 
 import {
@@ -25,6 +26,8 @@ import { Icons } from "@/components/icons"
 import { Loader } from "@/components/loader"
 
 export const Editor = () => {
+  const [show, setShow] = useState(false)
+
   const [files, setFiles] = useState(null)
   const [showDialog, setShowDialog] = useState(false)
   const [dialogText, setDialogText] = useState<string>("null")
@@ -88,8 +91,13 @@ export const Editor = () => {
           `🚀 Successful operation in  ${Math.floor(time / 1000)} s`
         )
 
-        sendGAEvent({ event: "removeBackground", value: "success" })
+        sendGAEvent({ event: "remove-background", value: "success" })
         setResultData(url)
+        setShow(true)
+
+        setTimeout(() => {
+          setShow(false)
+        }, 100)
       })
     }
   }
@@ -154,13 +162,20 @@ export const Editor = () => {
           itemTwo={
             <>
               {resultData ? (
-                <div className="flex flex-col items-center justify-center gap-2 rounded-xl bg-neutral-200 dark:bg-neutral-900">
+                <div className="relative flex flex-col items-center justify-center gap-2 rounded-xl bg-neutral-200 dark:bg-neutral-900">
                   <Image
                     width={300}
                     height={150}
                     className="grid-pattern flex max-h-80 w-full rounded-xl "
                     src={resultData}
                     alt="Processed image"
+                  />
+
+                  <DustEffect
+                    className="absolute flex max-h-80 w-full rounded-xl"
+                    src={imageData!}
+                    show={show}
+                    option={{ baseDuration: 100, blur: 2 }}
                   />
                 </div>
               ) : (
