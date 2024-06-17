@@ -1,7 +1,7 @@
 export type SiteConfig = typeof siteConfig
 
 export const siteConfig = {
-  name: "Removerized - Free AI-Powered Background Remover Tool",
+  name: "removerized: Free AI-Powered Background Remover Tool",
 
   description:
     "Effortlessly Remove Image Backgrounds with AI - Free & Limitless with Offline Support",
