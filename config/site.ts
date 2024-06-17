@@ -6,16 +6,14 @@ export const siteConfig = {
     "Effortlessly Remove Image Backgrounds with AI - Free & Limitless with Offline Support",
   mainNav: [
     {
-      title: "Home",
-      href: "/",
-    },
-    {
-      title: "Licenses",
-      href: "/",
+      title: "License",
+      href: "https://github.com/yossTheDev/boostedpic/blob/main/LICENSE",
+      external: true
     },
     {
       title: "Donation",
-      href: "/",
+      href: "https://qvapay.com/payme/yoannisgnw",
+      external: true
     },
     {
       title: "Send Feedback",
