@@ -57,7 +57,7 @@ export const Editor = () => {
     ev.preventDefault()
 
     let config: Config = {
-      model: "small",
+      model: "medium",
       debug: true,
       publicPath: "http://localhost:3000/ai-data/", // path to the wasm files
       progress: (key, current, total) => {
