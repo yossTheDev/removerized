@@ -16,7 +16,9 @@ export function MainNav({ items }: MainNavProps) {
     <div className="flex gap-6 md:gap-10">
       <Link href="/" className="flex items-center space-x-2">
         <Icons.logo className="size-5" />
-        <span className="inline-block font-museo font-bold">removerized</span>
+        <span className="inline-block font-museo font-extrabold tracking-wider">
+          removerized
+        </span>
       </Link>
       {items?.length ? (
         <nav className="hidden gap-6 md:flex">
