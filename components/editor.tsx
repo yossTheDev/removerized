@@ -194,7 +194,7 @@ export const Editor = () => {
       <div className="flex items-center justify-center gap-2">
         <Button
           variant={"ringHover"}
-          className="font-bold"
+          className="rounded-full font-bold"
           onClick={remove}
           disabled={!imageData}
         >
