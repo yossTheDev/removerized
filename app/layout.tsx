@@ -1,5 +1,6 @@
 import "@/styles/globals.css"
 import { Metadata, type Viewport } from "next"
+import Script from "next/script"
 import { GoogleAnalytics } from "@next/third-parties/google"
 
 import { siteConfig } from "@/config/site"
@@ -58,7 +59,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <>
       <html lang="en" suppressHydrationWarning>
-        <head />
+        <head>
+          <Script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5245068093651973"
+            crossOrigin="anonymous"
+            strategy="lazyOnload"
+          />
+        </head>
         <body
           className={cn(
             "min-h-screen bg-background font-sans antialiased",
