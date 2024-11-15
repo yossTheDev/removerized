@@ -14,7 +14,7 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache"
   },
   "dependencies": {
-    "@imgly/background-removal": "1.4.5",
+    "@imgly/background-removal": "^1.5.5",
     "@imgly/background-removal-data": "^1.4.5",
     "@midudev/tailwind-animations": "^0.0.7",
     "@next/third-parties": "^14.2.3",
