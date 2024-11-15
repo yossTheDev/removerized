@@ -1,18 +1,16 @@
+/* eslint-disable @next/next/no-img-element */
 "use client"
 
 import { FormEvent, useState } from "react"
 import Image from "next/image"
-import imglyRemoveBackground, {
-  Config,
-  removeBackground,
-} from "@imgly/background-removal"
+import { Config, removeBackground } from "@imgly/background-removal"
 import { sendGAEvent } from "@next/third-parties/google"
 import {
   Download,
   LoaderIcon,
+  Plus,
   ScanEye,
   Settings,
-  Square,
   ZoomIn,
   ZoomOut,
 } from "lucide-react"
@@ -43,7 +41,7 @@ import { ThemeToggle } from "./theme-toggle"
 export const Editor = () => {
   const [show, setShow] = useState(false)
 
-  const [files, setFiles] = useState(null)
+  const [files, setFiles] = useState<File[] | null>(null)
   const [showDialog, setShowDialog] = useState(false)
   const [dialogText, setDialogText] = useState<string>("null")
   const [dialogProgress, setDialogProgress] = useState<number>(0)
@@ -52,10 +50,14 @@ export const Editor = () => {
   const [imageData, setImageData] = useState<string | null>(null)
   const [resultData, setResultData] = useState<string | null>(null)
 
-  const handleDataChange = (file: File[] | null) => {
-    if (file) {
-      const url = URL.createObjectURL(file[0])
+  const handleDataChange = (_files: File[] | null) => {
+    console.log(_files)
+    setFiles(_files)
 
+    if (_files) {
+      const url = URL.createObjectURL(_files[0])
+
+      console.log("files " + _files.length)
       setImageData(url)
       setResultData(null)
     }
@@ -137,39 +139,6 @@ export const Editor = () => {
       >
         <div className="viewport  ">
           <div className="rounded-2xl  p-4">
-            {/* Input */}
-            <div
-              className="mt-2 flex items-center justify-center gap-4 px-2 md:px-28"
-              onSubmit={remove}
-            >
-              <FileUploader
-                value={files}
-                dropzoneOptions={{
-                  multiple: false,
-                  accept: {
-                    "image/png": [".png"],
-                    "image/jpg": [".jpg", ".jpeg"],
-                    "image/webp": [".webp"],
-                  },
-                }}
-                onValueChange={handleDataChange}
-                className="relative max-w-xs space-y-1 rounded-xl transition-all hover:bg-neutral-200 dark:hover:bg-neutral-900"
-              >
-                <FileInput>
-                  <div className="flex w-full flex-col items-center justify-center pb-4 pt-3 ">
-                    <Icons.SolarCloudUploadBoldDuotone className="size-8"></Icons.SolarCloudUploadBoldDuotone>
-                    <p className="mb-1 text-sm text-gray-500 dark:text-gray-400">
-                      <span className="font-semibold">Click to upload</span>
-                      &nbsp; or drag and drop
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      PNG, JPG or WEBP file
-                    </p>
-                  </div>
-                </FileInput>
-                <FileUploaderContent></FileUploaderContent>
-              </FileUploader>
-            </div>
             {/* Images */}
             <div className="flex size-full items-center justify-center gap-16 p-4">
               <ReactCompareSlider
@@ -284,7 +253,57 @@ export const Editor = () => {
 
           {/* Queue Bar */}
           <div className="pointer-events-auto flex w-1/5 items-center justify-center p-4">
-            <div className="h-96 w-60 bg-white p-2 dark:bg-neutral-900"></div>
+            <div className="min-h-96 w-60 rounded-xl bg-white px-4 py-2 dark:bg-neutral-900">
+              {/* Input */}
+              <div
+                className="mt-2 flex items-center justify-center gap-4 rounded-xl bg-neutral-950/35"
+                onSubmit={remove}
+              >
+                <FileUploader
+                  value={null}
+                  dropzoneOptions={{
+                    maxFiles: 10,
+                    accept: {
+                      "image/png": [".png"],
+                      "image/jpg": [".jpg", ".jpeg"],
+                      "image/webp": [".webp"],
+                    },
+                  }}
+                  onValueChange={handleDataChange}
+                  className="relative max-w-xs space-y-1 rounded-xl transition-all hover:bg-neutral-200 dark:hover:bg-neutral-900"
+                >
+                  <FileInput>
+                    <div className="flex w-full flex-col items-center justify-center pb-4 pt-3 ">
+                      <Plus className="size-24"></Plus>
+                      <p className="mb-1 text-sm text-gray-500 dark:text-gray-400">
+                        <span className="font-semibold">Click to upload</span>
+                        &nbsp; or drag and drop
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        PNG, JPG or WEBP file
+                      </p>
+                    </div>
+                  </FileInput>
+                  <FileUploaderContent></FileUploaderContent>
+                </FileUploader>
+              </div>
+
+              {/* Images List */}
+              <div className="flex flex-col gap-2 max-h-80 overflow-scroll">
+                <p>Files {files?.length}</p>
+                {files?.map((file, index) => {
+                  const url = URL.createObjectURL(file)
+
+                  return (
+                    <img
+                      className="rounded"
+                      alt={`image-${index}`}
+                      src={url}
+                    ></img>
+                  )
+                })}
+              </div>
+            </div>
           </div>
         </div>
         <div className="fixed left-10 top-10 rounded-2xl bg-white p-4"></div>
