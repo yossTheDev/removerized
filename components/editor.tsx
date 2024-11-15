@@ -7,6 +7,14 @@ import imglyRemoveBackground, {
   removeBackground,
 } from "@imgly/background-removal"
 import { sendGAEvent } from "@next/third-parties/google"
+import {
+  Download,
+  LoaderIcon,
+  Settings,
+  Square,
+  ZoomIn,
+  ZoomOut,
+} from "lucide-react"
 import { ReactCompareSlider } from "react-compare-slider"
 import DustEffect from "react-dust-effect"
 import InfiniteViewer from "react-infinite-viewer"
@@ -245,9 +253,29 @@ export const Editor = () => {
           {/* Bottom Bar */}
           <div className="flex w-full justify-center ">
             <div className="pointer-events-auto mb-10 mt-auto flex h-fit gap-2 rounded-md bg-white px-4 py-2 dark:bg-neutral-900">
-              <Button>Save</Button>
-              <Button>Process</Button>
-              <Button>Settings</Button>
+              <Button size={"icon"} variant={"ghost"}>
+                <LoaderIcon></LoaderIcon>
+              </Button>
+
+              <Button size={"icon"} variant={"ghost"}>
+                <Download></Download>
+              </Button>
+
+              <Button size={"icon"} variant={"ghost"}>
+                <Settings></Settings>
+              </Button>
+
+              <Button size={"icon"} variant={"ghost"}>
+                <ZoomIn></ZoomIn>
+              </Button>
+
+              <Button size={"icon"} variant={"ghost"}>
+                <ZoomOut></ZoomOut>
+              </Button>
+
+              <Button size={"icon"} variant={"ghost"}>
+                <Square></Square>
+              </Button>
 
               <ThemeToggle />
             </div>
