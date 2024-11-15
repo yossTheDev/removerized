@@ -219,41 +219,41 @@ export const Editor = () => {
 
       {/* Tools */}
       <div className="pointer-events-none absolute z-20 h-screen w-screen">
-        <div className="flex h-screen w-screen ">
-          {/* Bottom Bar */}
-          <div className="flex w-full justify-center ">
-            <div className="pointer-events-auto mb-10 mt-auto flex h-fit gap-2 rounded-md bg-white px-4 py-2 dark:bg-neutral-900">
-              <Button size={"icon"} variant={"ghost"}>
-                <LoaderIcon></LoaderIcon>
-              </Button>
+        {/* Bottom Bar */}
+        <div className="pointer-events-none absolute z-20 flex h-screen w-screen items-center justify-center">
+          <div className="pointer-events-auto  mb-10 mt-auto flex h-fit gap-2 rounded-md bg-white px-4 py-2 dark:bg-neutral-900">
+            <Button size={"icon"} variant={"ghost"}>
+              <LoaderIcon></LoaderIcon>
+            </Button>
 
-              <Button size={"icon"} variant={"ghost"}>
-                <Download></Download>
-              </Button>
+            <Button size={"icon"} variant={"ghost"}>
+              <Download></Download>
+            </Button>
 
-              <Button size={"icon"} variant={"ghost"}>
-                <Settings></Settings>
-              </Button>
+            <Button size={"icon"} variant={"ghost"}>
+              <Settings></Settings>
+            </Button>
 
-              <Button size={"icon"} variant={"ghost"}>
-                <ZoomIn></ZoomIn>
-              </Button>
+            <Button size={"icon"} variant={"ghost"}>
+              <ZoomIn></ZoomIn>
+            </Button>
 
-              <Button size={"icon"} variant={"ghost"}>
-                <ZoomOut></ZoomOut>
-              </Button>
+            <Button size={"icon"} variant={"ghost"}>
+              <ZoomOut></ZoomOut>
+            </Button>
 
-              <Button size={"icon"} variant={"ghost"}>
-                <ScanEye></ScanEye>
-              </Button>
+            <Button size={"icon"} variant={"ghost"}>
+              <ScanEye></ScanEye>
+            </Button>
 
-              <ThemeToggle />
-            </div>
+            <ThemeToggle />
           </div>
+        </div>
 
-          {/* Queue Bar */}
-          <div className="pointer-events-auto flex w-1/5 items-center justify-center p-4">
-            <div className="min-h-96 w-60 rounded-md bg-white px-4 py-2 dark:bg-neutral-900">
+        {/* Image Queue */}
+        <div className="pointer-events-none flex h-screen w-screen">
+          <div className="pointer-events-none flex w-full  items-center justify-end p-4">
+            <div className="pointer-events-auto h-fit w-60 rounded-md bg-white px-4 py-2 dark:bg-neutral-900">
               {/* Input */}
               <div
                 className="mt-2 flex items-center justify-center gap-4 rounded-md bg-neutral-950/35"
@@ -286,7 +286,7 @@ export const Editor = () => {
                 Files: {files?.length}
               </p>
 
-              <div className="mt-4 flex max-h-80 flex-col gap-4 overflow-x-hidden overflow-y-scroll">
+              <div className="mt-4 flex h-fit max-h-80 flex-col gap-4 overflow-x-hidden overflow-y-scroll">
                 {files?.map((file, index) => {
                   const url = URL.createObjectURL(file)
 
