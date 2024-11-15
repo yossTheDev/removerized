@@ -41,7 +41,7 @@ import { ThemeToggle } from "./theme-toggle"
 export const Editor = () => {
   const [show, setShow] = useState(false)
 
-  const [files, setFiles] = useState<File[]>([])
+  const [files, setFiles] = useState<File[] | null>([])
   const [showDialog, setShowDialog] = useState(false)
   const [dialogText, setDialogText] = useState<string>("null")
   const [dialogProgress, setDialogProgress] = useState<number>(0)
@@ -50,31 +50,15 @@ export const Editor = () => {
   const [imageData, setImageData] = useState<string | null>(null)
   const [resultData, setResultData] = useState<string | null>(null)
 
-  const handleDataChange = useCallback(
-    (_files: File[] | null) => {
-      console.log("previous files " + files.length)
-      console.log(files)
+  const handleDataChange = (_files: File[] | null) => {
+    if (_files) {
+      const url = URL.createObjectURL(_files[0])
 
-      if (_files) {
-        const url = URL.createObjectURL(_files[0])
-
-        const copy = [...files]
-
-        console.log("copy")
-        console.log(copy)
-
-        setFiles([...copy, _files[0]])
-
-        console.log("files " + _files.length)
-        console.log("files array")
-
-        console.log([...files, ..._files])
-        setImageData(url)
-        setResultData(null)
-      }
-    },
-    [files]
-  )
+      setFiles([..._files])
+      setImageData(url)
+      setResultData(null)
+    }
+  }
 
   const handleDownload = () => {
     const link = document.createElement("a")
@@ -269,9 +253,8 @@ export const Editor = () => {
                 className="mt-2 flex items-center justify-center gap-4 rounded-md bg-neutral-950/35"
                 onSubmit={remove}
               >
-                <button onClick={() => console.log(files)}>CLICK</button>
                 <FileUploader
-                  value={null}
+                  value={files}
                   dropzoneOptions={{
                     maxFiles: 10,
                     accept: {
