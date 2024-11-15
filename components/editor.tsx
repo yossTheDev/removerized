@@ -155,8 +155,8 @@ export const Editor = () => {
                         alt="Selected image"
                       />
                     ) : (
-                      <div className="flex h-80 w-[36rem] items-center justify-center rounded-xl bg-neutral-200 dark:bg-neutral-900">
-                        <Icons.SolarGalleryBoldDuotone className="size-16 text-neutral-500"></Icons.SolarGalleryBoldDuotone>
+                      <div className="flex h-80 w-[36rem] items-center justify-center rounded-xl bg-neutral-400 dark:bg-neutral-900">
+                        <Icons.SolarGalleryBoldDuotone className="size-16 text-neutral-700"></Icons.SolarGalleryBoldDuotone>
                       </div>
                     )}
                   </>
@@ -164,7 +164,7 @@ export const Editor = () => {
                 itemTwo={
                   <>
                     {resultData ? (
-                      <div className="relative flex flex-col items-center justify-center gap-2 rounded-xl bg-neutral-200 dark:bg-neutral-900">
+                      <div className="relative flex flex-col items-center justify-center gap-2 rounded-xl bg-neutral-500 dark:bg-neutral-900">
                         <Image
                           width={300}
                           height={150}
@@ -181,9 +181,9 @@ export const Editor = () => {
                         />
                       </div>
                     ) : (
-                      <div className="flex size-full items-center justify-center rounded-xl bg-neutral-200 dark:bg-neutral-900">
+                      <div className="flex size-full items-center justify-center rounded-xl bg-neutral-400 dark:bg-neutral-900">
                         <div className="grid-pattern flex size-full items-center justify-center">
-                          <Icons.SolarGalleryBoldDuotone className="size-16 text-neutral-500"></Icons.SolarGalleryBoldDuotone>
+                          <Icons.SolarGalleryBoldDuotone className="size-16 text-neutral-700"></Icons.SolarGalleryBoldDuotone>
                         </div>
                       </div>
                     )}
