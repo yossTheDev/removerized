@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
-import { FormEvent, useState } from "react"
+import { FormEvent, useEffect, useState } from "react"
 import Image from "next/image"
 import { Config, removeBackground } from "@imgly/background-removal"
 import { sendGAEvent } from "@next/third-parties/google"
@@ -9,7 +9,6 @@ import {
   Download,
   Layers,
   LoaderIcon,
-  Plus,
   ScanEye,
   Settings,
   Trash,
@@ -21,6 +20,7 @@ import DustEffect from "react-dust-effect"
 import InfiniteViewer from "react-infinite-viewer"
 import { toast } from "sonner"
 
+import { ImageSetting } from "@/types/image-settings"
 import {
   AlertDialog,
   AlertDialogContent,
@@ -29,6 +29,13 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import {
   FileInput,
   FileUploader,
@@ -44,10 +51,15 @@ export const Editor = () => {
   const [show, setShow] = useState(false)
 
   const [files, setFiles] = useState<File[] | null>([])
+  const [settings, setSettings] = useState<ImageSetting[]>([])
+
   const [showDialog, setShowDialog] = useState(false)
   const [dialogText, setDialogText] = useState<string>("null")
   const [dialogProgress, setDialogProgress] = useState<number>(0)
   const [dialogTotal, setDialogTotal] = useState<number>(100)
+
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [selectedSettings, setSelectedSettings] = useState<string | null>(null)
 
   const [imageData, setImageData] = useState<string | null>(null)
   const [resultData, setResultData] = useState<string | null>(null)
@@ -55,6 +67,20 @@ export const Editor = () => {
   const handleDataChange = (_files: File[] | null) => {
     if (_files) {
       const url = URL.createObjectURL(_files[0])
+
+      for (const file of _files) {
+        if (!settings.find((item) => item.name === file.name)) {
+          setSettings([
+            ...settings,
+            {
+              format: "image/png",
+              model: "isnet",
+              name: file.name,
+              quality: 1,
+            },
+          ])
+        }
+      }
 
       setFiles([..._files])
       setImageData(url)
@@ -123,6 +149,10 @@ export const Editor = () => {
     }
   }
 
+  useEffect(() => {
+    console.log(settings)
+  }, [settings])
+
   return (
     <>
       <InfiniteViewer
@@ -139,7 +169,7 @@ export const Editor = () => {
         zoom={0.8}
       >
         <div className="viewport  ">
-          <div className="rounded-2xl  p-4">
+          <div className="rounded-2xl p-4">
             {/* Images */}
             <div className="flex size-full items-center justify-center gap-16 p-4">
               <ReactCompareSlider
@@ -255,10 +285,18 @@ export const Editor = () => {
           </div>
         </div>
 
-        {/* Image Queue */}
         <div className="pointer-events-none flex h-screen w-screen">
-          <div className="pointer-events-none flex w-full items-center justify-end p-4">
+          <div className="pointer-events-none flex w-full items-center p-4">
+            {/* Image Settings */}
             <div className="pointer-events-auto h-fit w-60 rounded-md bg-white p-4 backdrop-blur-3xl transition-all dark:bg-neutral-900/80">
+              <div className="flex justify-center gap-2 p-2">
+                <Settings className="size-4"></Settings>
+                <span className="text-sm font-semibold">Settings</span>
+              </div>
+            </div>
+
+            {/* Image Queue */}
+            <div className="pointer-events-auto ml-auto h-fit w-60 rounded-md bg-white p-4 backdrop-blur-3xl transition-all dark:bg-neutral-900/80">
               <div className="flex justify-center gap-2 p-2">
                 <Layers className="size-4"></Layers>
                 <span className="text-sm font-semibold">Queue</span>
@@ -304,6 +342,7 @@ export const Editor = () => {
                         alt={`image-${index}`}
                         src={url}
                         onClick={() => {
+                          setSelectedImage(file.name)
                           setImageData(url)
                         }}
                       ></img>
