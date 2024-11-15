@@ -67,3 +67,27 @@
   background: url("../public/assets/background.svg");
   background-repeat: repeat;
 }
+
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar-corner {
+    background: rgba(0, 0, 0, 0);
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: #9187872f;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0);
+    background-clip: content-box;
+    min-width: 5px;
+    min-height: 5px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #706a6a2f;
+  }
+  ::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0);
+  }
+}

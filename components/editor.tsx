@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
-import { FormEvent, useState } from "react"
+import { FormEvent, useCallback, useState } from "react"
 import Image from "next/image"
 import { Config, removeBackground } from "@imgly/background-removal"
 import { sendGAEvent } from "@next/third-parties/google"
@@ -41,7 +41,7 @@ import { ThemeToggle } from "./theme-toggle"
 export const Editor = () => {
   const [show, setShow] = useState(false)
 
-  const [files, setFiles] = useState<File[] | null>(null)
+  const [files, setFiles] = useState<File[]>([])
   const [showDialog, setShowDialog] = useState(false)
   const [dialogText, setDialogText] = useState<string>("null")
   const [dialogProgress, setDialogProgress] = useState<number>(0)
@@ -50,18 +50,31 @@ export const Editor = () => {
   const [imageData, setImageData] = useState<string | null>(null)
   const [resultData, setResultData] = useState<string | null>(null)
 
-  const handleDataChange = (_files: File[] | null) => {
-    console.log(_files)
-    setFiles(_files)
+  const handleDataChange = useCallback(
+    (_files: File[] | null) => {
+      console.log("previous files " + files.length)
+      console.log(files)
 
-    if (_files) {
-      const url = URL.createObjectURL(_files[0])
+      if (_files) {
+        const url = URL.createObjectURL(_files[0])
 
-      console.log("files " + _files.length)
-      setImageData(url)
-      setResultData(null)
-    }
-  }
+        const copy = [...files]
+
+        console.log("copy")
+        console.log(copy)
+
+        setFiles([...copy, _files[0]])
+
+        console.log("files " + _files.length)
+        console.log("files array")
+
+        console.log([...files, ..._files])
+        setImageData(url)
+        setResultData(null)
+      }
+    },
+    [files]
+  )
 
   const handleDownload = () => {
     const link = document.createElement("a")
@@ -133,9 +146,6 @@ export const Editor = () => {
         useWheelPinch
         useTransform
         zoom={0.8}
-        onScroll={(e) => {
-          console.log(e)
-        }}
       >
         <div className="viewport  ">
           <div className="rounded-2xl  p-4">
@@ -253,12 +263,13 @@ export const Editor = () => {
 
           {/* Queue Bar */}
           <div className="pointer-events-auto flex w-1/5 items-center justify-center p-4">
-            <div className="min-h-96 w-60 rounded-xl bg-white px-4 py-2 dark:bg-neutral-900">
+            <div className="min-h-96 w-60 rounded-md bg-white px-4 py-2 dark:bg-neutral-900">
               {/* Input */}
               <div
-                className="mt-2 flex items-center justify-center gap-4 rounded-xl bg-neutral-950/35"
+                className="mt-2 flex items-center justify-center gap-4 rounded-md bg-neutral-950/35"
                 onSubmit={remove}
               >
+                <button onClick={() => console.log(files)}>CLICK</button>
                 <FileUploader
                   value={null}
                   dropzoneOptions={{
@@ -274,14 +285,7 @@ export const Editor = () => {
                 >
                   <FileInput>
                     <div className="flex w-full flex-col items-center justify-center pb-4 pt-3 ">
-                      <Plus className="size-24"></Plus>
-                      <p className="mb-1 text-sm text-gray-500 dark:text-gray-400">
-                        <span className="font-semibold">Click to upload</span>
-                        &nbsp; or drag and drop
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        PNG, JPG or WEBP file
-                      </p>
+                      <Plus className="size-20 text-neutral-700"></Plus>
                     </div>
                   </FileInput>
                   <FileUploaderContent></FileUploaderContent>
@@ -289,14 +293,16 @@ export const Editor = () => {
               </div>
 
               {/* Images List */}
-              <div className="flex flex-col gap-2 max-h-80 overflow-scroll">
-                <p>Files {files?.length}</p>
+              <div className="mt-4 flex max-h-80 flex-col gap-2 overflow-scroll">
+                <p className="my-2 text-sm text-neutral-500">
+                  Files: {files?.length}
+                </p>
                 {files?.map((file, index) => {
                   const url = URL.createObjectURL(file)
 
                   return (
                     <img
-                      className="rounded"
+                      className="rounded border border-neutral-900 dark:border-neutral-300"
                       alt={`image-${index}`}
                       src={url}
                     ></img>
