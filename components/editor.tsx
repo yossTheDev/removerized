@@ -7,6 +7,7 @@ import { Config, removeBackground } from "@imgly/background-removal"
 import { sendGAEvent } from "@next/third-parties/google"
 import {
   Download,
+  Layers,
   LoaderIcon,
   Plus,
   ScanEye,
@@ -68,7 +69,7 @@ export const Editor = () => {
     link.click()
   }
 
-  const removeFile = (file: File) => {
+  const handleRemoveFile = (file: File) => {
     const filtered = files?.filter((_file) => _file?.name !== file.name)
     setFiles(filtered!)
   }
@@ -252,8 +253,12 @@ export const Editor = () => {
 
         {/* Image Queue */}
         <div className="pointer-events-none flex h-screen w-screen">
-          <div className="pointer-events-none flex w-full  items-center justify-end p-4">
-            <div className="pointer-events-auto h-fit w-60 rounded-md bg-white px-4 py-2 dark:bg-neutral-900">
+          <div className="pointer-events-none flex w-full items-center justify-end p-4">
+            <div className="pointer-events-auto h-fit w-60 rounded-md bg-white px-4 py-2 transition-all dark:bg-neutral-900">
+              <div className="flex justify-center gap-2 p-2">
+                <Layers className="size-4"></Layers>
+                <span className="text-sm font-semibold">Queue</span>
+              </div>
               {/* Input */}
               <div
                 className="mt-2 flex items-center justify-center gap-4 rounded-md bg-neutral-950/35"
@@ -282,10 +287,6 @@ export const Editor = () => {
               </div>
 
               {/* Images List */}
-              <p className="my-2 text-xs text-neutral-500">
-                Files: {files?.length}
-              </p>
-
               <div className="mt-4 flex h-fit max-h-80 flex-col gap-4 overflow-x-hidden overflow-y-scroll">
                 {files?.map((file, index) => {
                   const url = URL.createObjectURL(file)
@@ -304,7 +305,7 @@ export const Editor = () => {
 
                       <Button
                         onClick={() => {
-                          removeFile(file)
+                          handleRemoveFile(file)
                         }}
                         className="absolute top-0 bg-neutral-800 opacity-0 transition-all group-hover:opacity-100"
                         variant={"ghost"}
@@ -315,6 +316,21 @@ export const Editor = () => {
                     </div>
                   )
                 })}
+              </div>
+
+              {/* Clear Queue */}
+              <div className="mt-4 flex flex-col gap-2">
+                <Button
+                  onClick={() => setFiles([])}
+                  disabled={files?.length! === 0}
+                  className="font-bold"
+                >
+                  <Trash className="mr-2 size-4"></Trash>
+                  Clear Queue
+                </Button>
+                <p className="my-2 text-xs text-neutral-500">
+                  Files: {files?.length}
+                </p>
               </div>
             </div>
           </div>
