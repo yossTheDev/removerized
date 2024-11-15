@@ -10,6 +10,7 @@ import { sendGAEvent } from "@next/third-parties/google"
 import {
   Download,
   LoaderIcon,
+  ScanEye,
   Settings,
   Square,
   ZoomIn,
@@ -274,7 +275,7 @@ export const Editor = () => {
               </Button>
 
               <Button size={"icon"} variant={"ghost"}>
-                <Square></Square>
+                <ScanEye></ScanEye>
               </Button>
 
               <ThemeToggle />
