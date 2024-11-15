@@ -1,12 +1,10 @@
 import { Suspense } from "react"
-import Image from "next/image"
 
 import { Editor } from "@/components/editor"
-import { Icons } from "@/components/icons"
 
 export default async function IndexPage() {
   return (
-    <section className="container flex h-full  flex-col gap-2 pb-8 md:flex-row">
+    <section className="grid-pattern flex h-full">
       {/* Content */}
       <Suspense
         fallback={

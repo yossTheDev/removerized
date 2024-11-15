@@ -9,6 +9,7 @@ import imglyRemoveBackground, {
 import { sendGAEvent } from "@next/third-parties/google"
 import { ReactCompareSlider } from "react-compare-slider"
 import DustEffect from "react-dust-effect"
+import InfiniteViewer from "react-infinite-viewer"
 import { toast } from "sonner"
 
 import {
@@ -27,6 +28,8 @@ import {
 import { Progress } from "@/components/ui/progress"
 import { Icons } from "@/components/icons"
 import { Loader } from "@/components/loader"
+
+import { ThemeToggle } from "./theme-toggle"
 
 export const Editor = () => {
   const [show, setShow] = useState(false)
@@ -106,114 +109,156 @@ export const Editor = () => {
   }
 
   return (
-    <div className="flex w-full flex-col gap-2">
-      {/* Input */}
-      <div
-        className="mt-2 flex items-center justify-center gap-4 px-2 md:px-28"
-        onSubmit={remove}
+    <>
+      <InfiniteViewer
+        className="viewer my-2 h-screen w-screen"
+        margin={0}
+        threshold={0}
+        useMouseDrag
+        useAutoZoom
+        useGesture
+        useResizeObserver
+        useWheelScroll
+        useWheelPinch
+        useTransform
+        zoom={0.8}
+        onScroll={(e) => {
+          console.log(e)
+        }}
       >
-        <FileUploader
-          value={files}
-          dropzoneOptions={{
-            multiple: false,
-            accept: {
-              "image/png": [".png"],
-              "image/jpg": [".jpg", ".jpeg"],
-              "image/webp": [".webp"],
-            },
-          }}
-          onValueChange={handleDataChange}
-          className="relative max-w-xs space-y-1 rounded-xl transition-all hover:bg-neutral-200 dark:hover:bg-neutral-900"
-        >
-          <FileInput>
-            <div className="flex w-full flex-col items-center justify-center pb-4 pt-3 ">
-              <Icons.SolarCloudUploadBoldDuotone className="size-8"></Icons.SolarCloudUploadBoldDuotone>
-              <p className="mb-1 text-sm text-gray-500 dark:text-gray-400">
-                <span className="font-semibold">Click to upload</span>
-                &nbsp; or drag and drop
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                PNG, JPG or WEBP file
-              </p>
-            </div>
-          </FileInput>
-          <FileUploaderContent></FileUploaderContent>
-        </FileUploader>
-      </div>
-
-      {/* Images */}
-      <div className="flex size-full items-center justify-center gap-16 p-4">
-        <ReactCompareSlider
-          className="max-w-xl rounded-xl"
-          itemOne={
-            <>
-              {imageData ? (
-                <Image
-                  width={300}
-                  height={150}
-                  className="flex max-h-80 w-full rounded-xl"
-                  src={imageData}
-                  alt="Selected image"
-                />
-              ) : (
-                <div className="flex h-80 w-[36rem] items-center justify-center rounded-xl bg-neutral-200 dark:bg-neutral-900">
-                  <Icons.SolarGalleryBoldDuotone className="size-16 text-neutral-500"></Icons.SolarGalleryBoldDuotone>
-                </div>
-              )}
-            </>
-          }
-          itemTwo={
-            <>
-              {resultData ? (
-                <div className="relative flex flex-col items-center justify-center gap-2 rounded-xl bg-neutral-200 dark:bg-neutral-900">
-                  <Image
-                    width={300}
-                    height={150}
-                    className="grid-pattern flex max-h-80 w-full rounded-xl "
-                    src={resultData}
-                    alt="Processed image"
-                  />
-
-                  <DustEffect
-                    className="absolute flex max-h-80 w-full rounded-xl"
-                    src={imageData!}
-                    show={show}
-                    option={{ baseDuration: 100, blur: 2 }}
-                  />
-                </div>
-              ) : (
-                <div className="flex size-full items-center justify-center rounded-xl bg-neutral-200 dark:bg-neutral-900">
-                  <div className="grid-pattern flex size-full items-center justify-center">
-                    <Icons.SolarGalleryBoldDuotone className="size-16 text-neutral-500"></Icons.SolarGalleryBoldDuotone>
+        <div className="viewport  ">
+          <div className="rounded-2xl  p-4">
+            {/* Input */}
+            <div
+              className="mt-2 flex items-center justify-center gap-4 px-2 md:px-28"
+              onSubmit={remove}
+            >
+              <FileUploader
+                value={files}
+                dropzoneOptions={{
+                  multiple: false,
+                  accept: {
+                    "image/png": [".png"],
+                    "image/jpg": [".jpg", ".jpeg"],
+                    "image/webp": [".webp"],
+                  },
+                }}
+                onValueChange={handleDataChange}
+                className="relative max-w-xs space-y-1 rounded-xl transition-all hover:bg-neutral-200 dark:hover:bg-neutral-900"
+              >
+                <FileInput>
+                  <div className="flex w-full flex-col items-center justify-center pb-4 pt-3 ">
+                    <Icons.SolarCloudUploadBoldDuotone className="size-8"></Icons.SolarCloudUploadBoldDuotone>
+                    <p className="mb-1 text-sm text-gray-500 dark:text-gray-400">
+                      <span className="font-semibold">Click to upload</span>
+                      &nbsp; or drag and drop
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      PNG, JPG or WEBP file
+                    </p>
                   </div>
-                </div>
-              )}
-            </>
-          }
-        ></ReactCompareSlider>
-      </div>
+                </FileInput>
+                <FileUploaderContent></FileUploaderContent>
+              </FileUploader>
+            </div>
+            {/* Images */}
+            <div className="flex size-full items-center justify-center gap-16 p-4">
+              <ReactCompareSlider
+                className="max-w-xl rounded-xl"
+                itemOne={
+                  <>
+                    {imageData ? (
+                      <Image
+                        width={300}
+                        height={150}
+                        className="flex max-h-80 w-full rounded-xl"
+                        src={imageData}
+                        alt="Selected image"
+                      />
+                    ) : (
+                      <div className="flex h-80 w-[36rem] items-center justify-center rounded-xl bg-neutral-200 dark:bg-neutral-900">
+                        <Icons.SolarGalleryBoldDuotone className="size-16 text-neutral-500"></Icons.SolarGalleryBoldDuotone>
+                      </div>
+                    )}
+                  </>
+                }
+                itemTwo={
+                  <>
+                    {resultData ? (
+                      <div className="relative flex flex-col items-center justify-center gap-2 rounded-xl bg-neutral-200 dark:bg-neutral-900">
+                        <Image
+                          width={300}
+                          height={150}
+                          className="grid-pattern flex max-h-80 w-full rounded-xl "
+                          src={resultData}
+                          alt="Processed image"
+                        />
+
+                        <DustEffect
+                          className="absolute flex max-h-80 w-full rounded-xl"
+                          src={imageData!}
+                          show={show}
+                          option={{ baseDuration: 100, blur: 2 }}
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex size-full items-center justify-center rounded-xl bg-neutral-200 dark:bg-neutral-900">
+                        <div className="grid-pattern flex size-full items-center justify-center">
+                          <Icons.SolarGalleryBoldDuotone className="size-16 text-neutral-500"></Icons.SolarGalleryBoldDuotone>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                }
+              ></ReactCompareSlider>
+            </div>
+
+            {/* Tools */}
+            <div className="flex items-center justify-center gap-2">
+              <Button
+                variant={"ringHover"}
+                className="rounded-full font-bold"
+                onClick={remove}
+                disabled={!imageData}
+              >
+                <Icons.SolarGalleryRemoveLineDuotone className="mr-2 size-5"></Icons.SolarGalleryRemoveLineDuotone>
+                Process
+              </Button>
+
+              <Button
+                variant={"linkHover2"}
+                disabled={!resultData}
+                className="font-bold"
+                onClick={handleDownload}
+              >
+                <Icons.SolarDownloadMinimalisticBoldDuotone className="mr-2 size-5"></Icons.SolarDownloadMinimalisticBoldDuotone>
+                Download
+              </Button>
+            </div>
+          </div>
+        </div>
+      </InfiniteViewer>
 
       {/* Tools */}
-      <div className="flex items-center justify-center gap-2">
-        <Button
-          variant={"ringHover"}
-          className="rounded-full font-bold"
-          onClick={remove}
-          disabled={!imageData}
-        >
-          <Icons.SolarGalleryRemoveLineDuotone className="mr-2 size-5"></Icons.SolarGalleryRemoveLineDuotone>
-          Process
-        </Button>
+      <div className="pointer-events-none absolute z-20 h-screen w-screen">
+        <div className="flex h-screen w-screen ">
+          {/* Bottom Bar */}
+          <div className="flex w-full justify-center ">
+            <div className="pointer-events-auto mb-10 mt-auto flex h-fit gap-2 rounded-md bg-white px-4 py-2 dark:bg-neutral-900">
+              <Button>Save</Button>
+              <Button>Process</Button>
+              <Button>Settings</Button>
 
-        <Button
-          variant={"linkHover2"}
-          disabled={!resultData}
-          className="font-bold"
-          onClick={handleDownload}
-        >
-          <Icons.SolarDownloadMinimalisticBoldDuotone className="mr-2 size-5"></Icons.SolarDownloadMinimalisticBoldDuotone>
-          Download
-        </Button>
+              <ThemeToggle />
+            </div>
+          </div>
+
+          {/* Queue Bar */}
+          <div className="pointer-events-auto flex w-1/5 items-center justify-center p-4">
+            <div className="h-96 w-60 bg-white p-2 dark:bg-neutral-900"></div>
+          </div>
+        </div>
+        <div className="fixed left-10 top-10 rounded-2xl bg-white p-4"></div>
       </div>
 
       <AlertDialog open={showDialog}>
@@ -233,6 +278,6 @@ export const Editor = () => {
           </AlertDialogHeader>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </>
   )
 }
