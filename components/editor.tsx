@@ -222,10 +222,12 @@ export const Editor = () => {
       <div className="pointer-events-none absolute z-20 h-screen w-screen">
         {/* Bottom Bar */}
         <div className="pointer-events-none absolute z-20 flex h-screen w-screen items-center justify-center">
-          <div className="pointer-events-auto  mb-10 mt-auto flex h-fit gap-2 rounded-md bg-white px-4 py-2 dark:bg-neutral-900">
+          <div className="pointer-events-auto  mb-10 mt-auto flex h-fit gap-2 rounded-md bg-white px-4 py-2 backdrop-blur-3xl dark:bg-neutral-900/80">
             <Button size={"icon"} variant={"ghost"}>
               <LoaderIcon></LoaderIcon>
             </Button>
+
+            <div className="my-auto rounded-full bg-neutral-950/40 p-1"></div>
 
             <Button size={"icon"} variant={"ghost"}>
               <Download></Download>
@@ -247,6 +249,8 @@ export const Editor = () => {
               <ScanEye></ScanEye>
             </Button>
 
+            <div className="my-auto rounded-full bg-neutral-950/40 p-1"></div>
+
             <ThemeToggle />
           </div>
         </div>
@@ -254,16 +258,19 @@ export const Editor = () => {
         {/* Image Queue */}
         <div className="pointer-events-none flex h-screen w-screen">
           <div className="pointer-events-none flex w-full items-center justify-end p-4">
-            <div className="pointer-events-auto h-fit w-60 rounded-md bg-white px-4 py-2 transition-all dark:bg-neutral-900">
+            <div className="pointer-events-auto h-fit w-60 rounded-md bg-white p-4 backdrop-blur-3xl transition-all dark:bg-neutral-900/80">
               <div className="flex justify-center gap-2 p-2">
                 <Layers className="size-4"></Layers>
                 <span className="text-sm font-semibold">Queue</span>
+
+                {files?.length! > 0 && (
+                  <span className="tezxt flex items-center justify-center  rounded-xl bg-red-600 px-2 text-xs font-semibold text-white">
+                    {files?.length}
+                  </span>
+                )}
               </div>
               {/* Input */}
-              <div
-                className="mt-2 flex items-center justify-center gap-4 rounded-md bg-neutral-950/35"
-                onSubmit={remove}
-              >
+              <div onSubmit={remove}>
                 <FileUploader
                   value={files}
                   dropzoneOptions={{
@@ -275,12 +282,10 @@ export const Editor = () => {
                     },
                   }}
                   onValueChange={handleDataChange}
-                  className="relative max-w-xs space-y-1 rounded-xl transition-all hover:bg-neutral-200 dark:hover:bg-neutral-900"
+                  className="relative max-w-xs space-y-1 rounded-xl bg-neutral-300 transition-all hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-900"
                 >
                   <FileInput>
-                    <div className="flex w-full flex-col items-center justify-center pb-4 pt-3 ">
-                      <Plus className="size-20 text-neutral-700"></Plus>
-                    </div>
+                    <Icons.SolarCloudUploadBoldDuotone className="mx-auto my-8 size-10 text-neutral-700 dark:text-neutral-400"></Icons.SolarCloudUploadBoldDuotone>
                   </FileInput>
                   <FileUploaderContent></FileUploaderContent>
                 </FileUploader>
@@ -307,7 +312,7 @@ export const Editor = () => {
                         onClick={() => {
                           handleRemoveFile(file)
                         }}
-                        className="absolute top-0 bg-neutral-800 opacity-0 transition-all group-hover:opacity-100"
+                        className="absolute left-1 top-1 rounded-full bg-neutral-800 text-neutral-100 opacity-0 transition-all group-hover:opacity-100 dark:hover:bg-neutral-100 dark:hover:text-neutral-950"
                         variant={"ghost"}
                         size={"icon"}
                       >
@@ -323,14 +328,12 @@ export const Editor = () => {
                 <Button
                   onClick={() => setFiles([])}
                   disabled={files?.length! === 0}
-                  className="font-bold"
+                  className=""
+                  variant={"surface"}
                 >
                   <Trash className="mr-2 size-4"></Trash>
                   Clear Queue
                 </Button>
-                <p className="my-2 text-xs text-neutral-500">
-                  Files: {files?.length}
-                </p>
               </div>
             </div>
           </div>
