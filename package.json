@@ -42,6 +42,7 @@
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
     "react-dust-effect": "^0.0.7",
+    "react-infinite-viewer": "^0.28.1",
     "sharp": "^0.32.6",
     "sonner": "^1.4.41",
     "tailwind-merge": "^1.13.2",
