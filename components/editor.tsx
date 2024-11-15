@@ -2,7 +2,10 @@
 
 import { FormEvent, useState } from "react"
 import Image from "next/image"
-import imglyRemoveBackground, { Config } from "@imgly/background-removal"
+import imglyRemoveBackground, {
+  Config,
+  removeBackground,
+} from "@imgly/background-removal"
 import { sendGAEvent } from "@next/third-parties/google"
 import { ReactCompareSlider } from "react-compare-slider"
 import DustEffect from "react-dust-effect"
@@ -57,7 +60,7 @@ export const Editor = () => {
     ev.preventDefault()
 
     let config: Config = {
-      model: "medium",
+      model: "isnet",
       debug: true,
       publicPath: "http://localhost:3000/ai-data/", // path to the wasm files
       progress: (key, current, total) => {
@@ -79,7 +82,7 @@ export const Editor = () => {
       setDialogText("Starting...")
       setShowDialog(true)
 
-      imglyRemoveBackground(imageData!, config).then((blob: Blob) => {
+      removeBackground(imageData!, config).then((blob: Blob) => {
         // result is a blob encoded as PNG.
         // It can be converted to an URL to be used as HTMLImage.src
         const url = URL.createObjectURL(blob)
