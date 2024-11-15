@@ -32,7 +32,7 @@
     "embla-carousel-react": "^8.0.0",
     "framer-motion": "^11.0.28",
     "html2canvas": "^1.4.1",
-    "lucide-react": "0.105.0-alpha.4",
+    "lucide-react": "^0.456.0",
     "luxon": "^3.4.4",
     "next": "^14.1.4",
     "next-image-export-optimizer": "^1.12.3",
