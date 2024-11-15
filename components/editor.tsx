@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
-import { FormEvent, useCallback, useState } from "react"
+import { FormEvent, useState } from "react"
 import Image from "next/image"
 import { Config, removeBackground } from "@imgly/background-removal"
 import { sendGAEvent } from "@next/third-parties/google"
@@ -11,6 +11,7 @@ import {
   Plus,
   ScanEye,
   Settings,
+  Trash,
   ZoomIn,
   ZoomOut,
 } from "lucide-react"
@@ -65,6 +66,11 @@ export const Editor = () => {
     link.href = resultData!
     link.download = `removerized-${Date.now()}.png`
     link.click()
+  }
+
+  const removeFile = (file: File) => {
+    const filtered = files?.filter((_file) => _file?.name !== file.name)
+    setFiles(filtered!)
   }
 
   const remove = (ev: FormEvent) => {
@@ -276,19 +282,37 @@ export const Editor = () => {
               </div>
 
               {/* Images List */}
-              <div className="mt-4 flex max-h-80 flex-col gap-2 overflow-scroll">
-                <p className="my-2 text-sm text-neutral-500">
-                  Files: {files?.length}
-                </p>
+              <p className="my-2 text-xs text-neutral-500">
+                Files: {files?.length}
+              </p>
+
+              <div className="mt-4 flex max-h-80 flex-col gap-4 overflow-x-hidden overflow-y-scroll">
                 {files?.map((file, index) => {
                   const url = URL.createObjectURL(file)
 
                   return (
-                    <img
-                      className="rounded border border-neutral-900 dark:border-neutral-300"
-                      alt={`image-${index}`}
-                      src={url}
-                    ></img>
+                    <div className="group relative h-32 cursor-pointer rounded border-2 border-neutral-900 bg-slate-500 object-cover transition-all dark:border-neutral-300">
+                      <img
+                        key={`image-${index}`}
+                        className="h-32 w-full object-cover"
+                        alt={`image-${index}`}
+                        src={url}
+                        onClick={() => {
+                          setImageData(url)
+                        }}
+                      ></img>
+
+                      <Button
+                        onClick={() => {
+                          removeFile(file)
+                        }}
+                        className="absolute top-0 bg-neutral-800 opacity-0 transition-all group-hover:opacity-100"
+                        variant={"ghost"}
+                        size={"icon"}
+                      >
+                        <Trash></Trash>
+                      </Button>
+                    </div>
                   )
                 })}
               </div>
