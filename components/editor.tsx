@@ -1,9 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
-import { FormEvent, useEffect, useState } from "react"
+import { FormEvent, useEffect, useRef, useState } from "react"
 import Image from "next/image"
-import { Config, removeBackground } from "@imgly/background-removal"
+import {
+  Config,
+  removeBackground,
+  removeForeground,
+} from "@imgly/background-removal"
 import { sendGAEvent } from "@next/third-parties/google"
 import {
   Download,
@@ -38,10 +42,12 @@ import { Progress } from "@/components/ui/progress"
 import { Icons } from "@/components/icons"
 import { Loader } from "@/components/loader"
 
+import AdBanner from "./ads/ad-banner"
 import ImageSettings from "./settings/ImageSettings"
 import { ThemeToggle } from "./theme-toggle"
 
 export const Editor = () => {
+  const editor = useRef<InfiniteViewer>(null)
   const [show, setShow] = useState(false)
 
   const [files, setFiles] = useState<File[] | null>([])
@@ -53,33 +59,58 @@ export const Editor = () => {
   const [dialogTotal, setDialogTotal] = useState<number>(100)
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
-  const [selectedSettings, setSelectedSettings] = useState<string | null>(null)
   const [localSettings, setLocalSettings] = useState<ImageSetting | null>(null)
 
   const [imageData, setImageData] = useState<string | null>(null)
   const [resultData, setResultData] = useState<string | null>(null)
+  const [resultsData, setResultsData] = useState<
+    { data: Blob; name: string }[] | null
+  >(null)
 
   const handleDataChange = (_files: File[] | null) => {
     if (_files) {
-      const url = URL.createObjectURL(_files[0])
+      const duplicateFiles: string[] = []
+      const newSettings = _files.reduce((acc: ImageSetting[], file) => {
+        const exists = settings.some((item) => item.name === file.name)
 
-      for (const file of _files) {
-        if (!settings.find((item) => item.name === file.name)) {
-          setSettings([
-            ...settings,
-            {
-              format: "image/png",
-              model: "isnet",
-              name: file.name,
-              quality: 1,
-            },
-          ])
+        if (exists) {
+          duplicateFiles.push(file.name)
+          return acc
         }
+
+        acc.push({
+          format: "image/png",
+          model: "isnet",
+          name: file.name,
+          quality: 100,
+          remove: "background",
+        })
+
+        return acc
+      }, [])
+
+      if (duplicateFiles.length === _files.length) {
+        toast(`All selected files already exist: ${duplicateFiles.join(", ")}`)
       }
 
-      setFiles([..._files])
-      setImageData(url)
-      setResultData(null)
+      if (newSettings.length > 0) {
+        setSettings((prevSettings) => [...prevSettings, ...newSettings])
+      }
+
+      const newFiles = _files.filter(
+        (file) => !settings.some((item) => item.name === file.name)
+      )
+      if (newFiles.length > 0) {
+        setFiles((prevFiles) => [...prevFiles!, ...newFiles])
+      }
+
+      const lastFile = _files[_files.length - 1]
+      if (lastFile) {
+        const url = URL.createObjectURL(lastFile)
+        setSelectedImage(lastFile.name)
+        setImageData(url)
+        setResultData(null)
+      }
     }
   }
 
@@ -92,7 +123,11 @@ export const Editor = () => {
 
   const handleRemoveFile = (file: File) => {
     const filtered = files?.filter((_file) => _file?.name !== file.name)
+    const filteredSettings = settings?.filter(
+      (_setting) => _setting?.name !== file.name
+    )
     setFiles(filtered!)
+    setSettings(filteredSettings!)
   }
 
   const remove = (ev: FormEvent) => {
@@ -144,13 +179,79 @@ export const Editor = () => {
     }
   }
 
+  const process = async () => {
+    const start = performance.now()
+
+    setDialogText("Starting...")
+    setShowDialog(true)
+
+    for (const setting of settings) {
+      const _image = files?.find((item) => item.name === setting.name)
+      let result
+
+      setDialogText(`Processing: ${setting.name.slice(0, 25)}`)
+      if (setting.remove === "background") {
+        result = await removeBackground(_image!, {
+          model: setting.model,
+          output: { format: setting.format, quality: setting.quality },
+          progress: (key, current, total) => {
+            setDialogProgress(current)
+            setDialogTotal(total)
+            setDialogText(key)
+
+            if (key.includes("fetch:"))
+              setDialogText(
+                "Downloading AI models. This was a little while ago the first time..."
+              )
+            if (key === "compute:inference")
+              setDialogText("Processing image...")
+          },
+        })
+      } else {
+        result = await removeForeground(_image!, {
+          model: setting.model,
+          output: { format: setting.format, quality: setting.quality },
+          progress: (key, current, total) => {
+            setDialogProgress(current)
+            setDialogTotal(total)
+            setDialogText(key)
+
+            if (key.includes("fetch:"))
+              setDialogText(
+                "Downloading AI models. This was a little while ago the first time..."
+              )
+            if (key === "compute:inference")
+              setDialogText("Processing image...")
+          },
+        })
+      }
+
+      setResultsData([...resultsData!, { data: result, name: setting.name }])
+
+      /* Calculate processing time */
+      const end = performance.now()
+      const time = end - start
+      toast.success(`🚀 Successful operation in  ${Math.floor(time / 1000)} s`)
+
+      sendGAEvent({ event: "remove-background", value: "success" })
+      const url = URL.createObjectURL(resultsData?.[0].data!)
+      setResultData(url)
+      setShow(true)
+
+      setTimeout(() => {
+        setShow(false)
+      }, 100)
+    }
+  }
+
   useEffect(() => {
-    console.log(settings)
-  }, [settings])
+    setLocalSettings(settings.find((item) => item.name === selectedImage!)!)
+  }, [selectedImage, settings])
 
   return (
     <>
       <InfiniteViewer
+        ref={editor}
         className="viewer my-2 h-screen w-screen"
         margin={0}
         threshold={0}
@@ -216,29 +317,6 @@ export const Editor = () => {
                 }
               ></ReactCompareSlider>
             </div>
-
-            {/* Tools */}
-            <div className="flex items-center justify-center gap-2">
-              <Button
-                variant={"ringHover"}
-                className="rounded-full font-bold"
-                onClick={remove}
-                disabled={!imageData}
-              >
-                <Icons.SolarGalleryRemoveLineDuotone className="mr-2 size-5"></Icons.SolarGalleryRemoveLineDuotone>
-                Process
-              </Button>
-
-              <Button
-                variant={"linkHover2"}
-                disabled={!resultData}
-                className="font-bold"
-                onClick={handleDownload}
-              >
-                <Icons.SolarDownloadMinimalisticBoldDuotone className="mr-2 size-5"></Icons.SolarDownloadMinimalisticBoldDuotone>
-                Download
-              </Button>
-            </div>
           </div>
         </div>
       </InfiniteViewer>
@@ -248,7 +326,11 @@ export const Editor = () => {
         {/* Bottom Bar */}
         <div className="pointer-events-none absolute z-20 flex h-screen w-screen items-center justify-center">
           <div className="pointer-events-auto  mb-10 mt-auto flex h-fit gap-2 rounded-md bg-white px-4 py-2 backdrop-blur-3xl dark:bg-neutral-900/80">
-            <Button size={"icon"} variant={"ghost"}>
+            <div className="my-auto flex items-center">
+              <Icons.logo className="size-8 text-[#FF2587]"></Icons.logo>
+            </div>
+
+            <Button onClick={process} size={"icon"} variant={"ghost"}>
               <LoaderIcon></LoaderIcon>
             </Button>
 
@@ -258,19 +340,34 @@ export const Editor = () => {
               <Download></Download>
             </Button>
 
-            <Button size={"icon"} variant={"ghost"}>
-              <Settings></Settings>
-            </Button>
-
-            <Button size={"icon"} variant={"ghost"}>
+            <Button
+              onClick={() =>
+                editor.current?.setZoom(editor.current.getZoom() + 0.2)
+              }
+              size={"icon"}
+              variant={"ghost"}
+            >
               <ZoomIn></ZoomIn>
             </Button>
 
-            <Button size={"icon"} variant={"ghost"}>
+            <Button
+              onClick={() =>
+                editor.current?.setZoom(editor.current.getZoom() - 0.2)
+              }
+              size={"icon"}
+              variant={"ghost"}
+            >
               <ZoomOut></ZoomOut>
             </Button>
 
-            <Button size={"icon"} variant={"ghost"}>
+            <Button
+              onClick={() => {
+                editor.current?.setZoom(1)
+                editor.current?.scrollCenter()
+              }}
+              size={"icon"}
+              variant={"ghost"}
+            >
               <ScanEye></ScanEye>
             </Button>
 
@@ -280,6 +377,7 @@ export const Editor = () => {
           </div>
         </div>
 
+        {/* Settings Bars */}
         <div className="pointer-events-none flex h-screen w-screen">
           <div className="pointer-events-none flex w-full items-center p-4">
             {/* Image Settings */}
@@ -291,12 +389,24 @@ export const Editor = () => {
 
               {localSettings ? (
                 <ImageSettings
-                  settings={localSettings!}
-                  onChange={setLocalSettings}
+                  settings={localSettings}
+                  onChange={(_setting) => {
+                    setLocalSettings(_setting)
+
+                    const newSettings = settings.map((item) =>
+                      item.name !== selectedImage ? item : _setting
+                    )
+
+                    setSettings(newSettings)
+                  }}
                 ></ImageSettings>
               ) : (
-                <p>Select an image to edit</p>
+                <p className="mt-2 text-center text-sm text-neutral-400">
+                  Select an image to edit
+                </p>
               )}
+
+              <AdBanner></AdBanner>
             </div>
 
             {/* Image Queue */}
@@ -369,7 +479,13 @@ export const Editor = () => {
               {/* Clear Queue */}
               <div className="mt-4 flex flex-col gap-2">
                 <Button
-                  onClick={() => setFiles([])}
+                  onClick={() => {
+                    setFiles([])
+                    setSettings([])
+                    setSelectedImage(null)
+                    setLocalSettings(null)
+                    setImageData(null)
+                  }}
                   disabled={files?.length! === 0}
                   className=""
                   variant={"surface"}
@@ -381,7 +497,6 @@ export const Editor = () => {
             </div>
           </div>
         </div>
-        <div className="fixed left-10 top-10 rounded-2xl bg-white p-4"></div>
       </div>
 
       <AlertDialog open={showDialog}>
