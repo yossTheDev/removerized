@@ -42,6 +42,7 @@ import { Progress } from "@/components/ui/progress"
 import { Icons } from "@/components/icons"
 import { Loader } from "@/components/loader"
 
+import AdBanner from "./ads/ad-banner"
 import ImageSettings from "./settings/ImageSettings"
 import { ThemeToggle } from "./theme-toggle"
 
@@ -404,6 +405,8 @@ export const Editor = () => {
                   Select an image to edit
                 </p>
               )}
+
+              <AdBanner></AdBanner>
             </div>
 
             {/* Image Queue */}
