@@ -334,7 +334,9 @@ export const Editor = () => {
                   }}
                 ></ImageSettings>
               ) : (
-                <p>Select an image to edit</p>
+                <p className="mt-2 text-center text-sm text-neutral-400">
+                  Select an image to edit
+                </p>
               )}
             </div>
 
