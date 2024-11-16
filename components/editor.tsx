@@ -60,26 +60,48 @@ export const Editor = () => {
 
   const handleDataChange = (_files: File[] | null) => {
     if (_files) {
-      const url = URL.createObjectURL(_files[0])
+      const duplicateFiles: string[] = []
+      const newSettings = _files.reduce((acc: ImageSetting[], file) => {
+        const exists = settings.some((item) => item.name === file.name)
 
-      for (const file of _files) {
-        if (!settings.find((item) => item.name === file.name)) {
-          setSettings([
-            ...settings,
-            {
-              format: "image/png",
-              model: "isnet",
-              name: file.name,
-              quality: 1,
-            },
-          ])
+        if (exists) {
+          duplicateFiles.push(file.name)
+          return acc
         }
+
+        acc.push({
+          format: "image/png",
+          model: "isnet",
+          name: file.name,
+          quality: 100,
+          remove: "background",
+        })
+
+        return acc
+      }, [])
+
+      if (duplicateFiles.length === _files.length) {
+        toast(`All selected files already exist: ${duplicateFiles.join(", ")}`)
       }
 
-      setFiles([..._files])
-      setSelectedImage(_files[_files.length - 1].name)
-      setImageData(url)
-      setResultData(null)
+      if (newSettings.length > 0) {
+        setSettings((prevSettings) => [...prevSettings, ...newSettings])
+      }
+
+      const newFiles = _files.filter(
+        (file) => !settings.some((item) => item.name === file.name)
+      )
+      if (newFiles.length > 0) {
+        setFiles((prevFiles) => [...prevFiles!, ...newFiles])
+      }
+
+      const lastFile = _files[_files.length - 1]
+      if (lastFile) {
+        const url = URL.createObjectURL(lastFile)
+        setSelectedImage(lastFile.name)
+        setImageData(url)
+        setResultData(null)
+      }
     }
   }
 
@@ -92,7 +114,11 @@ export const Editor = () => {
 
   const handleRemoveFile = (file: File) => {
     const filtered = files?.filter((_file) => _file?.name !== file.name)
+    const filteredSettings = settings?.filter(
+      (_setting) => _setting?.name !== file.name
+    )
     setFiles(filtered!)
+    setSettings(filteredSettings!)
   }
 
   const remove = (ev: FormEvent) => {
@@ -382,7 +408,13 @@ export const Editor = () => {
               {/* Clear Queue */}
               <div className="mt-4 flex flex-col gap-2">
                 <Button
-                  onClick={() => setFiles([])}
+                  onClick={() => {
+                    setFiles([])
+                    setSettings([])
+                    setSelectedImage(null)
+                    setLocalSettings(null)
+                    setImageData(null)
+                  }}
                   disabled={files?.length! === 0}
                   className=""
                   variant={"surface"}
