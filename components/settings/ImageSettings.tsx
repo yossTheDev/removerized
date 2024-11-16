@@ -2,7 +2,6 @@ import { Info } from "lucide-react"
 
 import { ImageSetting } from "@/types/image-settings"
 
-import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import {
   Select,
@@ -27,7 +26,7 @@ export default function ImageSettings({
   }
 
   return (
-    <div className="flex flex-col overflow-y-auto overflow-x-hidden h-44 gap-4">
+    <div className="flex h-44 flex-col gap-4 overflow-y-auto overflow-x-hidden">
       {/* Name */}
       <div className="flex flex-col gap-2">
         <label className="text-sm font-medium">Image Name</label>
