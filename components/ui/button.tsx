@@ -9,6 +9,8 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
+        surface:
+          "bg-neutral-400 font-semibold text-neutral-700 hover:text-neutral-100 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-950/60 dark:hover:text-neutral-200 dark:active:bg-neutral-950 hover:bg-neutral-800",
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",

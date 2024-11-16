@@ -6,6 +6,7 @@ export const fontSans = FontSans({
   style: "normal",
   variable: "--font-sans",
 })
+
 export const fontMono = FontMono({
   subsets: ["latin"],
   variable: "--font-mono",
