@@ -29,7 +29,7 @@ export default function ImageSettings({
   return (
     <div className="flex flex-col gap-4">
       {/* Name */}
-      <div>
+      <div className="flex flex-col gap-2">
         <label className="text-sm font-medium">Image Name</label>
         <Input
           disabled
@@ -40,7 +40,7 @@ export default function ImageSettings({
       </div>
 
       {/* Remove */}
-      <div>
+      <div className="flex flex-col gap-2">
         <label className="flex items-center text-sm font-medium">
           Remove
           <Tooltip>
@@ -71,7 +71,7 @@ export default function ImageSettings({
       </div>
 
       {/* Model */}
-      <div>
+      <div className="flex flex-col gap-2">
         <label className="flex items-center text-sm font-medium">
           Model
           <Tooltip>
@@ -114,7 +114,7 @@ export default function ImageSettings({
       </div>
 
       {/* Quality */}
-      <div>
+      <div className="flex flex-col gap-2">
         <label className="flex items-center text-sm font-medium">
           Quality
           <Tooltip>
@@ -138,7 +138,7 @@ export default function ImageSettings({
       </div>
 
       {/* Format */}
-      <div>
+      <div className="flex flex-col gap-2">
         <label className="flex items-center text-sm font-medium">
           Format
           <Tooltip>
@@ -164,8 +164,6 @@ export default function ImageSettings({
           </SelectContent>
         </Select>
       </div>
-
-      <Button onClick={() => console.log(settings)}>Save Settings</Button>
     </div>
   )
 }

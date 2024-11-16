@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
-import { FormEvent, useEffect, useState } from "react"
+import { FormEvent, useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import { Config, removeBackground } from "@imgly/background-removal"
 import { sendGAEvent } from "@next/third-parties/google"
@@ -42,6 +42,7 @@ import ImageSettings from "./settings/ImageSettings"
 import { ThemeToggle } from "./theme-toggle"
 
 export const Editor = () => {
+  const editor = useRef<InfiniteViewer>(null)
   const [show, setShow] = useState(false)
 
   const [files, setFiles] = useState<File[] | null>([])
@@ -177,6 +178,7 @@ export const Editor = () => {
   return (
     <>
       <InfiniteViewer
+        ref={editor}
         className="viewer my-2 h-screen w-screen"
         margin={0}
         threshold={0}
@@ -288,19 +290,34 @@ export const Editor = () => {
               <Download></Download>
             </Button>
 
-            <Button size={"icon"} variant={"ghost"}>
-              <Settings></Settings>
-            </Button>
-
-            <Button size={"icon"} variant={"ghost"}>
+            <Button
+              onClick={() =>
+                editor.current?.setZoom(editor.current.getZoom() + 0.2)
+              }
+              size={"icon"}
+              variant={"ghost"}
+            >
               <ZoomIn></ZoomIn>
             </Button>
 
-            <Button size={"icon"} variant={"ghost"}>
+            <Button
+              onClick={() =>
+                editor.current?.setZoom(editor.current.getZoom() - 0.2)
+              }
+              size={"icon"}
+              variant={"ghost"}
+            >
               <ZoomOut></ZoomOut>
             </Button>
 
-            <Button size={"icon"} variant={"ghost"}>
+            <Button
+              onClick={() => {
+                editor.current?.setZoom(1)
+                editor.current?.scrollCenter()
+              }}
+              size={"icon"}
+              variant={"ghost"}
+            >
               <ScanEye></ScanEye>
             </Button>
 
