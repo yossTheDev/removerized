@@ -53,7 +53,6 @@ export const Editor = () => {
   const [dialogTotal, setDialogTotal] = useState<number>(100)
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
-  const [selectedSettings, setSelectedSettings] = useState<string | null>(null)
   const [localSettings, setLocalSettings] = useState<ImageSetting | null>(null)
 
   const [imageData, setImageData] = useState<string | null>(null)
@@ -249,6 +248,10 @@ export const Editor = () => {
         {/* Bottom Bar */}
         <div className="pointer-events-none absolute z-20 flex h-screen w-screen items-center justify-center">
           <div className="pointer-events-auto  mb-10 mt-auto flex h-fit gap-2 rounded-md bg-white px-4 py-2 backdrop-blur-3xl dark:bg-neutral-900/80">
+            <div className="my-auto flex items-center">
+              <Icons.logo className="size-8 text-[#FF2587]"></Icons.logo>
+            </div>
+
             <Button size={"icon"} variant={"ghost"}>
               <LoaderIcon></LoaderIcon>
             </Button>
@@ -391,7 +394,6 @@ export const Editor = () => {
             </div>
           </div>
         </div>
-        <div className="fixed left-10 top-10 rounded-2xl bg-white p-4"></div>
       </div>
 
       <AlertDialog open={showDialog}>
