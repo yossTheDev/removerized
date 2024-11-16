@@ -30,13 +30,6 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import {
   FileInput,
   FileUploader,
   FileUploaderContent,
@@ -45,6 +38,7 @@ import { Progress } from "@/components/ui/progress"
 import { Icons } from "@/components/icons"
 import { Loader } from "@/components/loader"
 
+import ImageSettings from "./settings/ImageSettings"
 import { ThemeToggle } from "./theme-toggle"
 
 export const Editor = () => {
@@ -60,6 +54,7 @@ export const Editor = () => {
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [selectedSettings, setSelectedSettings] = useState<string | null>(null)
+  const [localSettings, setLocalSettings] = useState<ImageSetting | null>(null)
 
   const [imageData, setImageData] = useState<string | null>(null)
   const [resultData, setResultData] = useState<string | null>(null)
@@ -293,6 +288,15 @@ export const Editor = () => {
                 <Settings className="size-4"></Settings>
                 <span className="text-sm font-semibold">Settings</span>
               </div>
+
+              {localSettings ? (
+                <ImageSettings
+                  settings={localSettings!}
+                  onChange={setLocalSettings}
+                ></ImageSettings>
+              ) : (
+                <p>Select an image to edit</p>
+              )}
             </div>
 
             {/* Image Queue */}

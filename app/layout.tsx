@@ -6,6 +6,7 @@ import { siteConfig } from "@/config/site"
 import { fontMuseo, fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/sonner"
+import { TooltipProvider } from "@/components/ui/tooltip"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
 
@@ -64,13 +65,15 @@ export default function RootLayout({ children }: RootLayoutProps) {
             fontMuseo.variable
           )}
         >
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <main className="relative flex h-screen min-h-screen flex-col overflow-hidden bg-neutral-200 dark:bg-neutral-800">
-              <div className="flex-1">{children}</div>
-              <Toaster></Toaster>
-            </main>
-            <TailwindIndicator />
-          </ThemeProvider>
+          <TooltipProvider>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              <main className="relative flex h-screen min-h-screen flex-col overflow-hidden bg-neutral-200 dark:bg-neutral-800">
+                <div className="flex-1">{children}</div>
+                <Toaster></Toaster>
+              </main>
+              <TailwindIndicator />
+            </ThemeProvider>
+          </TooltipProvider>
         </body>
         <GoogleAnalytics gaId="G-20G8R0K6W9" />
       </html>
