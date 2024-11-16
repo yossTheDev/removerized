@@ -3,7 +3,11 @@
 
 import { FormEvent, useEffect, useRef, useState } from "react"
 import Image from "next/image"
-import { Config, removeBackground } from "@imgly/background-removal"
+import {
+  Config,
+  removeBackground,
+  removeForeground,
+} from "@imgly/background-removal"
 import { sendGAEvent } from "@next/third-parties/google"
 import {
   Download,
@@ -58,6 +62,9 @@ export const Editor = () => {
 
   const [imageData, setImageData] = useState<string | null>(null)
   const [resultData, setResultData] = useState<string | null>(null)
+  const [resultsData, setResultsData] = useState<
+    { data: Blob; name: string }[] | null
+  >(null)
 
   const handleDataChange = (_files: File[] | null) => {
     if (_files) {
@@ -171,6 +178,71 @@ export const Editor = () => {
     }
   }
 
+  const process = async () => {
+    const start = performance.now()
+
+    setDialogText("Starting...")
+    setShowDialog(true)
+
+    for (const setting of settings) {
+      const _image = files?.find((item) => item.name === setting.name)
+      let result
+
+      setDialogText(`Processing: ${setting.name.slice(0, 25)}`)
+      if (setting.remove === "background") {
+        result = await removeBackground(_image!, {
+          model: setting.model,
+          output: { format: setting.format, quality: setting.quality },
+          progress: (key, current, total) => {
+            setDialogProgress(current)
+            setDialogTotal(total)
+            setDialogText(key)
+
+            if (key.includes("fetch:"))
+              setDialogText(
+                "Downloading AI models. This was a little while ago the first time..."
+              )
+            if (key === "compute:inference")
+              setDialogText("Processing image...")
+          },
+        })
+      } else {
+        result = await removeForeground(_image!, {
+          model: setting.model,
+          output: { format: setting.format, quality: setting.quality },
+          progress: (key, current, total) => {
+            setDialogProgress(current)
+            setDialogTotal(total)
+            setDialogText(key)
+
+            if (key.includes("fetch:"))
+              setDialogText(
+                "Downloading AI models. This was a little while ago the first time..."
+              )
+            if (key === "compute:inference")
+              setDialogText("Processing image...")
+          },
+        })
+      }
+
+      setResultsData([...resultsData!, { data: result, name: setting.name }])
+
+      /* Calculate processing time */
+      const end = performance.now()
+      const time = end - start
+      toast.success(`🚀 Successful operation in  ${Math.floor(time / 1000)} s`)
+
+      sendGAEvent({ event: "remove-background", value: "success" })
+      const url = URL.createObjectURL(resultsData?.[0].data!)
+      setResultData(url)
+      setShow(true)
+
+      setTimeout(() => {
+        setShow(false)
+      }, 100)
+    }
+  }
+
   useEffect(() => {
     setLocalSettings(settings.find((item) => item.name === selectedImage!)!)
   }, [selectedImage, settings])
@@ -244,29 +316,6 @@ export const Editor = () => {
                 }
               ></ReactCompareSlider>
             </div>
-
-            {/* Tools */}
-            <div className="flex items-center justify-center gap-2">
-              <Button
-                variant={"ringHover"}
-                className="rounded-full font-bold"
-                onClick={remove}
-                disabled={!imageData}
-              >
-                <Icons.SolarGalleryRemoveLineDuotone className="mr-2 size-5"></Icons.SolarGalleryRemoveLineDuotone>
-                Process
-              </Button>
-
-              <Button
-                variant={"linkHover2"}
-                disabled={!resultData}
-                className="font-bold"
-                onClick={handleDownload}
-              >
-                <Icons.SolarDownloadMinimalisticBoldDuotone className="mr-2 size-5"></Icons.SolarDownloadMinimalisticBoldDuotone>
-                Download
-              </Button>
-            </div>
           </div>
         </div>
       </InfiniteViewer>
@@ -280,7 +329,7 @@ export const Editor = () => {
               <Icons.logo className="size-8 text-[#FF2587]"></Icons.logo>
             </div>
 
-            <Button size={"icon"} variant={"ghost"}>
+            <Button onClick={process} size={"icon"} variant={"ghost"}>
               <LoaderIcon></LoaderIcon>
             </Button>
 
