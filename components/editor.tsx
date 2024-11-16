@@ -78,6 +78,7 @@ export const Editor = () => {
       }
 
       setFiles([..._files])
+      setSelectedImage(_files[_files.length - 1].name)
       setImageData(url)
       setResultData(null)
     }
@@ -145,8 +146,8 @@ export const Editor = () => {
   }
 
   useEffect(() => {
-    console.log(settings)
-  }, [settings])
+    setLocalSettings(settings.find((item) => item.name === selectedImage!)!)
+  }, [selectedImage, settings])
 
   return (
     <>
@@ -280,6 +281,7 @@ export const Editor = () => {
           </div>
         </div>
 
+        {/* Settings Bars */}
         <div className="pointer-events-none flex h-screen w-screen">
           <div className="pointer-events-none flex w-full items-center p-4">
             {/* Image Settings */}
@@ -291,8 +293,16 @@ export const Editor = () => {
 
               {localSettings ? (
                 <ImageSettings
-                  settings={localSettings!}
-                  onChange={setLocalSettings}
+                  settings={localSettings}
+                  onChange={(_setting) => {
+                    setLocalSettings(_setting)
+
+                    const newSettings = settings.map((item) =>
+                      item.name !== selectedImage ? item : _setting
+                    )
+
+                    setSettings(newSettings)
+                  }}
                 ></ImageSettings>
               ) : (
                 <p>Select an image to edit</p>
