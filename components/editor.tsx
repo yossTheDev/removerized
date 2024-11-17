@@ -204,6 +204,7 @@ export const Editor = () => {
 
   const process = async () => {
     const start = performance.now()
+    let results: any[] = []
 
     setDialogText("Starting...")
     setShowDialog(true)
@@ -249,11 +250,12 @@ export const Editor = () => {
         })
       }
 
-      setResultsData([...resultsData, { data: result, name: setting.name }])
+      results = [...results, { data: result, name: setting.name }]
 
       sendGAEvent({ event: "remove-background", value: "success" })
       const url = URL.createObjectURL(result)
       setResultData(url)
+      setResultsData(results)
       setShow(true)
 
       setTimeout(() => {
@@ -282,6 +284,10 @@ export const Editor = () => {
       setResultData(null)
     }
   }, [resultsData, selectedImage, settings])
+
+  useEffect(() => {
+    console.log(settings)
+  }, [settings])
 
   return (
     <>
