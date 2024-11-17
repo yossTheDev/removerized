@@ -64,8 +64,8 @@ export const Editor = () => {
   const [imageData, setImageData] = useState<string | null>(null)
   const [resultData, setResultData] = useState<string | null>(null)
   const [resultsData, setResultsData] = useState<
-    { data: Blob; name: string }[] | null
-  >(null)
+    { data: Blob; name: string }[]
+  >([])
 
   const handleDataChange = (_files: File[] | null) => {
     if (_files) {
@@ -116,9 +116,16 @@ export const Editor = () => {
 
   const handleDownload = () => {
     const link = document.createElement("a")
-    link.href = resultData!
-    link.download = `removerized-${Date.now()}.png`
-    link.click()
+
+    const result = resultsData.find((item) => item.name === selectedImage)
+
+    if (result) {
+      const url = URL.createObjectURL(result?.data)
+
+      link.href = url
+      link.download = `removerized-${Date.now()}.png`
+      link.click()
+    }
   }
 
   const handleRemoveFile = (file: File) => {
@@ -128,6 +135,22 @@ export const Editor = () => {
     )
     setFiles(filtered!)
     setSettings(filteredSettings!)
+  }
+
+  const handleChangeImage = (url: string, name: string) => {
+    setSelectedImage(name)
+    setImageData(url)
+
+    const r = resultsData.find((item) => item.name === name)
+
+    console.log(r)
+
+    if (r) {
+      const resultUrl = URL.createObjectURL(r.data)
+      setResultData(resultUrl)
+    } else {
+      setResultData(null)
+    }
   }
 
   const remove = (ev: FormEvent) => {
@@ -204,7 +227,7 @@ export const Editor = () => {
                 "Downloading AI models. This was a little while ago the first time..."
               )
             if (key === "compute:inference")
-              setDialogText("Processing image...")
+              setDialogText(`Processing image...${setting.name}`)
           },
         })
       } else {
@@ -221,12 +244,15 @@ export const Editor = () => {
                 "Downloading AI models. This was a little while ago the first time..."
               )
             if (key === "compute:inference")
-              setDialogText("Processing image...")
+              setDialogText(`Processing image...${setting.name}`)
           },
         })
       }
 
-      setResultsData([...resultsData!, { data: result, name: setting.name }])
+      console.log("result")
+      console.log({ data: result, name: setting.name })
+
+      setResultsData([...resultsData, { data: result, name: setting.name }])
 
       /* Calculate processing time */
       const end = performance.now()
@@ -234,7 +260,7 @@ export const Editor = () => {
       toast.success(`🚀 Successful operation in  ${Math.floor(time / 1000)} s`)
 
       sendGAEvent({ event: "remove-background", value: "success" })
-      const url = URL.createObjectURL(resultsData?.[0].data!)
+      const url = URL.createObjectURL(result)
       setResultData(url)
       setShow(true)
 
@@ -242,11 +268,24 @@ export const Editor = () => {
         setShow(false)
       }, 100)
     }
+
+    setShowDialog(false)
   }
 
   useEffect(() => {
     setLocalSettings(settings.find((item) => item.name === selectedImage!)!)
-  }, [selectedImage, settings])
+
+    const r = resultsData.find((item) => item.name === selectedImage)
+
+    console.log(r)
+
+    if (r) {
+      const resultUrl = URL.createObjectURL(r.data)
+      setResultData(resultUrl)
+    } else {
+      setResultData(null)
+    }
+  }, [resultsData, selectedImage, settings])
 
   return (
     <>
@@ -336,7 +375,14 @@ export const Editor = () => {
 
             <div className="my-auto rounded-full bg-neutral-950/40 p-1"></div>
 
-            <Button size={"icon"} variant={"ghost"}>
+            <Button
+              disabled={
+                !resultsData.find((item) => item.name === selectedImage)
+              }
+              onClick={handleDownload}
+              size={"icon"}
+              variant={"ghost"}
+            >
               <Download></Download>
             </Button>
 
@@ -456,8 +502,7 @@ export const Editor = () => {
                         alt={`image-${index}`}
                         src={url}
                         onClick={() => {
-                          setSelectedImage(file.name)
-                          setImageData(url)
+                          handleChangeImage(url, file.name)
                         }}
                       ></img>
 
