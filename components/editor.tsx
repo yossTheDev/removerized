@@ -249,15 +249,7 @@ export const Editor = () => {
         })
       }
 
-      console.log("result")
-      console.log({ data: result, name: setting.name })
-
       setResultsData([...resultsData, { data: result, name: setting.name }])
-
-      /* Calculate processing time */
-      const end = performance.now()
-      const time = end - start
-      toast.success(`🚀 Successful operation in  ${Math.floor(time / 1000)} s`)
 
       sendGAEvent({ event: "remove-background", value: "success" })
       const url = URL.createObjectURL(result)
@@ -269,6 +261,10 @@ export const Editor = () => {
       }, 100)
     }
 
+    /* Calculate processing time */
+    const end = performance.now()
+    const time = end - start
+    toast.success(`🚀 Successful operation in  ${Math.floor(time / 1000)} s`)
     setShowDialog(false)
   }
 
