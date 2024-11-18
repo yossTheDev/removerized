@@ -26,7 +26,7 @@ export default function ImageSettings({
   }
 
   return (
-    <div className="flex h-44 flex-col gap-4 overflow-y-auto overflow-x-hidden">
+    <div className="flex h-full flex-col gap-4 overflow-y-auto overflow-x-hidden">
       {/* Name */}
       <div className="flex flex-col gap-2">
         <label className="text-sm font-medium">Image Name</label>
