@@ -66,7 +66,6 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-tailwindcss": "^3.13.0",
-    "next-export-optimize-images": "^3.3.0",
     "postcss": "^8.4.24",
     "prettier": "^2.8.8",
     "serwist": "^9.0.0-preview.24",
