@@ -430,7 +430,7 @@ export const Editor = () => {
           <div className="pointer-events-none flex w-full items-center p-4">
             {/* Image Settings */}
             <div className="pointer-events-auto h-fit max-h-full w-[21rem] overflow-y-auto  rounded-md bg-white p-4 backdrop-blur-3xl transition-all dark:bg-neutral-900/80">
-              <div className="flex justify-center gap-2 p-2">
+              <div className="flex items-center justify-center gap-2 p-2">
                 <Settings className="size-4"></Settings>
                 <span className="text-sm font-semibold">Settings</span>
               </div>
@@ -459,7 +459,7 @@ export const Editor = () => {
 
             {/* Image Queue */}
             <div className="pointer-events-auto ml-auto h-fit w-60 rounded-md bg-white p-4 backdrop-blur-3xl transition-all dark:bg-neutral-900/80">
-              <div className="flex justify-center gap-2 p-2">
+              <div className="flex items-center justify-center gap-2 p-2">
                 <Layers className="size-4"></Layers>
                 <span className="text-sm font-semibold">Queue</span>
 
