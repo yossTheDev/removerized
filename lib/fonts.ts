@@ -1,4 +1,4 @@
-import { JetBrains_Mono as FontMono, Montserrat as FontSans, MuseoModerno } from "next/font/google"
+import { JetBrains_Mono as FontMono, Poppins as FontSans, MuseoModerno } from "next/font/google"
 
 export const fontSans = FontSans({
   subsets: ["latin"],
