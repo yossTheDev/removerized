@@ -43,3 +43,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Removerized. If not, see <https://www.gnu.org/licenses/>.
 ```
+
+## Credits
+
+This project uses `imgly/background-removal-js`, which is licensed under the GNU Affero General Public License v3.0.  
+For more details, visit the official repository: <https://github.com/imgly/background-removal-js>
