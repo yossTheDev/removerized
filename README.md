@@ -10,6 +10,13 @@
 
 ![blog](docs/banner.png)
 
+    🛑 Project Status: Open Source Version Discontinued
+    This Open Source version of the project will no longer be maintained due to licensing restrictions imposed by (@imgly/background-removal), which is released under the AGPL license.
+
+    Since we plan to transition this project into a SaaS product, we will be replacing this library with an alternative solution that allows for a more flexible licensing model.
+
+    We appreciate the support from the community, and we will share updates on the new version as development progresses. Stay tuned! 🚀
+
 <div align="center">
 <img src="https://img.shields.io/badge/Next.js-000?logo=nextdotjs&logoColor=fff&style=for-the-badge" alt="Next.js Badge">
 <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff&style=for-the-badge" alt="TypeScript Badge">
