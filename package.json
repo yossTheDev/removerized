@@ -14,8 +14,6 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache"
   },
   "dependencies": {
-    "@imgly/background-removal": "^1.5.5",
-    "@imgly/background-removal-data": "^1.4.5",
     "@midudev/tailwind-animations": "^0.0.7",
     "@next/third-parties": "^14.2.3",
     "@prisma/client": "^6.4.1",
@@ -48,6 +46,7 @@
     "react-dust-effect": "^0.0.7",
     "react-infinite-viewer": "^0.28.1",
     "sharp": "^0.32.6",
+    "simple-background-remover": "^1.0.5",
     "sonner": "^1.4.41",
     "tailwind-merge": "^1.13.2",
     "tailwindcss-animate": "^1.0.6"
