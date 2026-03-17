@@ -15,6 +15,7 @@ import {
   ZoomIn,
   ZoomOut,
 } from "lucide-react"
+import * as ort from "onnxruntime-web"
 import { ReactCompareSlider } from "react-compare-slider"
 import DustEffect from "react-dust-effect"
 import InfiniteViewer from "react-infinite-viewer"
@@ -105,6 +106,11 @@ export const Editor = () => {
   const [resultsData, setResultsData] = useState<
     { data: Blob; name: string }[]
   >([])
+
+  useEffect(() => {
+    // Force ort to be available globally if a third-party library expects it
+    ;(window as any).ort = ort
+  }, [])
 
   // solid background
   const [applyBgColor, setApplyBgColor] = useState(false)
@@ -200,7 +206,10 @@ export const Editor = () => {
       const { default: SimpleBackgroundRemover } = await import(
         "simple-background-remover"
       )
-      const remover = new SimpleBackgroundRemover()
+      const remover = new SimpleBackgroundRemover({
+        modelUrl:
+          "https://huggingface.co/onnx-community/ormbg-ONNX/resolve/main/onnx/model_quantized.onnx",
+      })
       const imgEl = await loadImage(imageData)
 
       let result = (await remover.removeBackground(imgEl, {
@@ -231,7 +240,8 @@ export const Editor = () => {
       toast.success(
         `🚀 Done in ${Math.floor((performance.now() - start) / 1000)} s`
       )
-    } catch {
+    } catch (error) {
+      console.error(error)
       toast.error("Background removal failed")
     } finally {
       setShowDialog(false)
