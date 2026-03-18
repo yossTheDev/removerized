@@ -4,6 +4,13 @@ const nextConfig = {
   serverRuntimeConfig: {
     runtime: "edge",
   },
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "onnxruntime-node": false,
+    }
+    return config
+  },
   images: {
     dangerouslyAllowSVG: true,
     remotePatterns: [
