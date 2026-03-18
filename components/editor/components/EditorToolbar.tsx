@@ -1,94 +1,81 @@
 import { Download, LoaderIcon, ScanEye, ZoomIn, ZoomOut } from "lucide-react"
 import InfiniteViewer from "react-infinite-viewer"
 
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
-import { ThemeToggle } from "@/components/theme-toggle"
-
-// ── Types ─────────────────────────────────────────────────────────────────────
 
 interface EditorToolbarProps {
-  /** Ref to the InfiniteViewer instance used for zoom/pan controls */
   editorRef: React.RefObject<InfiniteViewer>
-  /** Whether the download button should be enabled */
   canDownload: boolean
-  /** Called when the user clicks the batch-process (loader) button */
   onProcess: () => void
-  /** Called when the user clicks the download button */
   onDownload: () => void
+  accentColor: string
 }
 
-// ── Component ─────────────────────────────────────────────────────────────────
-
-/**
- * EditorToolbar
- * ─────────────
- * The floating bottom bar anchored to the bottom-center of the viewport.
- *
- * Contains (left → right):
- *  - Brand logo
- *  - Batch-process trigger
- *  - Separator
- *  - Download result
- *  - Zoom in / out / reset
- *  - Separator
- *  - Theme toggle
- *
- * The entire bar is `pointer-events-auto` so clicks are not swallowed by the
- * transparent overlay that covers the canvas.
- */
 export const EditorToolbar = ({
   editorRef,
   canDownload,
   onProcess,
   onDownload,
+  accentColor,
 }: EditorToolbarProps) => {
-  /** Increases the canvas zoom by a fixed step */
   const handleZoomIn = () => {
     editorRef.current?.setZoom(editorRef.current.getZoom() + 0.2)
   }
 
-  /** Decreases the canvas zoom by a fixed step */
   const handleZoomOut = () => {
     editorRef.current?.setZoom(editorRef.current.getZoom() - 0.2)
   }
 
-  /** Resets zoom to 1× and re-centers the viewport */
   const handleZoomReset = () => {
     editorRef.current?.setZoom(1)
     editorRef.current?.scrollCenter()
   }
 
   return (
-    <div className="pointer-events-none absolute z-20 flex h-screen w-screen items-center justify-center">
-      <div className="pointer-events-auto mb-10 mt-auto flex h-fit items-center gap-2 rounded-md bg-white px-4 py-2 shadow-md backdrop-blur-3xl dark:bg-neutral-900/80">
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-center pb-5">
+      <div
+        className="pointer-events-auto flex h-fit items-center gap-1 rounded-2xl border border-white/10 bg-white/[0.06] px-3 py-2 shadow-2xl backdrop-blur-2xl"
+        style={{
+          boxShadow: `0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06), 0 0 40px ${accentColor}10`,
+        }}
+      >
         {/* Brand */}
-        <div className="my-auto flex items-center">
-          <Icons.logo className="size-8 text-[#FF2587]" />
+        <div className="flex items-center px-1">
+          <Icons.logo
+            className="size-7 transition-colors"
+            style={{ color: accentColor }}
+          />
         </div>
 
-        {/* Batch process all queued images */}
+        <div className="mx-1.5 h-4 w-px bg-white/10" />
+
+        {/* Batch process queue */}
         <Button
           onClick={onProcess}
           size="icon"
           variant="ghost"
           title="Process all images in queue"
+          className={cn(
+            "size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white"
+          )}
         >
-          <LoaderIcon />
+          <LoaderIcon className="size-4" />
         </Button>
 
-        {/* Visual separator */}
-        <div className="my-auto h-4 w-px bg-neutral-200 dark:bg-neutral-700" />
+        <div className="mx-1.5 h-4 w-px bg-white/10" />
 
-        {/* Download current result */}
+        {/* Download result */}
         <Button
           disabled={!canDownload}
           onClick={onDownload}
           size="icon"
           variant="ghost"
           title="Download result"
+          className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white disabled:opacity-20"
         >
-          <Download />
+          <Download className="size-4" />
         </Button>
 
         {/* Zoom in */}
@@ -97,8 +84,9 @@ export const EditorToolbar = ({
           size="icon"
           variant="ghost"
           title="Zoom in"
+          className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white"
         >
-          <ZoomIn />
+          <ZoomIn className="size-4" />
         </Button>
 
         {/* Zoom out */}
@@ -107,25 +95,21 @@ export const EditorToolbar = ({
           size="icon"
           variant="ghost"
           title="Zoom out"
+          className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white"
         >
-          <ZoomOut />
+          <ZoomOut className="size-4" />
         </Button>
 
-        {/* Reset zoom and re-center */}
+        {/* Reset zoom + recenter */}
         <Button
           onClick={handleZoomReset}
           size="icon"
           variant="ghost"
           title="Reset zoom"
+          className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white"
         >
-          <ScanEye />
+          <ScanEye className="size-4" />
         </Button>
-
-        {/* Visual separator */}
-        <div className="my-auto h-4 w-px bg-neutral-200 dark:bg-neutral-700" />
-
-        {/* Light / dark theme toggle */}
-        <ThemeToggle />
       </div>
     </div>
   )

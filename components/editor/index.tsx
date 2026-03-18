@@ -2,116 +2,102 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import * as ort from "onnxruntime-web"
+import { useRouter, useSearchParams } from "next/navigation"
 import { sendGAEvent } from "@next/third-parties/google"
+import * as ort from "onnxruntime-web"
+import InfiniteViewer from "react-infinite-viewer"
 
-import { MODELS, WASM_CDN_BASE } from "./constants"
-import { isModelCached } from "./lib/idb"
-import { base64ToBlob, compositeOnColor, loadImage } from "./lib/image-utils"
+import { EditorCanvas } from "./components/EditorCanvas"
+import { EditorProcessingDialog } from "./components/EditorProcessingDialog"
+import { EditorToolbar } from "./components/EditorToolbar"
+import { EditorLeftPanel } from "./components/panels/EditorLeftPanel"
+import { EditorRightPanel } from "./components/panels/EditorRightPanel"
+import { MODELS, TOOL_ACCENTS, WASM_CDN_BASE } from "./constants"
 import { useImageQueue } from "./hooks/use-image-queue"
 import { useOnnxSession } from "./hooks/use-onnx-session"
 import { useProcessingDialog } from "./hooks/use-processing-dialog"
-import { EditorCanvas } from "./components/EditorCanvas"
-import { EditorToolbar } from "./components/EditorToolbar"
-import { EditorProcessingDialog } from "./components/EditorProcessingDialog"
-import { EditorLeftPanel } from "./components/panels/EditorLeftPanel"
-import { EditorQueuePanel } from "./components/panels/EditorQueuePanel"
+import { isModelCached } from "./lib/idb"
+import { base64ToBlob, compositeOnColor, loadImage } from "./lib/image-utils"
 import type { ActiveTool, ModelKey } from "./types"
-import InfiniteViewer from "react-infinite-viewer"
 
-/**
- * Editor
- * ──────
- * Root orchestrator for the Removerized editor page.
- *
- * Responsibilities:
- *  - Initialises the onnxruntime-web WASM environment once on mount.
- *  - Composes the three core hooks:
- *      • useImageQueue    — file / settings queue management
- *      • useOnnxSession   — ONNX session lifecycle + inference pipeline
- *      • useProcessingDialog — modal open/close/update state
- *  - Owns the cross-cutting action functions (remove, process, upscale)
- *    that require state from multiple hooks simultaneously.
- *  - Passes strictly-typed props down to each presentational sub-component;
- *    no component below this level reads from context or owns async logic.
- *
- * Component tree:
- *  Editor
- *  ├── EditorCanvas          (pannable viewport + compare slider)
- *  ├── EditorToolbar         (bottom floating bar)
- *  ├── EditorLeftPanel       (tab switcher → RemoverTab | UpscalerTab)
- *  ├── EditorQueuePanel      (right panel file queue)
- *  └── EditorProcessingDialog (blocking progress modal)
- */
+const VALID_TOOLS: ActiveTool[] = ["remover", "upscaler"]
+const VALID_MODELS = Object.keys(MODELS) as ModelKey[]
+
 export const Editor = () => {
-  // ── Viewport ref ────────────────────────────────────────────────────────────
-  /** Forwarded to EditorCanvas and EditorToolbar for zoom/pan control. */
   const editorRef = useRef<InfiniteViewer>(null)
+  const searchParams = useSearchParams()
+  const router = useRouter()
 
-  // ── Core hooks ───────────────────────────────────────────────────────────────
   const queue = useImageQueue()
   const onnx = useOnnxSession()
-  const { dialog, openDialog, updateDialog, closeDialog } = useProcessingDialog()
+  const { dialog, openDialog, updateDialog, closeDialog } =
+    useProcessingDialog()
 
-  // ── Dust-effect trigger ──────────────────────────────────────────────────────
-  /**
-   * Briefly set to `true` after a result arrives to trigger the DustEffect
-   * particle animation, then immediately reset to `false`.
-   */
   const [showDust, setShowDust] = useState(false)
-
-  // ── Active tool tab ──────────────────────────────────────────────────────────
   const [activeTool, setActiveTool] = useState<ActiveTool>("remover")
-
-  // ── ONNX model selection ─────────────────────────────────────────────────────
   const [selectedModel, setSelectedModel] = useState<ModelKey>("quantized")
-
-  // ── Solid background ─────────────────────────────────────────────────────────
   const [applyBgColor, setApplyBgColor] = useState(false)
   const [bgColor, setBgColor] = useState("#ffffff")
-
-  // ── Upscaler result ──────────────────────────────────────────────────────────
-  /** base64 data URL of the upscaled image, or null before first upscale. */
   const [upscaledData, setUpscaledData] = useState<string | null>(null)
 
-  // ── WASM environment init (once per page load) ───────────────────────────────
+  // ── WASM init ────────────────────────────────────────────────────────────────
   useEffect(() => {
-    // Point onnxruntime-web to CDN-hosted WASM binaries.
-    // numThreads=1 avoids the SharedArrayBuffer / COOP header requirement.
     ort.env.wasm.wasmPaths = WASM_CDN_BASE
     ort.env.wasm.numThreads = 1
   }, [])
 
+  // ── URL → state (once on mount) ───────────────────────────────────────────
+  useEffect(() => {
+    const toolParam = searchParams.get("tool") as ActiveTool | null
+    const modelParam = searchParams.get("model") as ModelKey | null
+
+    if (toolParam && VALID_TOOLS.includes(toolParam)) {
+      setActiveTool(toolParam)
+    }
+    if (modelParam && VALID_MODELS.includes(modelParam)) {
+      setSelectedModel(modelParam)
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   // ── IDB cache check on model switch ─────────────────────────────────────────
-  /**
-   * When the user selects a different model variant, check IndexedDB to see
-   * if it is already cached and update the status badge accordingly.
-   * The in-memory session cache is checked first as a fast path.
-   */
   useEffect(() => {
     isModelCached(selectedModel)
       .then((cached) => onnx.setModelStatus(cached ? "ready" : "idle"))
       .catch(() => onnx.setModelStatus("idle"))
   }, [selectedModel]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Helpers ──────────────────────────────────────────────────────────────────
+  // ── URL sync helpers ─────────────────────────────────────────────────────────
+  const pushUrl = useCallback(
+    (tool: ActiveTool, model: ModelKey) => {
+      router.replace(`?tool=${tool}&model=${model}`, { scroll: false })
+    },
+    [router]
+  )
 
-  /**
-   * Triggers the dust-effect animation once then resets.
-   * The 100 ms timeout matches DustEffect's minimum display time.
-   */
+  const handleToolChange = useCallback(
+    (tool: ActiveTool) => {
+      setActiveTool(tool)
+      pushUrl(tool, selectedModel)
+    },
+    [selectedModel, pushUrl]
+  )
+
+  const handleModelChange = useCallback(
+    (key: ModelKey) => {
+      setSelectedModel(key)
+      setUpscaledData(null)
+      pushUrl(activeTool, key)
+    },
+    [activeTool, pushUrl]
+  )
+
+  // ── Dust trigger ─────────────────────────────────────────────────────────────
   const triggerDust = useCallback(() => {
     setShowDust(true)
     setTimeout(() => setShowDust(false), 100)
   }, [])
 
-  /**
-   * Optionally composites a solid colour behind a transparent-PNG Blob.
-   * Returns the original Blob unchanged when `applyBgColor` is false.
-   *
-   * @param blob - Transparent PNG Blob produced by inference.
-   * @returns    - Blob with solid background applied (if enabled).
-   */
+  // ── Background composite ──────────────────────────────────────────────────────
   const maybeComposite = useCallback(
     async (blob: Blob): Promise<Blob> => {
       if (!applyBgColor) return blob
@@ -123,17 +109,7 @@ export const Editor = () => {
     [applyBgColor, bgColor]
   )
 
-  // ── Actions ───────────────────────────────────────────────────────────────────
-
-  /**
-   * Removes the background from the currently selected image.
-   *
-   * Flow:
-   *  1. Load the original image element.
-   *  2. Run the full ONNX inference pipeline (download model if needed).
-   *  3. Optionally composite a solid background colour.
-   *  4. Push the result into the queue and refresh the preview.
-   */
+  // ── Remove background ─────────────────────────────────────────────────────────
   const remove = useCallback(async () => {
     if (!queue.imageData) return
 
@@ -142,13 +118,11 @@ export const Editor = () => {
 
     try {
       const imgEl = await loadImage(queue.imageData)
-
       const rawBlob = await onnx.runInference(
         imgEl,
         selectedModel,
         updateDialog
       )
-
       const blob = await maybeComposite(rawBlob)
       const url = URL.createObjectURL(blob)
 
@@ -167,7 +141,7 @@ export const Editor = () => {
       console.error("[remove]", err)
       onnx.setModelStatus("error")
       const { toast } = await import("sonner")
-      toast.error("Background removal failed. Check the console for details.")
+      toast.error("Background removal failed.")
     } finally {
       closeDialog()
     }
@@ -182,13 +156,7 @@ export const Editor = () => {
     triggerDust,
   ])
 
-  /**
-   * Processes every image in the queue sequentially.
-   *
-   * The ONNX session is acquired once (first iteration) and reused for all
-   * subsequent images in the same batch, making repeated inference much faster
-   * once the model is loaded.
-   */
+  // ── Batch process ─────────────────────────────────────────────────────────────
   const process = useCallback(async () => {
     if (!queue.files.length) return
 
@@ -210,12 +178,14 @@ export const Editor = () => {
           imgEl,
           selectedModel,
           (text, pct) => {
-            updateDialog(`[${i + 1}/${queue.settings.length}] ${label} — ${text}`, pct)
+            updateDialog(
+              `[${i + 1}/${queue.settings.length}] ${label} — ${text}`,
+              pct
+            )
           }
         )
 
         const blob = await maybeComposite(rawBlob)
-
         accumulated = [...accumulated, { data: blob, name: setting.name }]
         queue.setResultsData(accumulated)
         queue.setResultData(URL.createObjectURL(blob))
@@ -245,13 +215,7 @@ export const Editor = () => {
     triggerDust,
   ])
 
-  /**
-   * Upscales the current result (or original if no result exists) using
-   * UpscalerJS (TensorFlow.js).
-   *
-   * The upscaler is imported dynamically to keep it out of the initial bundle
-   * and to avoid any SSR incompatibilities.
-   */
+  // ── Upscale ───────────────────────────────────────────────────────────────────
   const upscale = useCallback(async () => {
     const source = queue.resultData || queue.imageData
     if (!source) return
@@ -289,12 +253,7 @@ export const Editor = () => {
     }
   }, [queue, updateDialog, openDialog, closeDialog])
 
-  /**
-   * Downloads the current result to the user's machine.
-   *
-   * - In "upscaler" mode: downloads the upscaled base64 image.
-   * - In "remover" mode: downloads the processed Blob from the results store.
-   */
+  // ── Download ──────────────────────────────────────────────────────────────────
   const handleDownload = useCallback(() => {
     const link = document.createElement("a")
 
@@ -313,89 +272,111 @@ export const Editor = () => {
     }
   }, [activeTool, upscaledData, queue.resultsData, queue.selectedImage])
 
-  // ── Derived state ─────────────────────────────────────────────────────────────
-
-  /**
-   * Whether the download button in the toolbar should be enabled.
-   * Depends on the active tab and whether a result is available.
-   */
+  // ── Derived ───────────────────────────────────────────────────────────────────
   const canDownload =
     activeTool === "upscaler"
       ? !!upscaledData
       : !!queue.resultsData.find((r) => r.name === queue.selectedImage)
 
-  // ── Render ────────────────────────────────────────────────────────────────────
+  const accentColor = TOOL_ACCENTS[activeTool]
+  const bgImage = queue.resultData || queue.imageData
 
+  // ── Render ────────────────────────────────────────────────────────────────────
   return (
-    <>
-      {/* Pannable / zoomable canvas with before/after slider */}
-      <EditorCanvas
-        editorRef={editorRef}
-        imageData={queue.imageData}
-        resultData={queue.resultData}
-        showDust={showDust}
+    <div
+      className="relative flex h-screen w-screen overflow-hidden bg-[#050505]"
+      style={{ "--tool-accent": accentColor } as React.CSSProperties}
+    >
+      {/* Full-screen frosted background layer */}
+      <div
+        className="pointer-events-none absolute inset-0 z-0 scale-110 transition-opacity duration-700"
+        style={{
+          backgroundImage: bgImage ? `url(${bgImage})` : undefined,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          filter: "blur(72px) brightness(0.13) saturate(1.6)",
+          opacity: bgImage ? 1 : 0,
+        }}
       />
 
-      {/* Full-screen transparent overlay for all floating UI */}
-      <div className="pointer-events-none absolute z-20 h-screen w-screen">
+      {/* Static dark noise texture overlay */}
+      <div
+        className="pointer-events-none absolute inset-0 z-0 opacity-[0.025]"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E\")",
+          backgroundSize: "128px 128px",
+        }}
+      />
 
-        {/* Bottom-center floating toolbar */}
+      {/* Accent ambient glow — top */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 z-0 h-64 opacity-20 transition-colors duration-700"
+        style={{
+          background: `radial-gradient(ellipse 80% 100% at 50% 0%, ${accentColor}40, transparent)`,
+        }}
+      />
+
+      {/* ── Left SEO Sidebar ── */}
+      <aside className="relative z-10 hidden w-60 shrink-0 lg:flex">
+        <EditorLeftPanel activeTool={activeTool} accentColor={accentColor} />
+      </aside>
+
+      {/* ── Center Canvas ── */}
+      <main className="relative z-10 flex flex-1 flex-col overflow-hidden">
+        <EditorCanvas
+          editorRef={editorRef}
+          imageData={queue.imageData}
+          resultData={queue.resultData}
+          showDust={showDust}
+        />
         <EditorToolbar
           editorRef={editorRef}
           canDownload={canDownload}
           onProcess={process}
           onDownload={handleDownload}
+          accentColor={accentColor}
         />
+      </main>
 
-        {/* Side panels layout */}
-        <div className="pointer-events-none flex h-screen w-screen">
-          <div className="pointer-events-none flex w-full items-center p-4">
+      {/* ── Right Controls + Queue Sidebar ── */}
+      <aside className="relative z-10 w-[19rem] shrink-0">
+        <EditorRightPanel
+          activeTool={activeTool}
+          onToolChange={handleToolChange}
+          selectedModel={selectedModel}
+          onModelChange={handleModelChange}
+          modelStatus={onnx.modelStatus}
+          downloadProgress={onnx.downloadProgress}
+          localSettings={queue.localSettings}
+          onSettingsChange={queue.updateLocalSettings}
+          applyBgColor={applyBgColor}
+          onToggleBgColor={() => setApplyBgColor((v) => !v)}
+          bgColor={bgColor}
+          onBgColorChange={setBgColor}
+          hasImage={!!queue.imageData}
+          onRemove={remove}
+          hasResult={!!queue.resultData}
+          hasUpscaled={!!upscaledData}
+          onUpscale={upscale}
+          onDownload={handleDownload}
+          files={queue.files}
+          settings={queue.settings}
+          selectedImage={queue.selectedImage}
+          resultsData={queue.resultsData}
+          onFilesChange={queue.handleDataChange}
+          onRemoveFile={queue.handleRemoveFile}
+          onSelectImage={queue.handleChangeImage}
+          onClearQueue={() => {
+            queue.clearQueue()
+            setUpscaledData(null)
+          }}
+          accentColor={accentColor}
+        />
+      </aside>
 
-            {/* Left panel: tool tabs (Remover / Upscaler) */}
-            <EditorLeftPanel
-              activeTool={activeTool}
-              onToolChange={setActiveTool}
-              localSettings={queue.localSettings}
-              onSettingsChange={queue.updateLocalSettings}
-              selectedModel={selectedModel}
-              onModelChange={(key) => {
-                setSelectedModel(key)
-                setUpscaledData(null)
-              }}
-              modelStatus={onnx.modelStatus}
-              downloadProgress={onnx.downloadProgress}
-              applyBgColor={applyBgColor}
-              onToggleBgColor={() => setApplyBgColor((v) => !v)}
-              bgColor={bgColor}
-              onBgColorChange={setBgColor}
-              hasImage={!!queue.imageData}
-              onRemove={remove}
-              hasResult={!!queue.resultData}
-              hasUpscaled={!!upscaledData}
-              onUpscale={upscale}
-              onDownload={handleDownload}
-            />
-
-            {/* Right panel: file queue */}
-            <EditorQueuePanel
-              files={queue.files}
-              settings={queue.settings}
-              selectedImage={queue.selectedImage}
-              resultsData={queue.resultsData}
-              onFilesChange={queue.handleDataChange}
-              onRemoveFile={queue.handleRemoveFile}
-              onSelectImage={queue.handleChangeImage}
-              onClearQueue={() => {
-                queue.clearQueue()
-                setUpscaledData(null)
-              }}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Blocking progress modal (non-dismissable during inference) */}
+      {/* Blocking inference modal */}
       <EditorProcessingDialog dialog={dialog} />
-    </>
+    </div>
   )
 }

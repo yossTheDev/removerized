@@ -1,52 +1,78 @@
-import type { ModelKey } from "./types"
+import type { ActiveTool, ModelKey } from "./types"
 
-// ── Model registry ────────────────────────────────────────────────────────────
-
-/**
- * Registry of available ONNX background-removal models.
- * Each entry maps a ModelKey to its download URL, IndexedDB cache key,
- * and a human-readable label shown in the UI.
- */
 export const MODELS: Record<
   ModelKey,
-  { url: string; cacheKey: string; label: string }
+  {
+    url: string
+    cacheKey: string
+    label: string
+    description: string
+    size: string
+  }
 > = {
   quantized: {
     url: "https://huggingface.co/onnx-community/ormbg-ONNX/resolve/main/onnx/model_quantized.onnx",
     cacheKey: "ormbg_quantized_v1",
-    label: "Standard (~44 MB)",
+    label: "Balanced",
+    description: "Optimized for web performance",
+    size: "~44 MB",
   },
   fp16: {
     url: "https://huggingface.co/onnx-community/ormbg-ONNX/resolve/main/onnx/model_fp16.onnx",
     cacheKey: "ormbg_fp16_v1",
-    label: "High-Res (~88 MB)",
+    label: "High Precision",
+    description: "Best for complex details",
+    size: "~88 MB",
+  },
+  int8: {
+    url: "https://huggingface.co/onnx-community/ormbg-ONNX/resolve/main/onnx/model_quantized.onnx",
+    cacheKey: "ormbg_int8_v1",
+    label: "Fast / Mobile",
+    description: "Priority on speed",
+    size: "~44 MB",
   },
 }
 
-// ── IndexedDB ─────────────────────────────────────────────────────────────────
+export const TOOL_ACCENTS: Record<ActiveTool, string> = {
+  remover: "#A855F7",
+  upscaler: "#3B82F6",
+}
 
-/** Name of the IndexedDB database used to cache model weights. */
+export const SEO_CONTENT: Record<
+  ActiveTool,
+  { heading: string; subheading: string; body: string; features: string[] }
+> = {
+  remover: {
+    heading: "AI Background Removal",
+    subheading: "Instant & Private",
+    body: "Remove backgrounds from any image with on-device AI. No uploads, no server, fully offline-capable.",
+    features: [
+      "100% Client-Side",
+      "WebAssembly Accelerated",
+      "Transparent PNG Output",
+      "Batch Processing",
+    ],
+  },
+  upscaler: {
+    heading: "AI Image Upscaler",
+    subheading: "Enhance Resolution",
+    body: "Super-resolution AI upscales images up to 4× with TensorFlow.js — zero cloud dependency.",
+    features: [
+      "4× Super Resolution",
+      "TensorFlow.js Powered",
+      "Edge-Preserving Detail",
+      "Works Offline",
+    ],
+  },
+}
+
 export const IDB_NAME = "RemoverizerModelDB"
 
-/** Object store name inside the database. */
 export const IDB_STORE = "models"
 
-/** Schema version – bump when adding new object stores. */
 export const IDB_VERSION = 1
 
-// ── ONNX inference ────────────────────────────────────────────────────────────
-
-/**
- * Square pixel size used to resize images before feeding them
- * to the ONNX model.  Must match the model's expected input shape.
- */
 export const INFERENCE_SIZE = 1024
 
-// ── Runtime ───────────────────────────────────────────────────────────────────
-
-/**
- * CDN base URL for onnxruntime-web WASM binaries.
- * Pinned to the exact installed version to guarantee compatibility.
- */
 export const WASM_CDN_BASE =
   "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.24.3/dist/"

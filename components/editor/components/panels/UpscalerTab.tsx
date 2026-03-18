@@ -1,78 +1,64 @@
 import { Download, Sparkles } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
-
-// ── Types ─────────────────────────────────────────────────────────────────────
+import { cn } from "@/lib/utils"
 
 interface UpscalerTabProps {
-  /** Whether an image is currently selected in the queue */
   hasImage: boolean
-  /** Whether a processed result is currently displayed (upscales the result) */
   hasResult: boolean
-  /** Whether an upscaled version is available for download */
   hasUpscaled: boolean
-  /** Called when the user triggers an upscale operation */
   onUpscale: () => void
-  /** Called when the user downloads the upscaled image */
   onDownload: () => void
+  accentColor: string
 }
 
-// ── Component ─────────────────────────────────────────────────────────────────
-
-/**
- * UpscalerTab
- * ───────────
- * Content panel rendered inside the left sidebar when the "Upscaler" tab
- * is active.
- *
- * Behaviour:
- *  - When no image is selected, a placeholder message guides the user.
- *  - When an image is selected, an "Upscale Image" button is shown.
- *    The description adapts to tell the user whether the original or the
- *    already-processed result will be upscaled.
- *  - After a successful upscale, a secondary "Download Upscaled" button
- *    appears so the user can save the result without switching tabs.
- *
- * This component is intentionally stateless — all logic lives in the
- * parent orchestrator (Editor/index.tsx).
- */
 export const UpscalerTab = ({
   hasImage,
   hasResult,
   hasUpscaled,
   onUpscale,
   onDownload,
+  accentColor,
 }: UpscalerTabProps) => {
   if (!hasImage) {
     return (
-      <p className="mt-2 text-center text-sm text-neutral-400">
+      <p className="mt-2 text-center text-sm text-white/30">
         Select an image to upscale
       </p>
     )
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Contextual description */}
-      <p className="text-center text-xs leading-relaxed text-neutral-400">
+    <div className="flex flex-col gap-3">
+      <p className="text-center text-xs leading-relaxed text-white/35">
         Enhances and upscales using AI (TensorFlow.js).{" "}
         {hasResult
           ? "Will upscale the processed result."
           : "Will upscale the original image."}
       </p>
 
-      {/* Primary action */}
-      <Button onClick={onUpscale} className="w-full">
-        <Sparkles className="mr-2 size-4" />
+      <button
+        onClick={onUpscale}
+        className={cn(
+          "flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:brightness-110 active:scale-[0.98]"
+        )}
+        style={{
+          background: `linear-gradient(135deg, ${accentColor}cc, ${accentColor}99)`,
+          borderColor: `${accentColor}60`,
+          boxShadow: `0 0 20px ${accentColor}30, 0 4px 12px rgba(0,0,0,0.3)`,
+        }}
+      >
+        <Sparkles className="size-4" />
         Upscale Image
-      </Button>
+      </button>
 
-      {/* Secondary action — only visible after a successful upscale */}
       {hasUpscaled && (
-        <Button onClick={onDownload} variant="outline" className="w-full">
-          <Download className="mr-2 size-4" />
+        <button
+          onClick={onDownload}
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.05] px-4 py-2.5 text-sm font-medium text-white/70 transition-all duration-200 hover:border-white/20 hover:bg-white/10 hover:text-white active:scale-[0.98]"
+        >
+          <Download className="size-4" />
           Download Upscaled
-        </Button>
+        </button>
       )}
     </div>
   )
