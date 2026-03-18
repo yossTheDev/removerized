@@ -47,7 +47,7 @@ export const EditorCanvas = ({
                   <Image
                     width={300}
                     height={150}
-                    className="flex max-h-80 w-full rounded-xl"
+                    className="flex max-h-80 bg-white w-full rounded-xl"
                     src={imageData}
                     alt="Original"
                   />
@@ -75,7 +75,7 @@ export const EditorCanvas = ({
                     />
                   </div>
                 ) : (
-                  <div className="flex size-full items-center justify-center rounded-xl bg-white/5 backdrop-blur-xl border border-white/10">
+                  <div className="flex size-full items-center justify-center rounded-xl bg-white backdrop-blur-xl border border-white/10">
                     <div className="grid-pattern flex size-full items-center justify-center">
                       <Icons.SolarGalleryBoldDuotone className="size-16 text-white/20" />
                     </div>
