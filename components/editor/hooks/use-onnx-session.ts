@@ -149,7 +149,7 @@ export const useOnnxSession = (): UseOnnxSessionReturn => {
       // The model expects a single named input "pixel_values" with shape
       // [1, 3, 1024, 1024] (batch, channels, height, width).
       onUpdate("Running inference…", 0)
-      const results = await session.run({ pixel_values: inputTensor })
+      const results = await session.run({ input: inputTensor })
 
       // Step 4 – post-process
       onUpdate("Applying mask…", 0)

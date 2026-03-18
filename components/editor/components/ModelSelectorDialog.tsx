@@ -6,7 +6,7 @@ import {
   CloudDownload,
   Cpu,
   ExternalLink,
-  Target,
+  Weight,
   Zap,
 } from "lucide-react"
 
@@ -32,10 +32,14 @@ interface ModelSelectorDialogProps {
   accentColor: string
 }
 
-const MODEL_ICONS: Record<ModelKey, React.ElementType> = {
-  quantized: Target,
-  fp16: Cpu,
-  int8: Zap,
+/**
+ * Returns an icon based on model size string (e.g., "~44 MB")
+ */
+const getModelIcon = (sizeStr: string) => {
+  const size = parseInt(sizeStr.replace(/[^0-9]/g, ""))
+  if (size < 40) return Zap // Ultra light
+  if (size < 60) return Cpu // Standard
+  return Weight // Heavy/High-res
 }
 
 export const ModelSelectorDialog = ({
@@ -53,7 +57,9 @@ export const ModelSelectorDialog = ({
 
   useEffect(() => {
     if (!open) return
-    const keys: ModelKey[] = ["quantized", "fp16", "int8"]
+
+    const keys = Object.keys(MODELS) as ModelKey[]
+
     Promise.all(
       keys.map(async (k): Promise<readonly [ModelKey, boolean]> => {
         try {
@@ -77,20 +83,22 @@ export const ModelSelectorDialog = ({
     onOpenChange(false)
   }
 
+  // Info for the footer credit section based on currently selected model
+  const currentModelInfo = MODELS[selectedModel]
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="border border-white/10 bg-[#0a0a0a]/95 text-white shadow-2xl backdrop-blur-2xl sm:max-w-md">
+      <DialogContent className="border border-white/10 bg-[#0a0a0a]/95 text-white shadow-2xl backdrop-blur-2xl sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-base font-semibold text-white">
             Select AI Model
           </DialogTitle>
         </DialogHeader>
 
-        {/* Model cards */}
         <div className="flex flex-col gap-2.5 pt-1">
           {(Object.keys(MODELS) as ModelKey[]).map((mk) => {
             const model = MODELS[mk]
-            const Icon = MODEL_ICONS[mk]
+            const Icon = getModelIcon(model.size)
             const isCached = cachedModels[mk] ?? false
             const isSelected = selectedModel === mk
             const isDownloading = isSelected && modelStatus === "downloading"
@@ -115,7 +123,6 @@ export const ModelSelectorDialog = ({
                     : undefined
                 }
               >
-                {/* Radial glow on selected */}
                 {isSelected && (
                   <div
                     className="pointer-events-none absolute inset-0 rounded-xl opacity-20"
@@ -125,7 +132,6 @@ export const ModelSelectorDialog = ({
                   />
                 )}
 
-                {/* Icon */}
                 <div
                   className="relative mt-0.5 flex shrink-0 items-center justify-center rounded-lg p-2 transition-colors"
                   style={
@@ -143,21 +149,19 @@ export const ModelSelectorDialog = ({
                   <Icon className="size-4" />
                 </div>
 
-                {/* Text */}
                 <div className="relative flex flex-1 flex-col gap-0.5 min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-semibold text-white">
+                    <span className="text-sm font-semibold text-white truncate">
                       {model.label}
                     </span>
                     <span className="shrink-0 text-[10px] text-white/35">
                       {model.size}
                     </span>
                   </div>
-                  <span className="text-xs text-white/45">
+                  <span className="text-xs text-white/45 line-clamp-1">
                     {model.description}
                   </span>
 
-                  {/* Download progress bar */}
                   {isDownloading && (
                     <div className="mt-2 flex flex-col gap-1.5">
                       <div className="h-1 w-full overflow-hidden rounded-full bg-white/10">
@@ -177,7 +181,6 @@ export const ModelSelectorDialog = ({
                   )}
                 </div>
 
-                {/* Status icon */}
                 <div className="relative ml-1 shrink-0 self-center">
                   {isCached || isReady ? (
                     <CheckCircle2 className="size-4 text-green-400" />
@@ -192,42 +195,43 @@ export const ModelSelectorDialog = ({
           })}
         </div>
 
-        {/* Divider */}
         <div className="h-px w-full bg-white/[0.06]" />
 
-        {/* ORMBG credits + HuggingFace link */}
+        {/* Dynamic Model Info Section */}
         <div className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] px-3.5 py-3">
           <div className="flex flex-col gap-1 min-w-0">
             <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-white/30">
-              Powered by
+              Selected Model Info
             </p>
             <p className="text-xs font-semibold text-white/70 truncate">
-              ORMBG — Object Removal from Background
+              {currentModelInfo?.title}
             </p>
             <p className="text-[10px] text-white/35">
               by{" "}
-              <span className="font-medium text-white/50">onnx-community</span>
+              <span className="font-medium text-white/50">
+                {currentModelInfo?.author}
+              </span>
               {" · "}
-              <span className="text-white/35">Apache-2.0 license</span>
+              <span className="text-white/35">{currentModelInfo.license}</span>
             </p>
           </div>
 
           <a
-            href="https://huggingface.co/onnx-community/ormbg-ONNX"
+            href={currentModelInfo.hfUrl}
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
             className="flex shrink-0 items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.05] px-2.5 py-2 text-[10px] font-medium text-white/45 transition-all duration-200 hover:border-white/20 hover:bg-white/10 hover:text-white/80"
           >
             <ExternalLink className="size-3" />
-            HuggingFace
+            HF
           </a>
         </div>
 
-        {/* Cache hint */}
         <p className="text-[10px] leading-relaxed text-white/20">
-          Models are cached in IndexedDB after the first download — switching
-          between cached models is instant.
+          Models are cached in IndexedDB — switching between cached models is
+          instant. Input type:{" "}
+          <code className="text-white/40">{currentModelInfo.inputType}</code>.
         </p>
       </DialogContent>
     </Dialog>

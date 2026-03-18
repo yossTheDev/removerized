@@ -145,13 +145,13 @@ export const EditorRightPanel = ({
                       AI Model
                     </span>
                     <span className="text-sm font-semibold text-white">
-                      {MODELS[selectedModel].label}
+                      {MODELS[selectedModel]?.label}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2.5">
                     <span className="text-[10px] text-white/25">
-                      {MODELS[selectedModel].size}
+                      {MODELS[selectedModel]?.size}
                     </span>
                     <span
                       className={cn(

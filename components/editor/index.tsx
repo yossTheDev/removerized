@@ -40,7 +40,8 @@ export const Editor = () => {
 
   const [showDust, setShowDust] = useState(false)
   const [activeTool, setActiveTool] = useState<ActiveTool>("remover")
-  const [selectedModel, setSelectedModel] = useState<ModelKey>("quantized")
+  const [selectedModel, setSelectedModel] =
+    useState<ModelKey>("birefnet_lite_fp16")
   const [upscalerModel, setUpscalerModel] =
     useState<UpscalerModelKey>("balanced")
   const [applyBgColor, setApplyBgColor] = useState(false)

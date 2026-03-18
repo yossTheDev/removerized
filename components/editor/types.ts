@@ -1,6 +1,15 @@
 export type ActiveTool = "remover" | "upscaler"
 
-export type ModelKey = "quantized" | "fp16" | "int8"
+export type ModelKey =
+  | "ormbg_quantized"
+  | "ormbg_fp16"
+  | "isnet_quantized"
+  | "isnet_fp16"
+  | "birefnet_lite_quantized"
+  | "birefnet_lite_fp16"
+  | "rmbg_1_4_quantized"
+  | "rmbg_1_4_fp16"
+  | "modnet_quantized"
 
 export type UpscalerModelKey = "performance" | "balanced" | "quality"
 
