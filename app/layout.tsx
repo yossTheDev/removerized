@@ -47,14 +47,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <>
       <html lang="en" className="dark" suppressHydrationWarning>
-        <head>
-          <Script
-            async
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5245068093651973"
-            crossOrigin="anonymous"
-            strategy="lazyOnload"
-          />
-        </head>
+        <head></head>
         <body
           className={cn(
             "min-h-screen bg-[#050505] font-sans antialiased",

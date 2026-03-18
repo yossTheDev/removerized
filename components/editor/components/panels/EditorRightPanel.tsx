@@ -5,7 +5,6 @@ import { Eraser, Sparkles } from "lucide-react"
 
 import type { ImageSetting } from "@/types/image-settings"
 import { cn } from "@/lib/utils"
-import AdBanner from "@/components/ads/ad-banner"
 
 import { MODELS } from "../../constants"
 import type {
@@ -211,11 +210,6 @@ export const EditorRightPanel = ({
               onClearQueue={onClearQueue}
               accentColor={accentColor}
             />
-          </div>
-
-          {/* Ad banner */}
-          <div className="mt-auto border-t border-white/[0.06] pt-4">
-            <AdBanner />
           </div>
         </div>
       </div>
