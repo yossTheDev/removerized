@@ -1,5 +1,5 @@
-import * as ort from "onnxruntime-web"
 import { useCallback, useRef, useState } from "react"
+import * as ort from "onnxruntime-web"
 
 import { MODELS, WASM_CDN_BASE } from "../constants"
 import { checkAndDownloadModel } from "../lib/idb"
@@ -55,7 +55,9 @@ export interface UseOnnxSessionReturn {
 export const useOnnxSession = (): UseOnnxSessionReturn => {
   // In-memory session cache keyed by model variant.
   // Using a ref ensures the cache survives re-renders without triggering them.
-  const sessionCache = useRef<Partial<Record<ModelKey, ort.InferenceSession>>>({})
+  const sessionCache = useRef<Partial<Record<ModelKey, ort.InferenceSession>>>(
+    {}
+  )
 
   const [modelStatus, setModelStatus] = useState<ModelStatus>("idle")
   const [downloadProgress, setDownloadProgress] = useState(0)
