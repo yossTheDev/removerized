@@ -289,7 +289,7 @@ export const Editor = () => {
       : !!queue.resultsData.find((r) => r.name === queue.selectedImage)
 
   const accentColor = TOOL_ACCENTS[activeTool]
-  const bgImage = queue.resultData || queue.imageData
+  const bgImage = queue.imageData || queue.resultData
 
   // ── Render ────────────────────────────────────────────────────────────────────
   return (
