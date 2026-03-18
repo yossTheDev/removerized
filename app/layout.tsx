@@ -1,6 +1,5 @@
 import "@/styles/globals.css"
 import { Metadata, type Viewport } from "next"
-import Script from "next/script"
 import { GoogleAnalytics } from "@next/third-parties/google"
 
 import { siteConfig } from "@/config/site"
