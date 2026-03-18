@@ -1,7 +1,14 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { CheckCircle2, CloudDownload, Cpu, Target, Zap } from "lucide-react"
+import {
+  CheckCircle2,
+  CloudDownload,
+  Cpu,
+  ExternalLink,
+  Target,
+  Zap,
+} from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import {
@@ -79,6 +86,7 @@ export const ModelSelectorDialog = ({
           </DialogTitle>
         </DialogHeader>
 
+        {/* Model cards */}
         <div className="flex flex-col gap-2.5 pt-1">
           {(Object.keys(MODELS) as ModelKey[]).map((mk) => {
             const model = MODELS[mk]
@@ -94,9 +102,8 @@ export const ModelSelectorDialog = ({
                 onClick={() => handleSelect(mk)}
                 className={cn(
                   "group relative flex items-start gap-3.5 overflow-hidden rounded-xl border p-4 text-left transition-all duration-200",
-                  isSelected
-                    ? "border-white/20 bg-white/8"
-                    : "border-white/[0.06] bg-white/[0.03] hover:border-white/12 hover:bg-white/[0.06]"
+                  !isSelected &&
+                    "border-white/[0.06] bg-white/[0.03] hover:border-white/12 hover:bg-white/[0.06]"
                 )}
                 style={
                   isSelected
@@ -108,7 +115,7 @@ export const ModelSelectorDialog = ({
                     : undefined
                 }
               >
-                {/* Glow ring on selected */}
+                {/* Radial glow on selected */}
                 {isSelected && (
                   <div
                     className="pointer-events-none absolute inset-0 rounded-xl opacity-20"
@@ -150,7 +157,7 @@ export const ModelSelectorDialog = ({
                     {model.description}
                   </span>
 
-                  {/* Download progress — only for active model while downloading */}
+                  {/* Download progress bar */}
                   {isDownloading && (
                     <div className="mt-2 flex flex-col gap-1.5">
                       <div className="h-1 w-full overflow-hidden rounded-full bg-white/10">
@@ -170,7 +177,7 @@ export const ModelSelectorDialog = ({
                   )}
                 </div>
 
-                {/* Status badge */}
+                {/* Status icon */}
                 <div className="relative ml-1 shrink-0 self-center">
                   {isCached || isReady ? (
                     <CheckCircle2 className="size-4 text-green-400" />
@@ -185,9 +192,42 @@ export const ModelSelectorDialog = ({
           })}
         </div>
 
-        <p className="pt-1 text-[10px] leading-relaxed text-white/25">
-          Models are cached in IndexedDB after first download. Switching models
-          does not require re-downloading if already cached.
+        {/* Divider */}
+        <div className="h-px w-full bg-white/[0.06]" />
+
+        {/* ORMBG credits + HuggingFace link */}
+        <div className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] px-3.5 py-3">
+          <div className="flex flex-col gap-1 min-w-0">
+            <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-white/30">
+              Powered by
+            </p>
+            <p className="text-xs font-semibold text-white/70 truncate">
+              ORMBG — Object Removal from Background
+            </p>
+            <p className="text-[10px] text-white/35">
+              by{" "}
+              <span className="font-medium text-white/50">onnx-community</span>
+              {" · "}
+              <span className="text-white/35">Apache-2.0 license</span>
+            </p>
+          </div>
+
+          <a
+            href="https://huggingface.co/onnx-community/ormbg-ONNX"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="flex shrink-0 items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.05] px-2.5 py-2 text-[10px] font-medium text-white/45 transition-all duration-200 hover:border-white/20 hover:bg-white/10 hover:text-white/80"
+          >
+            <ExternalLink className="size-3" />
+            HuggingFace
+          </a>
+        </div>
+
+        {/* Cache hint */}
+        <p className="text-[10px] leading-relaxed text-white/20">
+          Models are cached in IndexedDB after the first download — switching
+          between cached models is instant.
         </p>
       </DialogContent>
     </Dialog>

@@ -2,6 +2,8 @@ export type ActiveTool = "remover" | "upscaler"
 
 export type ModelKey = "quantized" | "fp16" | "int8"
 
+export type UpscalerModelKey = "performance" | "balanced" | "quality"
+
 export type ModelStatus = "idle" | "downloading" | "ready" | "error"
 
 export interface QueueResult {

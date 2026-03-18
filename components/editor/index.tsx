@@ -12,13 +12,18 @@ import { EditorProcessingDialog } from "./components/EditorProcessingDialog"
 import { EditorToolbar } from "./components/EditorToolbar"
 import { EditorLeftPanel } from "./components/panels/EditorLeftPanel"
 import { EditorRightPanel } from "./components/panels/EditorRightPanel"
-import { MODELS, TOOL_ACCENTS, WASM_CDN_BASE } from "./constants"
+import {
+  MODELS,
+  TOOL_ACCENTS,
+  UPSCALER_MODELS,
+  WASM_CDN_BASE,
+} from "./constants"
 import { useImageQueue } from "./hooks/use-image-queue"
 import { useOnnxSession } from "./hooks/use-onnx-session"
 import { useProcessingDialog } from "./hooks/use-processing-dialog"
 import { isModelCached } from "./lib/idb"
 import { base64ToBlob, compositeOnColor, loadImage } from "./lib/image-utils"
-import type { ActiveTool, ModelKey } from "./types"
+import type { ActiveTool, ModelKey, UpscalerModelKey } from "./types"
 
 const VALID_TOOLS: ActiveTool[] = ["remover", "upscaler"]
 const VALID_MODELS = Object.keys(MODELS) as ModelKey[]
@@ -36,6 +41,8 @@ export const Editor = () => {
   const [showDust, setShowDust] = useState(false)
   const [activeTool, setActiveTool] = useState<ActiveTool>("remover")
   const [selectedModel, setSelectedModel] = useState<ModelKey>("quantized")
+  const [upscalerModel, setUpscalerModel] =
+    useState<UpscalerModelKey>("balanced")
   const [applyBgColor, setApplyBgColor] = useState(false)
   const [bgColor, setBgColor] = useState("#ffffff")
   const [upscaledData, setUpscaledData] = useState<string | null>(null)
@@ -227,10 +234,12 @@ export const Editor = () => {
       const { default: Upscaler } = await import("upscaler")
       const instance = new Upscaler()
 
+      const currentConfig = UPSCALER_MODELS[upscalerModel]
+
       const upscaled = await instance.upscale(source, {
         output: "base64",
-        patchSize: 64,
-        padding: 2,
+        patchSize: currentConfig.patchSize,
+        padding: currentConfig.padding,
         progress: (amount: number) => {
           const pct = Math.round(amount * 100)
           updateDialog(`Upscaling… ${pct}%`, pct)
@@ -251,7 +260,7 @@ export const Editor = () => {
     } finally {
       closeDialog()
     }
-  }, [queue, updateDialog, openDialog, closeDialog])
+  }, [queue, openDialog, upscalerModel, updateDialog, closeDialog])
 
   // ── Download ──────────────────────────────────────────────────────────────────
   const handleDownload = useCallback(() => {
@@ -371,6 +380,8 @@ export const Editor = () => {
             queue.clearQueue()
             setUpscaledData(null)
           }}
+          onUpscalerModelChange={setUpscalerModel}
+          selectedUpscalerModel={upscalerModel}
           accentColor={accentColor}
         />
       </aside>

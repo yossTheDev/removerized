@@ -1,4 +1,4 @@
-import type { ActiveTool, ModelKey } from "./types"
+import type { ActiveTool, ModelKey, UpscalerModelKey } from "./types"
 
 export const MODELS: Record<
   ModelKey,
@@ -30,6 +30,39 @@ export const MODELS: Record<
     label: "Fast / Mobile",
     description: "Priority on speed",
     size: "~44 MB",
+  },
+}
+
+export const UPSCALER_MODELS: Record<
+  UpscalerModelKey,
+  {
+    label: string
+    description: string
+    patchSize: number
+    padding: number
+    detail: string
+  }
+> = {
+  performance: {
+    label: "Performance",
+    description: "Fastest processing, lower memory usage",
+    patchSize: 32,
+    padding: 1,
+    detail: "patch 32 · pad 1",
+  },
+  balanced: {
+    label: "Balanced",
+    description: "Best speed/quality tradeoff",
+    patchSize: 64,
+    padding: 2,
+    detail: "patch 64 · pad 2",
+  },
+  quality: {
+    label: "Quality",
+    description: "Maximum detail, slower processing",
+    patchSize: 128,
+    padding: 4,
+    detail: "patch 128 · pad 4",
   },
 }
 

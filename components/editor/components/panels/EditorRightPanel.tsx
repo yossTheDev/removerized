@@ -3,12 +3,18 @@
 import { useState } from "react"
 import { Eraser, Sparkles } from "lucide-react"
 
+import type { ImageSetting } from "@/types/image-settings"
 import { cn } from "@/lib/utils"
 import AdBanner from "@/components/ads/ad-banner"
-import type { ImageSetting } from "@/types/image-settings"
 
 import { MODELS } from "../../constants"
-import type { ActiveTool, ModelKey, ModelStatus, QueueResult } from "../../types"
+import type {
+  ActiveTool,
+  ModelKey,
+  ModelStatus,
+  QueueResult,
+  UpscalerModelKey,
+} from "../../types"
 import { ModelSelectorDialog } from "../ModelSelectorDialog"
 import { EditorQueuePanel } from "./EditorQueuePanel"
 import { RemoverTab } from "./RemoverTab"
@@ -33,6 +39,8 @@ interface EditorRightPanelProps {
   hasUpscaled: boolean
   onUpscale: () => void
   onDownload: () => void
+  selectedUpscalerModel: UpscalerModelKey
+  onUpscalerModelChange: (key: UpscalerModelKey) => void
   files: File[]
   settings: ImageSetting[]
   selectedImage: string | null
@@ -75,6 +83,8 @@ export const EditorRightPanel = ({
   hasUpscaled,
   onUpscale,
   onDownload,
+  selectedUpscalerModel,
+  onUpscalerModelChange,
   files,
   settings,
   selectedImage,
@@ -123,39 +133,44 @@ export const EditorRightPanel = ({
         {/* Scrollable body */}
         <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4">
           {/* Model selector button */}
-          <button
-            onClick={() => setModelDialogOpen(true)}
-            className="group flex w-full items-center justify-between rounded-xl border border-white/[0.07] bg-white/[0.03] px-3.5 py-3 text-left transition-all duration-200 hover:border-white/[0.14] hover:bg-white/[0.06]"
-          >
-            <div className="flex flex-col gap-0.5">
-              <span className="text-[9px] font-semibold uppercase tracking-[0.15em] text-white/30">
-                AI Model
-              </span>
-              <span className="text-sm font-semibold text-white">
-                {MODELS[selectedModel].label}
-              </span>
-            </div>
+          <>
+            {activeTool === "remover" && (
+              <>
+                <button
+                  onClick={() => setModelDialogOpen(true)}
+                  className="group flex w-full items-center justify-between rounded-xl border border-white/[0.07] bg-white/[0.03] px-3.5 py-3 text-left transition-all duration-200 hover:border-white/[0.14] hover:bg-white/[0.06]"
+                >
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[9px] font-semibold uppercase tracking-[0.15em] text-white/30">
+                      AI Model
+                    </span>
+                    <span className="text-sm font-semibold text-white">
+                      {MODELS[selectedModel].label}
+                    </span>
+                  </div>
 
-            <div className="flex items-center gap-2.5">
-              <span className="text-[10px] text-white/25">
-                {MODELS[selectedModel].size}
-              </span>
-              <span
-                className={cn(
-                  "size-2 shrink-0 rounded-full",
-                  MODEL_STATUS_DOT[modelStatus]
-                )}
-              />
-            </div>
-          </button>
-
-          {/* Accent divider */}
-          <div
-            className="h-px w-full rounded-full opacity-30"
-            style={{
-              background: `linear-gradient(to right, transparent, ${accentColor}, transparent)`,
-            }}
-          />
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-[10px] text-white/25">
+                      {MODELS[selectedModel].size}
+                    </span>
+                    <span
+                      className={cn(
+                        "size-2 shrink-0 rounded-full",
+                        MODEL_STATUS_DOT[modelStatus]
+                      )}
+                    />
+                  </div>
+                </button>
+                {/* Accent divider */}
+                <div
+                  className="h-px w-full rounded-full opacity-30"
+                  style={{
+                    background: `linear-gradient(to right, transparent, ${accentColor}, transparent)`,
+                  }}
+                />
+              </>
+            )}
+          </>
 
           {/* Tool-specific controls */}
           {activeTool === "remover" ? (
@@ -178,6 +193,8 @@ export const EditorRightPanel = ({
               onUpscale={onUpscale}
               onDownload={onDownload}
               accentColor={accentColor}
+              selectedUpscalerModel={selectedUpscalerModel}
+              onUpscalerModelChange={onUpscalerModelChange}
             />
           )}
 
