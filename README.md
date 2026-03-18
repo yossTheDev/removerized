@@ -1,37 +1,102 @@
-<h1 align="center">✨ Removerized - Free AI Background Remover Tool</h1>
+<h1 align="center">✨ Removerized</h1>
 
 <p align="center">
-🖼️ Effortlessly Remove Image Backgrounds with AI - 🆓 Free & Limitless with 🛩️ Offline Support
+🖼️ AI Image Toolkit that runs fully in your browser — free, private, and offline-first.
 </p>
 
 <p align="center">
-<a href="https://removerized.pages.dev/" target="_blank">removerized.pages.dev</a>
+<a href="https://removerized.pages.dev/" target="_blank">Live Demo</a>
 </p>
 
-![blog](docs/banner.png)
+![banner](docs/banner.png)
 
-    🛑 Project Status: Open Source Version Discontinued
-    This Open Source version of the project will no longer be maintained due to licensing restrictions imposed by (@imgly/background-removal), which is released under the AGPL license.
+---
 
-    Since we plan to transition this project into a SaaS product, we will be replacing this library with an alternative solution that allows for a more flexible licensing model.
+## 🚀 Overview
 
-    We appreciate the support from the community, and we will share updates on the new version as development progresses. Stay tuned! 🚀
+**Removerized** is an open-source, local-first AI image toolkit that runs entirely in the browser using ONNX Runtime Web.
+
+No uploads. No servers. No limits.
+
+All processing happens directly on your device.
+
+---
+
+## ✨ Features
+
+* 🧠 **Multiple AI Models** — choose the model that best fits your needs
+* 🖼️ **Background Removal** — fast, accurate, and fully local
+* 🔍 **Image Upscaling** — enhance resolution with AI
+* 📦 **Batch Processing** — process multiple images at once
+* 💾 **Model Caching** — models are stored in IndexedDB for instant reuse
+* 🔌 **Offline Ready** — works without internet after first load
+* ⚡ **Client-Side Only** — zero backend, zero data collection
+* 🎛️ **Advanced Controls** — tweak quality, format, and output
+
+---
+
+## 🧩 Tech Stack
 
 <div align="center">
 <img src="https://img.shields.io/badge/Next.js-000?logo=nextdotjs&logoColor=fff&style=for-the-badge" alt="Next.js Badge">
 <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff&style=for-the-badge" alt="TypeScript Badge">
 <img src="https://img.shields.io/badge/shadcn%2Fui-000?logo=shadcnui&logoColor=fff&style=for-the-badge" alt="shadcn/ui Badge">
 <img src="https://img.shields.io/badge/Tailwind%20CSS-06B6D4?logo=tailwindcss&logoColor=fff&style=for-the-badge" alt="Tailwind CSS Badge">
+<img src="https://img.shields.io/badge/ONNX-Runtime%20Web-005CED?style=for-the-badge" alt="ONNX Runtime Web Badge">
 </div>
 
-## ✨ Features
+---
 
-* 🌟 Effortlessly Remove Image Backgrounds with AI! 🤖
-* 💡 Free & Limitless: No hidden costs or usage limits!
-* 🔌 Offline Support: No internet connection needed!
-* 🚀 Fast & Accurate: AI-powered technology for quick and precise background removal.
-* 🛠️ Easy-to-Use: User-friendly interface for a seamless experience.
-* 🌈 Versatile: Perfect for any image, any occasion!
+## 🧠 How It Works
+
+* Models are loaded directly in the browser
+* Inference runs using WebAssembly (WASM)
+* Assets are cached locally via IndexedDB
+* No data ever leaves your device
+
+---
+
+## 🎯 Philosophy
+
+Removerized is built around a simple idea:
+
+> AI tools should be fast, private, and accessible to everyone.
+
+This project focuses on:
+
+* 🛡️ Privacy-first processing
+* ⚡ Performance through local execution
+* 🧑‍💻 Developer-friendly experimentation
+
+---
+
+## 🛠️ Getting Started
+
+```bash
+pnpm install
+pnpm dev
+```
+
+---
+
+## 📌 Roadmap
+
+* 🎨 Image colorization
+* 🧓 Photo restoration
+* 🏷️ Image → Alt text (captioning)
+* 🧪 Advanced mask editing tools
+* 📲 PWA support
+* 🧩 Browser extension
+
+---
+
+## 🤝 Contributing
+
+Contributions, ideas, and feedback are welcome!
+
+Feel free to open issues or submit pull requests.
+
+---
 
 ## ⚖️ License
 
@@ -40,7 +105,7 @@
 ```monospace
 Removerized is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation, version 3 of the License
+the Free Software Foundation, version 3 of the License.
 
 Removerized is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -51,7 +116,8 @@ You should have received a copy of the GNU General Public License
 along with Removerized. If not, see <https://www.gnu.org/licenses/>.
 ```
 
-## Credits
+---
 
-This project uses `imgly/background-removal-js`, which is licensed under the GNU Affero General Public License v3.0.  
-For more details, visit the official repository: <https://github.com/imgly/background-removal-js>
+<p align="center">
+Made with ❤️ by Yoss
+</p>

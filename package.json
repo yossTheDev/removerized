@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbo",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -14,8 +14,6 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache"
   },
   "dependencies": {
-    "@imgly/background-removal": "^1.5.5",
-    "@imgly/background-removal-data": "^1.4.5",
     "@midudev/tailwind-animations": "^0.0.7",
     "@next/third-parties": "^14.2.3",
     "@prisma/client": "^6.4.1",
@@ -31,6 +29,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tooltip": "^1.1.4",
     "@serwist/next": "9.0.0-preview.21",
+    "@tensorflow/tfjs": "^4.22.0",
     "cheerio": "^1.0.0-rc.12",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
@@ -41,6 +40,7 @@
     "luxon": "^3.4.4",
     "next": "^14.1.4",
     "next-themes": "^0.3.0",
+    "onnxruntime-web": "^1.24.3",
     "react": "^18.2.0",
     "react-compare-slider": "^3.1.0",
     "react-dom": "^18.2.0",
@@ -48,9 +48,11 @@
     "react-dust-effect": "^0.0.7",
     "react-infinite-viewer": "^0.28.1",
     "sharp": "^0.32.6",
+    "simple-background-remover": "^1.0.5",
     "sonner": "^1.4.41",
     "tailwind-merge": "^1.13.2",
-    "tailwindcss-animate": "^1.0.6"
+    "tailwindcss-animate": "^1.0.6",
+    "upscaler": "1.0.0-beta.19"
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^3.7.2",

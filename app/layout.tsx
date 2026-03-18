@@ -19,24 +19,16 @@ export const metadata: Metadata = {
     template: `%s - ${siteConfig.name}`,
   },
   description: siteConfig.description,
-
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: siteConfig.name,
-    // startUpImage: [],
   },
   manifest: "/manifest.json",
   openGraph: {
-    images: [
-      {
-        url: "https://removerized.pages.dev/og.png",
-      },
-    ],
+    images: [{ url: "https://removerized.pages.dev/og.png" }],
   },
-  icons: {
-    icon: "/icon.ico",
-  },
+  icons: { icon: "/icon.ico" },
 }
 
 export const viewport: Viewport = {
@@ -44,10 +36,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
-    { media: "(prefers-color-scheme: light)", color: "white" },
-  ],
+  themeColor: [{ color: "#050505" }],
 }
 
 interface RootLayoutProps {
@@ -57,7 +46,7 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en" className="dark" suppressHydrationWarning>
         <head>
           <Script
             async
@@ -68,16 +57,20 @@ export default function RootLayout({ children }: RootLayoutProps) {
         </head>
         <body
           className={cn(
-            "min-h-screen bg-background font-sans antialiased",
+            "min-h-screen bg-[#050505] font-sans antialiased",
             fontSans.variable,
             fontMuseo.variable
           )}
         >
           <TooltipProvider>
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-              <main className="relative flex h-screen min-h-screen flex-col overflow-hidden bg-neutral-200 dark:bg-neutral-800">
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              forcedTheme="dark"
+            >
+              <main className="relative flex h-screen min-h-screen flex-col overflow-hidden bg-[#050505]">
                 <div className="flex-1">{children}</div>
-                <Toaster></Toaster>
+                <Toaster />
               </main>
               <TailwindIndicator />
             </ThemeProvider>
