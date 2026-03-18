@@ -59,7 +59,7 @@ export const EditorCanvas = ({
               }
               itemTwo={
                 resultData ? (
-                  <div className="relative flex flex-col items-center justify-center gap-2 rounded-xl bg-white/5">
+                  <div className="relative flex flex-col items-center justify-center gap-2 rounded-xl bg-white/100">
                     <Image
                       width={300}
                       height={150}
