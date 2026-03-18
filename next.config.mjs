@@ -1,6 +1,9 @@
 /** @type {import('next').Config} */
 const nextConfig = {
   reactStrictMode: true,
+  experimental: {
+    esmExternals: "loose",
+  },
   serverRuntimeConfig: {
     runtime: "edge",
   },
@@ -9,16 +12,12 @@ const nextConfig = {
       ...config.resolve.alias,
       "onnxruntime-node": false,
     }
+    config.module.noParse = /node_modules\/onnxruntime-web\/dist\/ort.min.js/
     return config
   },
   images: {
     dangerouslyAllowSVG: true,
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "**",
-      },
-    ],
+    remotePatterns: [{ protocol: "https", hostname: "**" }],
   },
 }
 
