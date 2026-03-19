@@ -67,12 +67,14 @@ export const EditorCanvas = ({
                       src={resultData}
                       alt="Processed"
                     />
-                    <DustEffect
-                      className="absolute flex max-h-80 w-full rounded-xl"
-                      src={imageData!}
-                      show={showDust}
-                      option={{ baseDuration: 100, blur: 2 }}
-                    />
+                    {imageData && (
+                      <DustEffect
+                        className="absolute flex max-h-80 w-full rounded-xl"
+                        src={imageData}
+                        show={showDust}
+                        option={{ baseDuration: 100, blur: 2 }}
+                      />
+                    )}
                   </div>
                 ) : (
                   <div className="flex size-full items-center justify-center rounded-xl bg-white backdrop-blur-xl border border-white/10">

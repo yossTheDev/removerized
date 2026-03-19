@@ -4,7 +4,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { sendGAEvent } from "@next/third-parties/google"
-import * as ort from "onnxruntime-web"
 import InfiniteViewer from "react-infinite-viewer"
 
 import { EditorCanvas } from "./components/EditorCanvas"
@@ -29,12 +28,14 @@ const VALID_TOOLS: ActiveTool[] = ["remover", "upscaler"]
 const VALID_MODELS = Object.keys(MODELS) as ModelKey[]
 
 export const Editor = () => {
+  const ortRef = useRef<typeof import("onnxruntime-web") | null>(null)
+
   const editorRef = useRef<InfiniteViewer>(null)
   const searchParams = useSearchParams()
   const router = useRouter()
 
   const queue = useImageQueue()
-  const onnx = useOnnxSession()
+  const onnx = useOnnxSession(ortRef)
   const { dialog, openDialog, updateDialog, closeDialog } =
     useProcessingDialog()
 
@@ -49,9 +50,22 @@ export const Editor = () => {
   const [upscaledData, setUpscaledData] = useState<string | null>(null)
 
   // ── WASM init ────────────────────────────────────────────────────────────────
+
   useEffect(() => {
-    ort.env.wasm.wasmPaths = WASM_CDN_BASE
-    ort.env.wasm.numThreads = 1
+    let mounted = true
+
+    import("onnxruntime-web").then((ort) => {
+      if (!mounted) return
+
+      ort.env.wasm.wasmPaths = WASM_CDN_BASE
+      ort.env.wasm.numThreads = 1
+
+      ortRef.current = ort
+    })
+
+    return () => {
+      mounted = false
+    }
   }, [])
 
   // ── URL → state (once on mount) ───────────────────────────────────────────

@@ -1,6 +1,8 @@
-import * as ort from "onnxruntime-web"
+import { Tensor } from "onnxruntime-web"
 
 import { INFERENCE_SIZE } from "../constants"
+
+type Ort = typeof import("onnxruntime-web")
 
 // ── Pre-processing ────────────────────────────────────────────────────────────
 
@@ -18,7 +20,7 @@ import { INFERENCE_SIZE } from "../constants"
  * @param imgEl - The source image element (can be any natural size).
  * @returns     - An ort.Tensor with dtype "float32" and shape [1, 3, 1024, 1024].
  */
-export const preprocessImage = (imgEl: HTMLImageElement): ort.Tensor => {
+export const preprocessImage = (imgEl: HTMLImageElement, ort: Ort) => {
   const S = INFERENCE_SIZE
 
   const canvas = document.createElement("canvas")
@@ -73,7 +75,7 @@ export const preprocessImage = (imgEl: HTMLImageElement): ort.Tensor => {
  * @returns          - A Promise resolving to a transparent PNG Blob.
  */
 export const applyMaskAsAlpha = (
-  maskTensor: ort.Tensor,
+  maskTensor: any,
   imgEl: HTMLImageElement
 ): Promise<Blob> =>
   new Promise((resolve) => {
