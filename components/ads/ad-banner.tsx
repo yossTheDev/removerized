@@ -1,13 +1,13 @@
 "use client"
 
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useRef, useState } from "react"
+import { JSX, useEffect, useRef, useState } from "react"
 import { X } from "lucide-react"
 
 import { Button } from "../ui/button"
 
 export default function AdBanner(): JSX.Element {
-  const banner = useRef<any>()
+  const banner = useRef<any>(null)
   const [show, setShow] = useState(true)
 
   const atOptions = {
