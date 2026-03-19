@@ -30,6 +30,7 @@
     "@radix-ui/react-tooltip": "^1.1.4",
     "@tensorflow/tfjs": "^4.22.0",
     "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "cheerio": "^1.0.0-rc.12",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
