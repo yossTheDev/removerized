@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-<a href="https://removerized.pages.dev/" target="_blank">Live Demo</a>
+<a href="https://getremoverized.yoss.pro/" target="_blank">Live Demo</a>
 </p>
 
 ![banner](docs/banner.png)
