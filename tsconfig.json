@@ -18,9 +18,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "types": [
-      "@serwist/next/typings"
-    ],
     "baseUrl": ".",
     "paths": {
       "@/*": [

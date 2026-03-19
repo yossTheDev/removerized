@@ -10,7 +10,7 @@ import InfiniteViewer from "react-infinite-viewer"
 import { Icons } from "@/components/icons"
 
 interface EditorCanvasProps {
-  editorRef: RefObject<InfiniteViewer>
+  editorRef: RefObject<InfiniteViewer | null>
   imageData: string | null
   resultData: string | null
   showDust: boolean

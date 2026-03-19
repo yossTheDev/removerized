@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 
 interface EditorToolbarProps {
-  editorRef: React.RefObject<InfiniteViewer>
+  editorRef: React.RefObject<InfiniteViewer | null>
   canDownload: boolean
   onProcess: () => void
   onDownload: () => void

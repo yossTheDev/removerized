@@ -364,7 +364,7 @@ export const Editor = () => {
       </main>
 
       {/* ── Right Controls + Queue Sidebar ── */}
-      <aside className="relative z-10 w-[19rem] shrink-0">
+      <aside className="relative z-10 w-[1 9rem] shrink-0">
         <EditorRightPanel
           activeTool={activeTool}
           onToolChange={handleToolChange}
