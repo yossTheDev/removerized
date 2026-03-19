@@ -49,8 +49,7 @@ export const Editor = () => {
   const [bgColor, setBgColor] = useState("#ffffff")
   const [upscaledData, setUpscaledData] = useState<string | null>(null)
 
-  // ── WASM init ────────────────────────────────────────────────────────────────
-
+  // WASM init
   useEffect(() => {
     let mounted = true
 
@@ -68,7 +67,7 @@ export const Editor = () => {
     }
   }, [])
 
-  // ── URL → state (once on mount) ───────────────────────────────────────────
+  // URL → state (once on mount)
   useEffect(() => {
     const toolParam = searchParams.get("tool") as ActiveTool | null
     const modelParam = searchParams.get("model") as ModelKey | null
@@ -81,14 +80,14 @@ export const Editor = () => {
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── IDB cache check on model switch ─────────────────────────────────────────
+  // IDB cache check on model switch
   useEffect(() => {
     isModelCached(selectedModel)
       .then((cached) => onnx.setModelStatus(cached ? "ready" : "idle"))
       .catch(() => onnx.setModelStatus("idle"))
   }, [selectedModel]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── URL sync helpers ─────────────────────────────────────────────────────────
+  // URL sync helpers
   const pushUrl = useCallback(
     (tool: ActiveTool, model: ModelKey) => {
       router.replace(`?tool=${tool}&model=${model}`, { scroll: false })
@@ -113,13 +112,13 @@ export const Editor = () => {
     [activeTool, pushUrl]
   )
 
-  // ── Dust trigger ─────────────────────────────────────────────────────────────
+  // Dust trigger
   const triggerDust = useCallback(() => {
     setShowDust(true)
     setTimeout(() => setShowDust(false), 100)
   }, [])
 
-  // ── Background composite ──────────────────────────────────────────────────────
+  // Background composite
   const maybeComposite = useCallback(
     async (blob: Blob): Promise<Blob> => {
       if (!applyBgColor) return blob
@@ -131,7 +130,7 @@ export const Editor = () => {
     [applyBgColor, bgColor]
   )
 
-  // ── Remove background ─────────────────────────────────────────────────────────
+  // Remove background
   const remove = useCallback(async () => {
     if (!queue.imageData) return
 
@@ -178,7 +177,7 @@ export const Editor = () => {
     triggerDust,
   ])
 
-  // ── Batch process ─────────────────────────────────────────────────────────────
+  // Batch process
   const process = useCallback(async () => {
     if (!queue.files.length) return
 
@@ -237,7 +236,7 @@ export const Editor = () => {
     triggerDust,
   ])
 
-  // ── Upscale ───────────────────────────────────────────────────────────────────
+  // Upscale
   const upscale = useCallback(async () => {
     const source = queue.resultData || queue.imageData
     if (!source) return
@@ -277,7 +276,7 @@ export const Editor = () => {
     }
   }, [queue, openDialog, upscalerModel, updateDialog, closeDialog])
 
-  // ── Download ──────────────────────────────────────────────────────────────────
+  // Download
   const handleDownload = useCallback(() => {
     const link = document.createElement("a")
 
@@ -296,7 +295,7 @@ export const Editor = () => {
     }
   }, [activeTool, upscaledData, queue.resultsData, queue.selectedImage])
 
-  // ── Derived ───────────────────────────────────────────────────────────────────
+  // Derived
   const canDownload =
     activeTool === "upscaler"
       ? !!upscaledData
@@ -305,7 +304,6 @@ export const Editor = () => {
   const accentColor = TOOL_ACCENTS[activeTool]
   const bgImage = queue.imageData || queue.resultData
 
-  // ── Render ────────────────────────────────────────────────────────────────────
   return (
     <div
       className="relative flex h-screen w-screen overflow-hidden bg-[#050505]"
