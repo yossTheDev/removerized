@@ -1,6 +1,7 @@
 import "@/styles/globals.css"
 import { Metadata, type Viewport } from "next"
 import { GoogleAnalytics } from "@next/third-parties/google"
+import { Analytics } from "@vercel/analytics/next"
 
 import { siteConfig } from "@/config/site"
 import { fontMuseo, fontSans } from "@/lib/fonts"
@@ -69,6 +70,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           </TooltipProvider>
         </body>
         <GoogleAnalytics gaId="G-20G8R0K6W9" />
+        <Analytics />
       </html>
     </>
   )
