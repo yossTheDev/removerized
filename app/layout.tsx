@@ -13,6 +13,7 @@ import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://removerized.pages.dev"),
   title: {
     default: `${siteConfig.name} — AI BG Remover, Upscaler & Colorizer`,
     template: `%s — ${siteConfig.name}`,

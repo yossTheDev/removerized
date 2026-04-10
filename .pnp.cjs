@@ -3806,7 +3806,7 @@ const RAW_RUNTIME_STATE =
           ["bare-buffer", null],\
           ["bare-events", "virtual:389961744a59cbc556bbc8745f3031a53db1a52440f4266b3f98525d21ed1393464f4fdcb75e6c08c0717bd0fde3f64b08478707bc817c1e34fda25f57d0ac21#npm:2.8.2"],\
           ["bare-path", "npm:3.0.0"],\
-          ["bare-stream", "virtual:dc69fda33ee747fff69ce66bb0cbfb86c90589b8617a8bd34e1f5f205bcf68b7dd0e75cf45117b3bcb5268234ad2b66ec18ea6f953a9e3438bbc37f5d5d6fb93#npm:2.13.0"],\
+          ["bare-stream", "virtual:dc69fda33ee747fff69ce66bb0cbfb86c90589b8617a8bd34e1f5f205bcf68b7dd0e75cf45117b3bcb5268234ad2b66ec18ea6f953a9e3438bbc37f5d5d6fb93#npm:2.12.0"],\
           ["bare-url", "npm:2.4.0"],\
           ["fast-fifo", "npm:1.3.2"]\
         ],\
@@ -3837,17 +3837,17 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["bare-stream", [\
-      ["npm:2.13.0", {\
-        "packageLocation": "../home/jules/.yarn/berry/cache/bare-stream-npm-2.13.0-c1247e9f3d-10c0.zip/node_modules/bare-stream/",\
+      ["npm:2.12.0", {\
+        "packageLocation": "../home/jules/.yarn/berry/cache/bare-stream-npm-2.12.0-252fb95582-10c0.zip/node_modules/bare-stream/",\
         "packageDependencies": [\
-          ["bare-stream", "npm:2.13.0"]\
+          ["bare-stream", "npm:2.12.0"]\
         ],\
         "linkType": "SOFT"\
       }],\
-      ["virtual:dc69fda33ee747fff69ce66bb0cbfb86c90589b8617a8bd34e1f5f205bcf68b7dd0e75cf45117b3bcb5268234ad2b66ec18ea6f953a9e3438bbc37f5d5d6fb93#npm:2.13.0", {\
-        "packageLocation": "./.yarn/__virtual__/bare-stream-virtual-c429584341/2/home/jules/.yarn/berry/cache/bare-stream-npm-2.13.0-c1247e9f3d-10c0.zip/node_modules/bare-stream/",\
+      ["virtual:dc69fda33ee747fff69ce66bb0cbfb86c90589b8617a8bd34e1f5f205bcf68b7dd0e75cf45117b3bcb5268234ad2b66ec18ea6f953a9e3438bbc37f5d5d6fb93#npm:2.12.0", {\
+        "packageLocation": "./.yarn/__virtual__/bare-stream-virtual-eee816ad2f/2/home/jules/.yarn/berry/cache/bare-stream-npm-2.12.0-252fb95582-10c0.zip/node_modules/bare-stream/",\
         "packageDependencies": [\
-          ["bare-stream", "virtual:dc69fda33ee747fff69ce66bb0cbfb86c90589b8617a8bd34e1f5f205bcf68b7dd0e75cf45117b3bcb5268234ad2b66ec18ea6f953a9e3438bbc37f5d5d6fb93#npm:2.13.0"],\
+          ["bare-stream", "virtual:dc69fda33ee747fff69ce66bb0cbfb86c90589b8617a8bd34e1f5f205bcf68b7dd0e75cf45117b3bcb5268234ad2b66ec18ea6f953a9e3438bbc37f5d5d6fb93#npm:2.12.0"],\
           ["@types/bare-abort-controller", null],\
           ["@types/bare-buffer", null],\
           ["@types/bare-events", null],\

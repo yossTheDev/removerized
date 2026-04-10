@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     description: "Deep learning colorization that restores old photos in your browser.",
     images: [
       {
-        url: "/api/og?tool=colorizer",
+        url: "/api/og/colorizer",
         width: 1200,
         height: 630,
         alt: "Removerized AI Image Colorizer",
