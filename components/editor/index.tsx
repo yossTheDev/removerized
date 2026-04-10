@@ -287,6 +287,9 @@ export const Editor = () => {
 
     try {
       const imgEl = await loadImage(source)
+
+      // Use quantized by default for speed/browser compatibility as requested
+      // but could also use 'deoldify_artistic_fp16' for better quality
       const blob = await onnx.runImageToImage(
         imgEl,
         "deoldify_artistic_quantized",
