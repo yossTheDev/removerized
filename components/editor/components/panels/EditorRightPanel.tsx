@@ -41,8 +41,10 @@ interface EditorRightPanelProps {
   hasColorized: boolean
   onColorize: () => void
   onDownload: () => void
-  selectedUpscalerModel: UpscalerModelKey
-  onUpscalerModelChange: (key: UpscalerModelKey) => void
+  selectedUpscalerSettings: UpscalerModelKey
+  onUpscalerSettingsChange: (key: UpscalerModelKey) => void
+  upscalerModel: ModelKey
+  colorizerModel: ModelKey
   files: File[]
   settings: ImageSetting[]
   selectedImage: string | null
@@ -88,8 +90,10 @@ export const EditorRightPanel = ({
   hasColorized,
   onColorize,
   onDownload,
-  selectedUpscalerModel,
-  onUpscalerModelChange,
+  selectedUpscalerSettings,
+  onUpscalerSettingsChange,
+  upscalerModel,
+  colorizerModel,
   files,
   settings,
   selectedImage,
@@ -138,8 +142,16 @@ export const EditorRightPanel = ({
         {/* Scrollable body */}
         <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4">
           {/* Model selector button */}
-          <>
-            {activeTool === "remover" && (
+          {(() => {
+            const currentModelKey =
+              activeTool === "remover"
+                ? selectedModel
+                : activeTool === "upscaler"
+                ? upscalerModel
+                : colorizerModel
+            const currentModel = MODELS[currentModelKey]
+
+            return (
               <>
                 <button
                   onClick={() => setModelDialogOpen(true)}
@@ -150,13 +162,13 @@ export const EditorRightPanel = ({
                       AI Model
                     </span>
                     <span className="text-sm font-semibold text-white">
-                      {MODELS[selectedModel]?.label}
+                      {currentModel?.label}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2.5">
                     <span className="text-[10px] text-white/25">
-                      {MODELS[selectedModel]?.size}
+                      {currentModel?.size}
                     </span>
                     <span
                       className={cn(
@@ -174,8 +186,8 @@ export const EditorRightPanel = ({
                   }}
                 />
               </>
-            )}
-          </>
+            )
+          })()}
 
           {/* Tool-specific controls */}
           {activeTool === "remover" && (
@@ -199,8 +211,8 @@ export const EditorRightPanel = ({
               onUpscale={onUpscale}
               onDownload={onDownload}
               accentColor={accentColor}
-              selectedUpscalerModel={selectedUpscalerModel}
-              onUpscalerModelChange={onUpscalerModelChange}
+              selectedUpscalerSettings={selectedUpscalerSettings}
+              onUpscalerSettingsChange={onUpscalerSettingsChange}
             />
           )}
           {activeTool === "colorizer" && (
@@ -234,7 +246,14 @@ export const EditorRightPanel = ({
       <ModelSelectorDialog
         open={modelDialogOpen}
         onOpenChange={setModelDialogOpen}
-        selectedModel={selectedModel}
+        activeTool={activeTool}
+        selectedModel={
+          activeTool === "remover"
+            ? selectedModel
+            : activeTool === "upscaler"
+            ? upscalerModel
+            : colorizerModel
+        }
         modelStatus={modelStatus}
         downloadProgress={downloadProgress}
         onModelChange={onModelChange}

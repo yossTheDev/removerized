@@ -10,8 +10,8 @@ export type ModelKey =
   | "rmbg_1_4_quantized"
   | "rmbg_1_4_fp16"
   | "modnet_quantized"
-  | "realesrgan_x4plus_quantized"
-  | "realesrgan_x4plus_fp16"
+  | "swin2sr_quantized"
+  | "swin2sr_fp16"
   | "deoldify_artistic_quantized"
   | "deoldify_artistic_fp16"
 

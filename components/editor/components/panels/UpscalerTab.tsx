@@ -19,8 +19,8 @@ interface UpscalerTabProps {
   onUpscale: () => void
   onDownload: () => void
   accentColor: string
-  selectedUpscalerModel: UpscalerModelKey
-  onUpscalerModelChange: (key: UpscalerModelKey) => void
+  selectedUpscalerSettings: UpscalerModelKey
+  onUpscalerSettingsChange: (key: UpscalerModelKey) => void
 }
 
 const MODEL_ICONS: Record<UpscalerModelKey, React.ElementType> = {
@@ -36,8 +36,8 @@ export const UpscalerTab = ({
   onUpscale,
   onDownload,
   accentColor,
-  selectedUpscalerModel,
-  onUpscalerModelChange,
+  selectedUpscalerSettings,
+  onUpscalerSettingsChange,
 }: UpscalerTabProps) => {
   return (
     <div className="flex flex-col gap-4">
@@ -51,12 +51,12 @@ export const UpscalerTab = ({
           {(Object.keys(UPSCALER_MODELS) as UpscalerModelKey[]).map((mk) => {
             const model = UPSCALER_MODELS[mk]
             const Icon = MODEL_ICONS[mk]
-            const isSelected = selectedUpscalerModel === mk
+            const isSelected = selectedUpscalerSettings === mk
 
             return (
               <button
                 key={mk}
-                onClick={() => onUpscalerModelChange(mk)}
+                onClick={() => onUpscalerSettingsChange(mk)}
                 className={cn(
                   "flex items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-all duration-200",
                   !isSelected &&
@@ -82,7 +82,7 @@ export const UpscalerTab = ({
                         }
                       : {
                           backgroundColor: "rgba(255,255,255,0.06)",
-                          color: "rgba(255,255,255,0.3)",
+                          color: "rgba(255,255,255,0.35)",
                         }
                   }
                 >

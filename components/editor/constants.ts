@@ -3,6 +3,7 @@ import type { ActiveTool, ModelKey, UpscalerModelKey } from "./types"
 export const MODELS: Record<
   ModelKey,
   {
+    tool: ActiveTool
     url: string
     hfUrl: string
     cacheKey: string
@@ -16,6 +17,7 @@ export const MODELS: Record<
   }
 > = {
   ormbg_quantized: {
+    tool: "remover",
     url: "https://huggingface.co/onnx-community/ormbg-ONNX/resolve/main/onnx/model_quantized.onnx",
     hfUrl: "https://huggingface.co/onnx-community/ormbg-ONNX",
     cacheKey: "ormbg_quantized_v1",
@@ -28,6 +30,7 @@ export const MODELS: Record<
     inputType: "pixel_values",
   },
   ormbg_fp16: {
+    tool: "remover",
     url: "https://huggingface.co/onnx-community/ormbg-ONNX/resolve/main/onnx/model_fp16.onnx",
     hfUrl: "https://huggingface.co/onnx-community/ormbg-ONNX",
     cacheKey: "ormbg_fp16_v1",
@@ -40,6 +43,7 @@ export const MODELS: Record<
     inputType: "pixel_values",
   },
   isnet_quantized: {
+    tool: "remover",
     url: "https://huggingface.co/onnx-community/ISNet-ONNX/resolve/main/onnx/model_quantized.onnx",
     hfUrl: "https://huggingface.co/onnx-community/ISNet-ONNX",
     cacheKey: "isnet_quantized_v1",
@@ -52,6 +56,7 @@ export const MODELS: Record<
     inputType: "input",
   },
   isnet_fp16: {
+    tool: "remover",
     url: "https://huggingface.co/onnx-community/ISNet-ONNX/resolve/main/onnx/model_fp16.onnx",
     hfUrl: "https://huggingface.co/onnx-community/ISNet-ONNX",
     cacheKey: "isnet_fp16_v1",
@@ -64,6 +69,7 @@ export const MODELS: Record<
     inputType: "input",
   },
   birefnet_lite_quantized: {
+    tool: "remover",
     url: "https://huggingface.co/onnx-community/birefnet-v2-lite/resolve/main/onnx/model_quantized.onnx",
     hfUrl: "https://huggingface.co/onnx-community/birefnet-v2-lite",
     cacheKey: "birefnet_lite_quantized_v1",
@@ -76,6 +82,7 @@ export const MODELS: Record<
     inputType: "pixel_values",
   },
   birefnet_lite_fp16: {
+    tool: "remover",
     url: "https://huggingface.co/onnx-community/birefnet-v2-lite/resolve/main/onnx/model_fp16.onnx",
     hfUrl: "https://huggingface.co/onnx-community/birefnet-v2-lite",
     cacheKey: "birefnet_lite_fp16_v1",
@@ -88,6 +95,7 @@ export const MODELS: Record<
     inputType: "pixel_values",
   },
   rmbg_1_4_quantized: {
+    tool: "remover",
     url: "https://huggingface.co/Xenova/bria-rmbg-1.4/resolve/main/onnx/model_quantized.onnx",
     hfUrl: "https://huggingface.co/Xenova/bria-rmbg-1.4",
     cacheKey: "rmbg_1_4_quantized_v1",
@@ -100,6 +108,7 @@ export const MODELS: Record<
     inputType: "pixel_values",
   },
   rmbg_1_4_fp16: {
+    tool: "remover",
     url: "https://huggingface.co/Xenova/bria-rmbg-1.4/resolve/main/onnx/model_fp16.onnx",
     hfUrl: "https://huggingface.co/Xenova/bria-rmbg-1.4",
     cacheKey: "rmbg_1_4_fp16_v1",
@@ -112,6 +121,7 @@ export const MODELS: Record<
     inputType: "pixel_values",
   },
   modnet_quantized: {
+    tool: "remover",
     url: "https://huggingface.co/Xenova/modnet/resolve/main/onnx/model_quantized.onnx",
     hfUrl: "https://huggingface.co/Xenova/modnet",
     cacheKey: "modnet_quantized_v1",
@@ -123,10 +133,11 @@ export const MODELS: Record<
     license: "Apache-2.0",
     inputType: "pixel_values",
   },
-  realesrgan_x4plus_quantized: {
+  swin2sr_quantized: {
+    tool: "upscaler",
     url: "https://huggingface.co/onnx-community/swin2SR-realworld-sr-x4-64-bsrgan-psnr-ONNX/resolve/main/onnx/model_quantized.onnx",
     hfUrl: "https://huggingface.co/onnx-community/swin2SR-realworld-sr-x4-64-bsrgan-psnr-ONNX",
-    cacheKey: "realesrgan_x4plus_quantized_v1",
+    cacheKey: "swin2sr_quantized_v1",
     label: "Swin2SR x4 (Quantized)",
     title: "Swin2SR — Image Super-Resolution",
     description: "High-quality 4x upscaling",
@@ -135,10 +146,11 @@ export const MODELS: Record<
     license: "Apache-2.0",
     inputType: "pixel_values",
   },
-  realesrgan_x4plus_fp16: {
+  swin2sr_fp16: {
+    tool: "upscaler",
     url: "https://huggingface.co/onnx-community/swin2SR-realworld-sr-x4-64-bsrgan-psnr-ONNX/resolve/main/onnx/model_fp16.onnx",
     hfUrl: "https://huggingface.co/onnx-community/swin2SR-realworld-sr-x4-64-bsrgan-psnr-ONNX",
-    cacheKey: "realesrgan_x4plus_fp16_v1",
+    cacheKey: "swin2sr_fp16_v1",
     label: "Swin2SR x4 (FP16)",
     title: "Swin2SR — Image Super-Resolution",
     description: "Maximum precision 4x upscaling",
@@ -148,6 +160,7 @@ export const MODELS: Record<
     inputType: "pixel_values",
   },
   deoldify_artistic_quantized: {
+    tool: "colorizer",
     url: "https://huggingface.co/thookham/DeOldify-on-Browser/resolve/main/deoldify-quant.onnx",
     hfUrl: "https://huggingface.co/thookham/DeOldify-on-Browser",
     cacheKey: "deoldify_artistic_quantized_v2",
@@ -160,6 +173,7 @@ export const MODELS: Record<
     inputType: "input_1",
   },
   deoldify_artistic_fp16: {
+    tool: "colorizer",
     url: "https://huggingface.co/thookham/DeOldify-on-Browser/resolve/main/deoldify-art.onnx",
     hfUrl: "https://huggingface.co/thookham/DeOldify-on-Browser",
     cacheKey: "deoldify_artistic_fp16_v2",
