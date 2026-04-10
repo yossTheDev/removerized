@@ -3,16 +3,10 @@ import { MetadataRoute } from "next"
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: "https://removerized.pages.dev",
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 1,
-    },
-    {
       url: "https://removerized.pages.dev/removerized",
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.9,
+      priority: 1.0,
     },
     {
       url: "https://removerized.pages.dev/upscaler",
