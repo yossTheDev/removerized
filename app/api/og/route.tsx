@@ -1,6 +1,8 @@
 import { ImageResponse } from "next/og"
 import { NextRequest } from "next/server"
 
+export const runtime = "edge"
+
 const TOOL_ACCENTS: Record<string, string> = {
   remover: "#A855F7",
   upscaler: "#3B82F6",
@@ -22,20 +24,10 @@ const SEO_CONTENT: Record<string, { heading: string; subheading: string }> = {
   },
 }
 
-export function generateStaticParams() {
-  return [
-    { tool: "remover" },
-    { tool: "upscaler" },
-    { tool: "colorizer" },
-  ]
-}
-
-export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ tool: string }> }
-) {
+export async function GET(req: NextRequest) {
   try {
-    const { tool } = await params
+    const { searchParams } = new URL(req.url)
+    const tool = searchParams.get("tool") || "remover"
     const accentColor = TOOL_ACCENTS[tool] || TOOL_ACCENTS.remover
     const content = SEO_CONTENT[tool] || SEO_CONTENT.remover
 

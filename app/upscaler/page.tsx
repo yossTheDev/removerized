@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     description: "Super-resolution AI that upscales images locally in your browser.",
     images: [
       {
-        url: "/api/og/upscaler",
+        url: "/api/og?tool=upscaler",
         width: 1200,
         height: 630,
         alt: "Removerized AI Image Upscaler",

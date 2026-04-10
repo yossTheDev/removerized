@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     description: "Instant and private background removal in your browser.",
     images: [
       {
-        url: "/api/og/remover",
+        url: "/api/og?tool=remover",
         width: 1200,
         height: 630,
         alt: "Removerized AI Background Remover",
