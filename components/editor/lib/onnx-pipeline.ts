@@ -1,6 +1,7 @@
 import { Tensor } from "onnxruntime-web"
 
-import { INFERENCE_SIZE } from "../constants"
+import { INFERENCE_SIZE, MODELS } from "../constants"
+import type { ModelKey } from "../types"
 
 type Ort = typeof import("onnxruntime-web")
 
@@ -129,4 +130,66 @@ export const applyMaskAsAlpha = (
     outCanvas.height = oh
     outCanvas.getContext("2d")!.putImageData(origPx, 0, 0)
     outCanvas.toBlob((blob) => resolve(blob!), "image/png")
+  })
+
+/**
+ * Prepares a tensor for Image-to-Image models (Upscaler, Colorizer).
+ */
+export const preprocessImageToImage = (
+  imgEl: HTMLImageElement,
+  ort: Ort,
+  size: number = 512
+) => {
+  const canvas = document.createElement("canvas")
+  canvas.width = size
+  canvas.height = size
+  const ctx = canvas.getContext("2d")!
+
+  ctx.drawImage(imgEl, 0, 0, size, size)
+
+  const { data } = ctx.getImageData(0, 0, size, size)
+  const float32 = new Float32Array(3 * size * size)
+
+  for (let i = 0; i < size * size; i++) {
+    float32[i] = data[i * 4] / 255
+    float32[size * size + i] = data[i * 4 + 1] / 255
+    float32[size * size * 2 + i] = data[i * 4 + 2] / 255
+  }
+
+  return new ort.Tensor("float32", float32, [1, 3, size, size])
+}
+
+/**
+ * Converts a [1, 3, H, W] tensor back into a PNG Blob.
+ */
+export const tensorToImageData = (
+  tensor: any,
+  width: number,
+  height: number
+): Promise<Blob> =>
+  new Promise((resolve) => {
+    const canvas = document.createElement("canvas")
+    canvas.width = width
+    canvas.height = height
+    const ctx = canvas.getContext("2d")!
+    const imageData = ctx.createImageData(width, height)
+
+    const data = tensor.data as Float32Array
+    const size = width * height
+
+    for (let i = 0; i < size; i++) {
+      imageData.data[i * 4] = Math.max(0, Math.min(255, data[i] * 255))
+      imageData.data[i * 4 + 1] = Math.max(
+        0,
+        Math.min(255, data[size + i] * 255)
+      )
+      imageData.data[i * 4 + 2] = Math.max(
+        0,
+        Math.min(255, data[size * 2 + i] * 255)
+      )
+      imageData.data[i * 4 + 3] = 255
+    }
+
+    ctx.putImageData(imageData, 0, 0)
+    canvas.toBlob((blob) => resolve(blob!), "image/png")
   })

@@ -24,7 +24,7 @@ import { isModelCached } from "./lib/idb"
 import { base64ToBlob, compositeOnColor, loadImage } from "./lib/image-utils"
 import type { ActiveTool, ModelKey, UpscalerModelKey } from "./types"
 
-const VALID_TOOLS: ActiveTool[] = ["remover", "upscaler"]
+const VALID_TOOLS: ActiveTool[] = ["remover", "upscaler", "colorizer"]
 const VALID_MODELS = Object.keys(MODELS) as ModelKey[]
 
 export const Editor = () => {
@@ -43,11 +43,18 @@ export const Editor = () => {
   const [activeTool, setActiveTool] = useState<ActiveTool>("remover")
   const [selectedModel, setSelectedModel] =
     useState<ModelKey>("birefnet_lite_fp16")
-  const [upscalerModel, setUpscalerModel] =
+  const [upscalerModel, setUpscalerModel] = useState<ModelKey>(
+    "swin2sr_quantized"
+  )
+  const [colorizerModel, setColorizerModel] = useState<ModelKey>(
+    "deoldify_artistic_quantized"
+  )
+  const [upscalerSettings, setUpscalerSettings] =
     useState<UpscalerModelKey>("balanced")
   const [applyBgColor, setApplyBgColor] = useState(false)
   const [bgColor, setBgColor] = useState("#ffffff")
   const [upscaledData, setUpscaledData] = useState<string | null>(null)
+  const [colorizedData, setColorizedData] = useState<string | null>(null)
 
   // WASM init
   useEffect(() => {
@@ -76,37 +83,61 @@ export const Editor = () => {
       setActiveTool(toolParam)
     }
     if (modelParam && VALID_MODELS.includes(modelParam)) {
-      setSelectedModel(modelParam)
+      const model = MODELS[modelParam]
+      if (model) {
+        if (model.tool === "remover") setSelectedModel(modelParam)
+        if (model.tool === "upscaler") setUpscalerModel(modelParam)
+        if (model.tool === "colorizer") setColorizerModel(modelParam)
+      }
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // IDB cache check on model switch
   useEffect(() => {
-    isModelCached(selectedModel)
+    const currentModel =
+      activeTool === "remover"
+        ? selectedModel
+        : activeTool === "upscaler"
+        ? upscalerModel
+        : colorizerModel
+    isModelCached(currentModel)
       .then((cached) => onnx.setModelStatus(cached ? "ready" : "idle"))
       .catch(() => onnx.setModelStatus("idle"))
-  }, [selectedModel]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedModel, upscalerModel, colorizerModel, activeTool]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // URL sync helpers
   const pushUrl = useCallback(
     (tool: ActiveTool, model: ModelKey) => {
-      router.replace(`?tool=${tool}&model=${model}`, { scroll: false })
+      const params = new URLSearchParams(searchParams.toString())
+      params.set("tool", tool)
+      params.set("model", model)
+      router.replace(`?${params.toString()}`, { scroll: false })
     },
-    [router]
+    [router, searchParams]
   )
 
   const handleToolChange = useCallback(
     (tool: ActiveTool) => {
       setActiveTool(tool)
-      pushUrl(tool, selectedModel)
+      const model =
+        tool === "remover"
+          ? selectedModel
+          : tool === "upscaler"
+          ? upscalerModel
+          : colorizerModel
+      pushUrl(tool, model)
     },
-    [selectedModel, pushUrl]
+    [selectedModel, upscalerModel, colorizerModel, pushUrl]
   )
 
   const handleModelChange = useCallback(
     (key: ModelKey) => {
-      setSelectedModel(key)
+      if (activeTool === "remover") setSelectedModel(key)
+      if (activeTool === "upscaler") setUpscalerModel(key)
+      if (activeTool === "colorizer") setColorizerModel(key)
+
       setUpscaledData(null)
+      setColorizedData(null)
       pushUrl(activeTool, key)
     },
     [activeTool, pushUrl]
@@ -245,23 +276,20 @@ export const Editor = () => {
     openDialog("Initializing upscaler…")
 
     try {
-      const { default: Upscaler } = await import("upscaler")
-      const instance = new Upscaler()
+      const imgEl = await loadImage(source)
 
-      const currentConfig = UPSCALER_MODELS[upscalerModel]
+      const blob = await onnx.runImageToImage(
+        imgEl,
+        upscalerModel,
+        updateDialog,
+        {
+          size: 512,
+        }
+      )
+      const url = URL.createObjectURL(blob)
 
-      const upscaled = await instance.upscale(source, {
-        output: "base64",
-        patchSize: currentConfig.patchSize,
-        padding: currentConfig.padding,
-        progress: (amount: number) => {
-          const pct = Math.round(amount * 100)
-          updateDialog(`Upscaling… ${pct}%`, pct)
-        },
-      })
-
-      setUpscaledData(upscaled)
-      queue.setResultData(upscaled)
+      setUpscaledData(url)
+      queue.setResultData(url)
 
       sendGAEvent({ event: "upscale-image", value: "success" })
       const elapsed = Math.floor((performance.now() - start) / 1000)
@@ -274,7 +302,42 @@ export const Editor = () => {
     } finally {
       closeDialog()
     }
-  }, [queue, openDialog, upscalerModel, updateDialog, closeDialog])
+  }, [queue, openDialog, onnx, upscalerModel, updateDialog, closeDialog])
+
+  // Colorize
+  const colorize = useCallback(async () => {
+    const source = queue.resultData || queue.imageData
+    if (!source) return
+
+    const start = performance.now()
+    openDialog("Initializing colorizer…")
+
+    try {
+      const imgEl = await loadImage(source)
+
+      const blob = await onnx.runImageToImage(
+        imgEl,
+        colorizerModel,
+        updateDialog,
+        { size: 512 }
+      )
+      const url = URL.createObjectURL(blob)
+
+      setColorizedData(url)
+      queue.setResultData(url)
+
+      sendGAEvent({ event: "colorize-image", value: "success" })
+      const elapsed = Math.floor((performance.now() - start) / 1000)
+      const { toast } = await import("sonner")
+      toast.success(`🚀 Colorized in ${elapsed} s`)
+    } catch (err) {
+      console.error("[colorize]", err)
+      const { toast } = await import("sonner")
+      toast.error("Colorization failed.")
+    } finally {
+      closeDialog()
+    }
+  }, [queue, openDialog, onnx, colorizerModel, updateDialog, closeDialog])
 
   // Download
   const handleDownload = useCallback(() => {
@@ -287,18 +350,27 @@ export const Editor = () => {
       return
     }
 
+    if (activeTool === "colorizer" && colorizedData) {
+      link.href = colorizedData
+      link.download = `removerized-colorized-${Date.now()}.png`
+      link.click()
+      return
+    }
+
     const result = queue.resultsData.find((r) => r.name === queue.selectedImage)
     if (result) {
       link.href = URL.createObjectURL(result.data)
       link.download = `removerized-${Date.now()}.png`
       link.click()
     }
-  }, [activeTool, upscaledData, queue.resultsData, queue.selectedImage])
+  }, [activeTool, upscaledData, colorizedData, queue.resultsData, queue.selectedImage])
 
   // Derived
   const canDownload =
     activeTool === "upscaler"
       ? !!upscaledData
+      : activeTool === "colorizer"
+      ? !!colorizedData
       : !!queue.resultsData.find((r) => r.name === queue.selectedImage)
 
   const accentColor = TOOL_ACCENTS[activeTool]
@@ -362,7 +434,7 @@ export const Editor = () => {
       </main>
 
       {/* ── Right Controls + Queue Sidebar ── */}
-      <aside className="relative z-10 w-[1 9rem] shrink-0">
+      <aside className="relative z-10 w-[19rem] shrink-0">
         <EditorRightPanel
           activeTool={activeTool}
           onToolChange={handleToolChange}
@@ -381,6 +453,8 @@ export const Editor = () => {
           hasResult={!!queue.resultData}
           hasUpscaled={!!upscaledData}
           onUpscale={upscale}
+          hasColorized={!!colorizedData}
+          onColorize={colorize}
           onDownload={handleDownload}
           files={queue.files}
           settings={queue.settings}
@@ -392,9 +466,12 @@ export const Editor = () => {
           onClearQueue={() => {
             queue.clearQueue()
             setUpscaledData(null)
+            setColorizedData(null)
           }}
-          onUpscalerModelChange={setUpscalerModel}
-          selectedUpscalerModel={upscalerModel}
+          onUpscalerSettingsChange={setUpscalerSettings}
+          selectedUpscalerSettings={upscalerSettings}
+          upscalerModel={upscalerModel}
+          colorizerModel={colorizerModel}
           accentColor={accentColor}
         />
       </aside>

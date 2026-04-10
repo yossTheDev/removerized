@@ -2,7 +2,12 @@ import { useCallback, useRef, useState } from "react"
 
 import { MODELS } from "../constants"
 import { checkAndDownloadModel } from "../lib/idb"
-import { applyMaskAsAlpha, preprocessImage } from "../lib/onnx-pipeline"
+import {
+  applyMaskAsAlpha,
+  preprocessImage,
+  preprocessImageToImage,
+  tensorToImageData,
+} from "../lib/onnx-pipeline"
 import type { ModelKey, ModelStatus, ProgressCallback } from "../types"
 
 type Ort = typeof import("onnxruntime-web")
@@ -16,6 +21,12 @@ export interface UseOnnxSessionReturn {
     imgEl: HTMLImageElement,
     modelKey: ModelKey,
     onUpdate: ProgressCallback
+  ) => Promise<Blob>
+  runImageToImage: (
+    imgEl: HTMLImageElement,
+    modelKey: ModelKey,
+    onUpdate: ProgressCallback,
+    options?: { size?: number }
   ) => Promise<Blob>
   setModelStatus: (status: ModelStatus) => void
 }
@@ -107,13 +118,58 @@ export const useOnnxSession = (
       const maskTensor = results[session.outputNames[0]]
       const blob = await applyMaskAsAlpha(maskTensor, imgEl)
 
-      inputTensor.dispose()
-      maskTensor.dispose()
+      return blob
+    },
+    [getOrCreateSession]
+  )
+
+  /**
+   * Run Image-to-Image inference (Upscale, Colorize).
+   */
+  const runImageToImage = useCallback(
+    async (
+      imgEl: HTMLImageElement,
+      modelKey: ModelKey,
+      onUpdate: ProgressCallback,
+      options: { size?: number } = {}
+    ): Promise<Blob> => {
+      if (!ortRef.current) {
+        throw new Error("ONNX Runtime not initialized")
+      }
+
+      const session = await getOrCreateSession(modelKey, onUpdate)
+
+      onUpdate("Pre-processing…", 0)
+      const inputTensor = preprocessImageToImage(
+        imgEl,
+        ortRef.current,
+        options.size
+      )
+
+      onUpdate("Running inference…", 0)
+      const inputType = MODELS[modelKey].inputType
+      const results = await session.run({ [inputType]: inputTensor })
+
+      onUpdate("Post-processing…", 0)
+      const outputTensor = results[session.outputNames[0]]
+
+      // For upscaler, output size is usually input * 4
+      const isUpscaler = modelKey.includes("realesrgan")
+      const outW = (outputTensor.dims[3] as number) || (options.size || 512) * (isUpscaler ? 4 : 1)
+      const outH = (outputTensor.dims[2] as number) || (options.size || 512) * (isUpscaler ? 4 : 1)
+
+      const blob = await tensorToImageData(outputTensor, outW, outH)
 
       return blob
     },
     [getOrCreateSession]
   )
 
-  return { modelStatus, downloadProgress, runInference, setModelStatus }
+  return {
+    modelStatus,
+    downloadProgress,
+    runInference,
+    runImageToImage,
+    setModelStatus,
+  }
 }

@@ -1,4 +1,4 @@
-export type ActiveTool = "remover" | "upscaler"
+export type ActiveTool = "remover" | "upscaler" | "colorizer"
 
 export type ModelKey =
   | "ormbg_quantized"
@@ -10,6 +10,10 @@ export type ModelKey =
   | "rmbg_1_4_quantized"
   | "rmbg_1_4_fp16"
   | "modnet_quantized"
+  | "swin2sr_quantized"
+  | "swin2sr_fp16"
+  | "deoldify_artistic_quantized"
+  | "deoldify_artistic_fp16"
 
 export type UpscalerModelKey = "performance" | "balanced" | "quality"
 

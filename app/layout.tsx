@@ -12,14 +12,25 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
 
-export const runtime = "edge"
-
 export const metadata: Metadata = {
   title: {
-    default: siteConfig.name,
-    template: `%s - ${siteConfig.name}`,
+    default: `${siteConfig.name} — AI BG Remover, Upscaler & Colorizer`,
+    template: `%s — ${siteConfig.name}`,
   },
-  description: siteConfig.description,
+  description:
+    "Free, private, and on-device AI tools to remove backgrounds, upscale images up to 4×, and colorize old photos. No uploads, no servers, 100% client-side.",
+  keywords: [
+    "background remover",
+    "image upscaler",
+    "photo colorizer",
+    "AI image editor",
+    "private AI",
+    "on-device AI",
+    "free background removal",
+  ],
+  authors: [{ name: "yossthedev", url: "https://github.com/yossTheDev" }],
+  creator: "yossthedev",
+  publisher: "Removerizer",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -27,9 +38,42 @@ export const metadata: Metadata = {
   },
   manifest: "/manifest.json",
   openGraph: {
-    images: [{ url: "https://removerized.pages.dev/og.png" }],
+    type: "website",
+    locale: "en_US",
+    url: "https://removerized.pages.dev",
+    siteName: siteConfig.name,
+    title: `${siteConfig.name} — All-in-One AI Image Lab`,
+    description:
+      "Instant, private, and free AI tools: Background Removal, 4× Upscaling, and Photo Colorization. All running in your browser.",
+    images: [
+      {
+        url: "https://removerized.pages.dev/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Removerizer AI Image Tools",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${siteConfig.name} — Private AI Image Tools`,
+    description:
+      "Remove backgrounds, upscale, and colorize images locally with AI. No data leaves your device.",
+    images: ["https://removerized.pages.dev/og.png"],
+    creator: "@yossthedev",
   },
   icons: { icon: "/icon.ico" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 }
 
 export const viewport: Viewport = {
