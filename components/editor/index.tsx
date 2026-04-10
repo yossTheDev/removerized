@@ -24,7 +24,7 @@ import { isModelCached } from "./lib/idb"
 import { base64ToBlob, compositeOnColor, loadImage } from "./lib/image-utils"
 import type { ActiveTool, ModelKey, UpscalerModelKey } from "./types"
 
-const VALID_TOOLS: ActiveTool[] = ["remover", "upscaler"]
+const VALID_TOOLS: ActiveTool[] = ["remover", "upscaler", "colorizer"]
 const VALID_MODELS = Object.keys(MODELS) as ModelKey[]
 
 export const Editor = () => {
@@ -48,6 +48,7 @@ export const Editor = () => {
   const [applyBgColor, setApplyBgColor] = useState(false)
   const [bgColor, setBgColor] = useState("#ffffff")
   const [upscaledData, setUpscaledData] = useState<string | null>(null)
+  const [colorizedData, setColorizedData] = useState<string | null>(null)
 
   // WASM init
   useEffect(() => {
@@ -107,6 +108,7 @@ export const Editor = () => {
     (key: ModelKey) => {
       setSelectedModel(key)
       setUpscaledData(null)
+      setColorizedData(null)
       pushUrl(activeTool, key)
     },
     [activeTool, pushUrl]
@@ -245,23 +247,22 @@ export const Editor = () => {
     openDialog("Initializing upscaler…")
 
     try {
-      const { default: Upscaler } = await import("upscaler")
-      const instance = new Upscaler()
+      const imgEl = await loadImage(source)
 
-      const currentConfig = UPSCALER_MODELS[upscalerModel]
+      // Map upscalerModel to specific Real-ESRGAN/Swin2SR variants
+      // Using fp16 for quality, quantized for performance/balanced for simplicity here
+      const modelKey: ModelKey =
+        upscalerModel === "quality"
+          ? "realesrgan_x4plus_fp16"
+          : "realesrgan_x4plus_quantized"
 
-      const upscaled = await instance.upscale(source, {
-        output: "base64",
-        patchSize: currentConfig.patchSize,
-        padding: currentConfig.padding,
-        progress: (amount: number) => {
-          const pct = Math.round(amount * 100)
-          updateDialog(`Upscaling… ${pct}%`, pct)
-        },
+      const blob = await onnx.runImageToImage(imgEl, modelKey, updateDialog, {
+        size: 512,
       })
+      const url = URL.createObjectURL(blob)
 
-      setUpscaledData(upscaled)
-      queue.setResultData(upscaled)
+      setUpscaledData(url)
+      queue.setResultData(url)
 
       sendGAEvent({ event: "upscale-image", value: "success" })
       const elapsed = Math.floor((performance.now() - start) / 1000)
@@ -274,7 +275,41 @@ export const Editor = () => {
     } finally {
       closeDialog()
     }
-  }, [queue, openDialog, upscalerModel, updateDialog, closeDialog])
+  }, [queue, openDialog, onnx, updateDialog, closeDialog])
+
+  // Colorize
+  const colorize = useCallback(async () => {
+    const source = queue.resultData || queue.imageData
+    if (!source) return
+
+    const start = performance.now()
+    openDialog("Initializing colorizer…")
+
+    try {
+      const imgEl = await loadImage(source)
+      const blob = await onnx.runImageToImage(
+        imgEl,
+        "deoldify_artistic_quantized",
+        updateDialog,
+        { size: 512 }
+      )
+      const url = URL.createObjectURL(blob)
+
+      setColorizedData(url)
+      queue.setResultData(url)
+
+      sendGAEvent({ event: "colorize-image", value: "success" })
+      const elapsed = Math.floor((performance.now() - start) / 1000)
+      const { toast } = await import("sonner")
+      toast.success(`🚀 Colorized in ${elapsed} s`)
+    } catch (err) {
+      console.error("[colorize]", err)
+      const { toast } = await import("sonner")
+      toast.error("Colorization failed.")
+    } finally {
+      closeDialog()
+    }
+  }, [queue, openDialog, onnx, updateDialog, closeDialog])
 
   // Download
   const handleDownload = useCallback(() => {
@@ -283,6 +318,13 @@ export const Editor = () => {
     if (activeTool === "upscaler" && upscaledData) {
       link.href = upscaledData
       link.download = `removerized-upscaled-${Date.now()}.png`
+      link.click()
+      return
+    }
+
+    if (activeTool === "colorizer" && colorizedData) {
+      link.href = colorizedData
+      link.download = `removerized-colorized-${Date.now()}.png`
       link.click()
       return
     }
@@ -299,6 +341,8 @@ export const Editor = () => {
   const canDownload =
     activeTool === "upscaler"
       ? !!upscaledData
+      : activeTool === "colorizer"
+      ? !!colorizedData
       : !!queue.resultsData.find((r) => r.name === queue.selectedImage)
 
   const accentColor = TOOL_ACCENTS[activeTool]
@@ -381,6 +425,8 @@ export const Editor = () => {
           hasResult={!!queue.resultData}
           hasUpscaled={!!upscaledData}
           onUpscale={upscale}
+          hasColorized={!!colorizedData}
+          onColorize={colorize}
           onDownload={handleDownload}
           files={queue.files}
           settings={queue.settings}
@@ -392,6 +438,7 @@ export const Editor = () => {
           onClearQueue={() => {
             queue.clearQueue()
             setUpscaledData(null)
+            setColorizedData(null)
           }}
           onUpscalerModelChange={setUpscalerModel}
           selectedUpscalerModel={upscalerModel}

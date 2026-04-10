@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Eraser, Sparkles } from "lucide-react"
+import { Eraser, Palette, Sparkles } from "lucide-react"
 
 import type { ImageSetting } from "@/types/image-settings"
 import { cn } from "@/lib/utils"
@@ -15,6 +15,7 @@ import type {
   UpscalerModelKey,
 } from "../../types"
 import { ModelSelectorDialog } from "../ModelSelectorDialog"
+import { ColorizerTab } from "./ColorizerTab"
 import { EditorQueuePanel } from "./EditorQueuePanel"
 import { RemoverTab } from "./RemoverTab"
 import { UpscalerTab } from "./UpscalerTab"
@@ -37,6 +38,8 @@ interface EditorRightPanelProps {
   hasResult: boolean
   hasUpscaled: boolean
   onUpscale: () => void
+  hasColorized: boolean
+  onColorize: () => void
   onDownload: () => void
   selectedUpscalerModel: UpscalerModelKey
   onUpscalerModelChange: (key: UpscalerModelKey) => void
@@ -54,6 +57,7 @@ interface EditorRightPanelProps {
 const TABS: { key: ActiveTool; label: string; Icon: React.ElementType }[] = [
   { key: "remover", label: "BG Remover", Icon: Eraser },
   { key: "upscaler", label: "Upscaler", Icon: Sparkles },
+  { key: "colorizer", label: "Colorizer", Icon: Palette },
 ]
 
 const MODEL_STATUS_DOT: Record<ModelStatus, string> = {
@@ -81,6 +85,8 @@ export const EditorRightPanel = ({
   hasResult,
   hasUpscaled,
   onUpscale,
+  hasColorized,
+  onColorize,
   onDownload,
   selectedUpscalerModel,
   onUpscalerModelChange,
@@ -172,7 +178,7 @@ export const EditorRightPanel = ({
           </>
 
           {/* Tool-specific controls */}
-          {activeTool === "remover" ? (
+          {activeTool === "remover" && (
             <RemoverTab
               localSettings={localSettings}
               onSettingsChange={onSettingsChange}
@@ -184,7 +190,8 @@ export const EditorRightPanel = ({
               onRemove={onRemove}
               accentColor={accentColor}
             />
-          ) : (
+          )}
+          {activeTool === "upscaler" && (
             <UpscalerTab
               hasImage={hasImage}
               hasResult={hasResult}
@@ -194,6 +201,16 @@ export const EditorRightPanel = ({
               accentColor={accentColor}
               selectedUpscalerModel={selectedUpscalerModel}
               onUpscalerModelChange={onUpscalerModelChange}
+            />
+          )}
+          {activeTool === "colorizer" && (
+            <ColorizerTab
+              hasImage={hasImage}
+              hasResult={hasResult}
+              hasColorized={hasColorized}
+              onColorize={onColorize}
+              onDownload={onDownload}
+              accentColor={accentColor}
             />
           )}
 

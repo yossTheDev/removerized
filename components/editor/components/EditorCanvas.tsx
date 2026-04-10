@@ -42,30 +42,39 @@ export const EditorCanvas = ({
           <div className="flex size-full items-center justify-center gap-16 p-4">
             <ReactCompareSlider
               className="max-w-xl rounded-xl"
+              aria-label="Image comparison slider"
               itemOne={
                 imageData ? (
                   <Image
                     width={300}
                     height={150}
-                    className="flex max-h-80 bg-white w-full rounded-xl"
+                    className="flex max-h-80 w-full rounded-xl bg-white"
                     src={imageData}
-                    alt="Original"
+                    alt="Original image"
                   />
                 ) : (
-                  <div className="flex h-80 w-[36rem] items-center justify-center rounded-xl bg-white/5 backdrop-blur-xl border border-white/10">
+                  <div
+                    className="flex h-80 w-[36rem] items-center justify-center rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl"
+                    role="img"
+                    aria-label="Empty gallery placeholder"
+                  >
                     <Icons.SolarGalleryBoldDuotone className="size-16 text-white/20" />
                   </div>
                 )
               }
               itemTwo={
                 resultData ? (
-                  <div className="relative flex flex-col items-center justify-center gap-2 rounded-xl bg-white/100">
+                  <div
+                    className="relative flex flex-col items-center justify-center gap-2 rounded-xl bg-white/100"
+                    role="img"
+                    aria-label="Processed image result"
+                  >
                     <Image
                       width={300}
                       height={150}
                       className="grid-pattern flex max-h-80 w-full rounded-xl"
                       src={resultData}
-                      alt="Processed"
+                      alt="Processed image"
                     />
                     {/*  {imageData && (
                       <DustEffect
@@ -77,7 +86,11 @@ export const EditorCanvas = ({
                     )} */}
                   </div>
                 ) : (
-                  <div className="flex size-full items-center justify-center rounded-xl bg-white backdrop-blur-xl border border-white/10">
+                  <div
+                    className="flex size-full items-center justify-center rounded-xl border border-white/10 bg-white backdrop-blur-xl"
+                    role="img"
+                    aria-label="Empty processed result placeholder"
+                  >
                     <div className="grid-pattern flex size-full items-center justify-center">
                       <Icons.SolarGalleryBoldDuotone className="size-16 text-white/20" />
                     </div>

@@ -123,6 +123,54 @@ export const MODELS: Record<
     license: "Apache-2.0",
     inputType: "pixel_values",
   },
+  realesrgan_x4plus_quantized: {
+    url: "https://huggingface.co/onnx-community/swin2SR-realworld-sr-x4-64-bsrgan-psnr-ONNX/resolve/main/onnx/model_quantized.onnx",
+    hfUrl: "https://huggingface.co/onnx-community/swin2SR-realworld-sr-x4-64-bsrgan-psnr-ONNX",
+    cacheKey: "realesrgan_x4plus_quantized_v1",
+    label: "Real-ESRGAN x4 (Quantized)",
+    title: "Real-ESRGAN — Image Super-Resolution",
+    description: "High-quality 4x upscaling",
+    size: "~18 MB",
+    author: "ONNX Community",
+    license: "Apache-2.0",
+    inputType: "pixel_values",
+  },
+  realesrgan_x4plus_fp16: {
+    url: "https://huggingface.co/onnx-community/swin2SR-realworld-sr-x4-64-bsrgan-psnr-ONNX/resolve/main/onnx/model_fp16.onnx",
+    hfUrl: "https://huggingface.co/onnx-community/swin2SR-realworld-sr-x4-64-bsrgan-psnr-ONNX",
+    cacheKey: "realesrgan_x4plus_fp16_v1",
+    label: "Real-ESRGAN x4 (FP16)",
+    title: "Real-ESRGAN — Image Super-Resolution",
+    description: "Maximum precision 4x upscaling",
+    size: "~36 MB",
+    author: "ONNX Community",
+    license: "Apache-2.0",
+    inputType: "pixel_values",
+  },
+  deoldify_artistic_quantized: {
+    url: "https://huggingface.co/thookham/DeOldify/resolve/main/deoldify-quant.onnx",
+    hfUrl: "https://huggingface.co/thookham/DeOldify",
+    cacheKey: "deoldify_artistic_quantized_v1",
+    label: "DeOldify Artistic (Quantized)",
+    title: "DeOldify — AI Image Colorization",
+    description: "Vibrant colors for old photos",
+    size: "~61 MB",
+    author: "Jason Antic / Travis Hookham",
+    license: "MIT",
+    inputType: "input_1",
+  },
+  deoldify_artistic_fp16: {
+    url: "https://huggingface.co/thookham/DeOldify/resolve/main/deoldify-art.onnx",
+    hfUrl: "https://huggingface.co/thookham/DeOldify",
+    cacheKey: "deoldify_artistic_fp16_v1",
+    label: "DeOldify Artistic (FP16)",
+    title: "DeOldify — AI Image Colorization",
+    description: "Highest quality artistic colorization",
+    size: "~243 MB",
+    author: "Jason Antic / Travis Hookham",
+    license: "MIT",
+    inputType: "input_1",
+  },
 }
 
 export const UPSCALER_MODELS: Record<
@@ -161,6 +209,7 @@ export const UPSCALER_MODELS: Record<
 export const TOOL_ACCENTS: Record<ActiveTool, string> = {
   remover: "#A855F7",
   upscaler: "#3B82F6",
+  colorizer: "#F59E0B",
 }
 
 export const SEO_CONTENT: Record<
@@ -181,12 +230,23 @@ export const SEO_CONTENT: Record<
   upscaler: {
     heading: "AI Image Upscaler",
     subheading: "Enhance Resolution",
-    body: "Super-resolution AI upscales images up to 4× with TensorFlow.js — zero cloud dependency.",
+    body: "Super-resolution AI upscales images up to 4× with on-device AI — zero cloud dependency.",
     features: [
       "4× Super Resolution",
-      "TensorFlow.js Powered",
+      "WASM Accelerated",
       "Edge-Preserving Detail",
       "Works Offline",
+    ],
+  },
+  colorizer: {
+    heading: "AI Image Colorizer",
+    subheading: "Restore Old Photos",
+    body: "Colorize black and white or sepia photographs instantly with AI. Professional results, locally processed.",
+    features: [
+      "Deep Learning Colorization",
+      "One-Click Restoration",
+      "Private & Secure",
+      "High Resolution Output",
     ],
   },
 }
