@@ -9,19 +9,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
-      url: "https://removerized.pages.dev/?tool=remover",
+      url: "https://removerized.pages.dev/removerized",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: "https://removerized.pages.dev/upscaler",
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
-      url: "https://removerized.pages.dev/?tool=upscaler",
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: "https://removerized.pages.dev/?tool=colorizer",
+      url: "https://removerized.pages.dev/colorizer",
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,

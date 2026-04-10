@@ -9,6 +9,7 @@ import InfiniteViewer from "react-infinite-viewer"
 import { EditorCanvas } from "./components/EditorCanvas"
 import { EditorProcessingDialog } from "./components/EditorProcessingDialog"
 import { EditorToolbar } from "./components/EditorToolbar"
+import { MobileRestriction } from "./components/MobileRestriction"
 import { EditorLeftPanel } from "./components/panels/EditorLeftPanel"
 import { EditorRightPanel } from "./components/panels/EditorRightPanel"
 import {
@@ -27,7 +28,11 @@ import type { ActiveTool, ModelKey, UpscalerModelKey } from "./types"
 const VALID_TOOLS: ActiveTool[] = ["remover", "upscaler", "colorizer"]
 const VALID_MODELS = Object.keys(MODELS) as ModelKey[]
 
-export const Editor = () => {
+interface EditorProps {
+  initialTool?: ActiveTool
+}
+
+export const Editor = ({ initialTool = "remover" }: EditorProps) => {
   const ortRef = useRef<typeof import("onnxruntime-web") | null>(null)
 
   const editorRef = useRef<InfiniteViewer>(null)
@@ -40,7 +45,7 @@ export const Editor = () => {
     useProcessingDialog()
 
   const [showDust, setShowDust] = useState(false)
-  const [activeTool, setActiveTool] = useState<ActiveTool>("remover")
+  const [activeTool, setActiveTool] = useState<ActiveTool>(initialTool)
   const [selectedModel, setSelectedModel] =
     useState<ModelKey>("birefnet_lite_fp16")
   const [upscalerModel, setUpscalerModel] = useState<ModelKey>(
@@ -108,10 +113,14 @@ export const Editor = () => {
   // URL sync helpers
   const pushUrl = useCallback(
     (tool: ActiveTool, model: ModelKey) => {
+      const toolRoute = tool === "remover" ? "/removerized" : `/${tool}`
       const params = new URLSearchParams(searchParams.toString())
-      params.set("tool", tool)
+      params.delete("tool") // We use dedicated routes now
       params.set("model", model)
-      router.replace(`?${params.toString()}`, { scroll: false })
+      const queryString = params.toString()
+      router.replace(`${toolRoute}${queryString ? `?${queryString}` : ""}`, {
+        scroll: false,
+      })
     },
     [router, searchParams]
   )
@@ -478,6 +487,9 @@ export const Editor = () => {
 
       {/* Blocking inference modal */}
       <EditorProcessingDialog dialog={dialog} />
+
+      {/* Mobile restriction overlay */}
+      <MobileRestriction accentColor={accentColor} />
     </div>
   )
 }

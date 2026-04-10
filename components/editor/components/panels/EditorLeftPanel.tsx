@@ -37,7 +37,7 @@ export const EditorLeftPanel = ({
         />
 
         {/* Dynamic SEO content */}
-        <div className="flex flex-col gap-3 flex-shrink-0">
+        <section className="flex flex-col gap-3 flex-shrink-0">
           <p
             className="text-[10px] font-semibold uppercase tracking-[0.15em] transition-colors duration-500"
             style={{ color: accentColor }}
@@ -52,7 +52,7 @@ export const EditorLeftPanel = ({
           <p className="text-[0.8rem] leading-relaxed text-white/40">
             {content.body}
           </p>
-        </div>
+        </section>
 
         {/* Feature list */}
         <ul className="flex flex-col gap-2.5">
