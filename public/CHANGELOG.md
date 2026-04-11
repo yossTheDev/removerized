@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [1.1.0] - Canvas Improvements & Colorizer
+## [1.1.0] - Canvas Improvements & Colorizer & PWA
 
 ### ✨ Added
 
@@ -15,6 +15,10 @@ All notable changes to this project will be documented in this file.
 - Floating version button on canvas that displays changelog dialog
 - Changelog dialog with GitHub link button
 - Dynamic CHANGELOG loading from public folder using fetch
+- Progressive Web App (PWA) support with Serwist and Turbopack
+- PWA install button on canvas (shows when app can be installed)
+- Service worker for offline functionality
+- Web app manifest with proper icon configuration
 
 ### 🔄 Changed
 

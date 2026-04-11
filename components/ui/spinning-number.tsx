@@ -25,14 +25,15 @@ export const SpinningNumber = ({
   useEffect(() => {
     const element = ref.current
     if (element) {
-      const tempElement = document.createElement("span")
-      tempElement.style.fontSize = window.getComputedStyle(element).fontSize
-      tempElement.style.fontFamily = window.getComputedStyle(element).fontFamily
-      tempElement.style.lineHeight = window.getComputedStyle(element).lineHeight
-      tempElement.innerHTML = "dummy"
-      element.appendChild(tempElement)
-      setLineHeight(tempElement.offsetHeight)
-      element.removeChild(tempElement)
+      const tempElement = (globalThis as any).document.createElement("span")
+      tempElement.style.fontSize = (globalThis as any).window.getComputedStyle(element).fontSize
+      tempElement.style.fontFamily = (globalThis as any).window.getComputedStyle(element).fontFamily
+      tempElement.style.lineHeight = (globalThis as any).window.getComputedStyle(element).lineHeight;
+      tempElement.textContent = "dummy";
+      (element as any).appendChild(tempElement)
+      const height = tempElement.offsetHeight
+        (element as any).removeChild(tempElement)
+      setLineHeight(height)
     }
   }, [lineHeight])
 

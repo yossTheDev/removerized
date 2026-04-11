@@ -1,4 +1,6 @@
-/** @type {import('next').Config} */
+import { withSerwist } from "@serwist/turbopack";
+
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ["onnxruntime-web"],
@@ -11,6 +13,6 @@ const nextConfig = {
       },
     ],
   },
-}
+};
 
-export default nextConfig
+export default withSerwist(nextConfig);

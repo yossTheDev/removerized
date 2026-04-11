@@ -72,14 +72,14 @@ export const RemoverTab = ({
             <input
               type="color"
               value={bgColor}
-              onChange={(e) => onBgColorChange(e.target.value)}
+              onChange={(e) => onBgColorChange((e.target as any).value)}
               className="size-9 cursor-pointer rounded-lg border border-white/10 bg-transparent p-0.5"
             />
             <input
               type="text"
               value={bgColor}
               maxLength={7}
-              onChange={(e) => onBgColorChange(e.target.value)}
+              onChange={(e) => onBgColorChange((e.target as any).value)}
               className="flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 font-mono text-xs text-white/80 focus:outline-none focus:border-white/20"
             />
           </div>
@@ -99,9 +99,9 @@ export const RemoverTab = ({
         style={
           hasImage
             ? {
-                background: `linear-gradient(135deg, ${accentColor}, ${accentColor}cc)`,
-                boxShadow: `0 4px 20px ${accentColor}40`,
-              }
+              background: `linear-gradient(135deg, ${accentColor}, ${accentColor}cc)`,
+              boxShadow: `0 4px 20px ${accentColor}40`,
+            }
             : { backgroundColor: "rgba(255,255,255,0.08)" }
         }
       >

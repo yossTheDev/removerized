@@ -21,10 +21,10 @@ type Ort = typeof import("onnxruntime-web")
  * @param imgEl - The source image element (can be any natural size).
  * @returns     - An ort.Tensor with dtype "float32" and shape [1, 3, 1024, 1024].
  */
-export const preprocessImage = (imgEl: HTMLImageElement, ort: Ort) => {
+export const preprocessImage = (imgEl: any, ort: Ort) => {
   const S = INFERENCE_SIZE
 
-  const canvas = document.createElement("canvas")
+  const canvas = (globalThis as any).document.createElement("canvas")
   canvas.width = S
   canvas.height = S
   const ctx = canvas.getContext("2d")!
@@ -77,7 +77,7 @@ export const preprocessImage = (imgEl: HTMLImageElement, ort: Ort) => {
  */
 export const applyMaskAsAlpha = (
   maskTensor: any,
-  imgEl: HTMLImageElement
+  imgEl: any
 ): Promise<Blob> =>
   new Promise((resolve) => {
     const ow = imgEl.naturalWidth
@@ -87,7 +87,7 @@ export const applyMaskAsAlpha = (
     const mW = (maskTensor.dims[3] as number) ?? INFERENCE_SIZE
     const maskData = maskTensor.data as Float32Array
 
-    const origCanvas = document.createElement("canvas")
+    const origCanvas = (globalThis as any).document.createElement("canvas")
     origCanvas.width = ow
     origCanvas.height = oh
     const origCtx = origCanvas.getContext("2d")!
@@ -125,22 +125,22 @@ export const applyMaskAsAlpha = (
       origPx.data[i * 4 + 3] = Math.round(maskValue * 255)
     }
 
-    const outCanvas = document.createElement("canvas")
+    const outCanvas = (globalThis as any).document.createElement("canvas")
     outCanvas.width = ow
     outCanvas.height = oh
     outCanvas.getContext("2d")!.putImageData(origPx, 0, 0)
-    outCanvas.toBlob((blob) => resolve(blob!), "image/png")
+    outCanvas.toBlob((blob: any) => resolve(blob!), "image/png")
   })
 
 /**
  * Prepares a tensor for Image-to-Image models (Upscaler, Colorizer).
  */
 export const preprocessImageToImage = (
-  imgEl: HTMLImageElement,
+  imgEl: any,
   ort: Ort,
   size: number = 512
 ) => {
-  const canvas = document.createElement("canvas")
+  const canvas = (globalThis as any).document.createElement("canvas")
   canvas.width = size
   canvas.height = size
   const ctx = canvas.getContext("2d")!
@@ -168,7 +168,7 @@ export const tensorToImageData = (
   height: number
 ): Promise<Blob> =>
   new Promise((resolve) => {
-    const canvas = document.createElement("canvas")
+    const canvas = (globalThis as any).document.createElement("canvas")
     canvas.width = width
     canvas.height = height
     const ctx = canvas.getContext("2d")!
@@ -191,5 +191,5 @@ export const tensorToImageData = (
     }
 
     ctx.putImageData(imageData, 0, 0)
-    canvas.toBlob((blob) => resolve(blob!), "image/png")
+    canvas.toBlob((blob: any) => resolve(blob!), "image/png")
   })

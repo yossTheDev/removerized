@@ -39,7 +39,7 @@ export const EditorCanvas = ({
       return
     }
 
-    const img = new window.Image()
+    const img = new (globalThis as any).Image()
     img.onload = () => {
       const aspectRatio = img.naturalWidth / img.naturalHeight
       setImageDimensions({
@@ -85,7 +85,7 @@ export const EditorCanvas = ({
     const container = containerRef.current
     if (!container) return
 
-    const handleWheel = (e: WheelEvent) => {
+    const handleWheel = (e: any) => {
       // Check for Ctrl (Windows/Linux) or Cmd (Mac) key
       if (e.ctrlKey || e.metaKey) {
         e.preventDefault()
@@ -99,10 +99,10 @@ export const EditorCanvas = ({
       }
     }
 
-    container.addEventListener("wheel", handleWheel, { passive: false })
+    (container as any).addEventListener("wheel", handleWheel, { passive: false })
 
     return () => {
-      container.removeEventListener("wheel", handleWheel)
+      (container as any).removeEventListener("wheel", handleWheel)
     }
   }, [onZoomIn, onZoomOut])
 

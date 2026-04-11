@@ -11,6 +11,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
+import { SerwistProvider } from "./serwist"
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://removerized.pages.dev"),
@@ -93,7 +94,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <>
       <html lang="en" className="dark" suppressHydrationWarning>
-        <head></head>
+        <head />
         <body
           className={cn(
             "min-h-screen bg-[#050505] font-sans antialiased",
@@ -107,10 +108,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
               defaultTheme="dark"
               forcedTheme="dark"
             >
-              <main className="relative flex h-screen min-h-screen flex-col overflow-hidden bg-[#050505]">
-                <div className="flex-1">{children}</div>
-                <Toaster />
-              </main>
+              <SerwistProvider swUrl="/serwist/sw.js">
+                <main className="relative flex h-screen min-h-screen flex-col overflow-hidden bg-[#050505]">
+                  <div className="flex-1">{children}</div>
+                  <Toaster />
+                </main>
+              </SerwistProvider>
               <TailwindIndicator />
             </ThemeProvider>
           </TooltipProvider>

@@ -10,6 +10,7 @@ import { ChangelogDialog } from "./components/ChangelogDialog"
 import { EditorProcessingDialog } from "./components/EditorProcessingDialog"
 import { EditorToolbar } from "./components/EditorToolbar"
 import { MobileRestriction } from "./components/MobileRestriction"
+import { PWAInstallButton } from "./components/PWAInstallButton"
 import { EditorLeftPanel } from "./components/panels/EditorLeftPanel"
 import { EditorRightPanel } from "./components/panels/EditorRightPanel"
 import {
@@ -365,7 +366,7 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
 
   // Download
   const handleDownload = useCallback(() => {
-    const link = document.createElement("a")
+    const link = (globalThis as any).document.createElement("a")
 
     if (activeTool === "upscaler" && upscaledData) {
       link.href = upscaledData
@@ -443,17 +444,20 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
       {/* ── Center Canvas ── */}
       <main className="relative z-10 flex flex-1 flex-col overflow-hidden">
         {/* Floating version button */}
-        <button
-          onClick={() => setShowChangelog(true)}
-          className="pointer-events-auto absolute top-4 left-4 z-20 rounded-xl border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-medium text-white/50 shadow-2xl backdrop-blur-2xl transition-all hover:bg-white/10 hover:text-white"
-          style={{
-            boxShadow: `0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06), 0 0 40px ${accentColor}10`,
-            color: accentColor,
-          }}
-          title="View changelog"
-        >
-          v{APP_VERSION}
-        </button>
+        <div className="pointer-events-auto absolute top-4 left-4 z-20 flex gap-2">
+          <button
+            onClick={() => setShowChangelog(true)}
+            className="rounded-xl border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-medium text-white/50 shadow-2xl backdrop-blur-2xl transition-all hover:bg-white/10 hover:text-white"
+            style={{
+              boxShadow: `0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06), 0 0 40px ${accentColor}10`,
+              color: accentColor,
+            }}
+            title="View changelog"
+          >
+            v{APP_VERSION}
+          </button>
+          <PWAInstallButton accentColor={accentColor} />
+        </div>
 
         <EditorCanvas
           imageData={queue.imageData}

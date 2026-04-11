@@ -19,8 +19,8 @@ export default function AdBanner(): JSX.Element {
   }
   useEffect(() => {
     if (banner.current && !banner.current.firstChild) {
-      const conf = document.createElement("script")
-      const script = document.createElement("script")
+      const conf = (globalThis as any).document.createElement("script")
+      const script = (globalThis as any).document.createElement("script")
       script.type = "text/javascript"
       script.src = `//www.highperformanceformat.com/${atOptions.key}/invoke.js`
       conf.innerHTML = `atOptions = ${JSON.stringify(atOptions)}`

@@ -11,11 +11,11 @@ export const ThemeToggleSheet: React.FC = () => {
 
   useEffect(() => {
     if (theme === "dark") {
-      document
+      (globalThis as any).document
         .querySelector('meta[name="theme-color"]')
         ?.setAttribute("content", "#0a0a0a")
     } else {
-      document
+      (globalThis as any).document
         .querySelector('meta[name="theme-color"]')
         ?.setAttribute("content", "white")
     }

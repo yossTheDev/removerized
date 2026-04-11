@@ -17,7 +17,7 @@
  */
 export const loadImage = (src: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
-    const img = new window.Image()
+    const img = new (globalThis as any).Image()
     img.crossOrigin = "anonymous"
     img.onload = () => resolve(img)
     img.onerror = reject
@@ -63,9 +63,9 @@ export const base64ToBlob = (base64: string): Blob => {
  */
 export const compositeOnColor = (src: string, color: string): Promise<string> =>
   new Promise((resolve) => {
-    const img = new window.Image()
+    const img = new (globalThis as any).Image()
     img.onload = () => {
-      const canvas = document.createElement("canvas")
+      const canvas = (globalThis as any).document.createElement("canvas")
       canvas.width = img.width
       canvas.height = img.height
       const ctx = canvas.getContext("2d")!

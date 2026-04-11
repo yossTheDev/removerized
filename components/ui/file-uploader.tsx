@@ -134,7 +134,7 @@ export const FileUploader = forwardRef<
           movePrev()
         } else if (e.key === "Enter" || e.key === "Space") {
           if (activeIndex === -1) {
-            dropzoneState.inputRef.current?.click()
+            (dropzoneState.inputRef.current as any)?.click()
           }
         } else if (e.key === "Delete" || e.key === "Backspace") {
           if (activeIndex !== -1) {
@@ -326,20 +326,18 @@ export const FileInput = forwardRef<
     <div
       ref={ref}
       {...props}
-      className={`relative w-full ${
-        isLOF ? "cursor-not-allowed opacity-50 " : "cursor-pointer "
-      }`}
+      className={`relative w-full ${isLOF ? "cursor-not-allowed opacity-50 " : "cursor-pointer "
+        }`}
     >
       <div
         className={cn(
           `w-full rounded-lg duration-300 ease-in-out
-         ${
-           dropzoneState.isDragAccept
-             ? "border-green-500"
-             : dropzoneState.isDragReject || isFileTooBig
-             ? "border-red-500"
-             : "border-gray-300"
-         }`,
+         ${dropzoneState.isDragAccept
+            ? "border-green-500"
+            : dropzoneState.isDragReject || isFileTooBig
+              ? "border-red-500"
+              : "border-gray-300"
+          }`,
           className
         )}
         {...rootProps}
