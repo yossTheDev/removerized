@@ -1,5 +1,9 @@
 // Vercel OG Image Implementation - COMMENTED OUT
 // Uncomment to reactivate
+
+// Empty export to make this a valid TypeScript module
+export { }
+
 /*
 import { ImageResponse } from "next/og"
 import { NextRequest } from "next/server"
