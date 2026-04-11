@@ -3,6 +3,7 @@ import { useCallback, useRef, useState } from "react"
 import { MODELS } from "../constants"
 import { checkAndDownloadModel } from "../lib/idb"
 import {
+  applyColorToLuminance,
   applyMaskAsAlpha,
   preprocessImage,
   preprocessImageToImage,
@@ -139,11 +140,20 @@ export const useOnnxSession = (
 
       const session = await getOrCreateSession(modelKey, onUpdate)
 
+      const isColorizer = modelKey.includes("deoldify")
+      const isUpscaler = modelKey.includes("swin2sr") || modelKey.includes("realesrgan")
+
       onUpdate("Pre-processing…", 0)
+      // Note: The current DeOldify ONNX models have a fixed input size of 256x256.
+      const size = isColorizer ? 256 : (options.size || 512)
       const inputTensor = preprocessImageToImage(
         imgEl,
         ortRef.current,
-        options.size
+        size,
+        {
+          keepAspectRatio: false, // Model expects square 256x256
+          grayscale: isColorizer,
+        }
       )
 
       onUpdate("Running inference…", 0)
@@ -153,8 +163,11 @@ export const useOnnxSession = (
       onUpdate("Post-processing…", 0)
       const outputTensor = results[session.outputNames[0]]
 
+      if (isColorizer) {
+        return applyColorToLuminance(outputTensor, imgEl)
+      }
+
       // For upscaler, output size is usually input * 4
-      const isUpscaler = modelKey.includes("realesrgan")
       const outW = (outputTensor.dims[3] as number) || (options.size || 512) * (isUpscaler ? 4 : 1)
       const outH = (outputTensor.dims[2] as number) || (options.size || 512) * (isUpscaler ? 4 : 1)
 

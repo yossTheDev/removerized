@@ -170,7 +170,7 @@ export const MODELS: Record<
     size: "~61 MB",
     author: "Jason Antic / Travis Hookham",
     license: "MIT",
-    inputType: "input_1",
+    inputType: "input",
   },
   deoldify_artistic_fp16: {
     tool: "colorizer",
@@ -183,7 +183,7 @@ export const MODELS: Record<
     size: "~243 MB",
     author: "Jason Antic / Travis Hookham",
     license: "MIT",
-    inputType: "input_1",
+    inputType: "input",
   },
 }
 

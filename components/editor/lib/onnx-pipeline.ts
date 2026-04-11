@@ -1,5 +1,3 @@
-import { Tensor } from "onnxruntime-web"
-
 import { INFERENCE_SIZE, MODELS } from "../constants"
 import type { ModelKey } from "../types"
 
@@ -138,25 +136,56 @@ export const applyMaskAsAlpha = (
 export const preprocessImageToImage = (
   imgEl: any,
   ort: Ort,
-  size: number = 512
+  size: number = 512,
+  options: { keepAspectRatio?: boolean; grayscale?: boolean } = {}
 ) => {
-  const canvas = (globalThis as any).document.createElement("canvas")
-  canvas.width = size
-  canvas.height = size
-  const ctx = canvas.getContext("2d")!
+  const { keepAspectRatio = false, grayscale = false } = options
 
-  ctx.drawImage(imgEl, 0, 0, size, size)
+  let width = size
+  let height = size
 
-  const { data } = ctx.getImageData(0, 0, size, size)
-  const float32 = new Float32Array(3 * size * size)
+  if (keepAspectRatio) {
+    const originalWidth = imgEl.naturalWidth
+    const originalHeight = imgEl.naturalHeight
 
-  for (let i = 0; i < size * size; i++) {
-    float32[i] = data[i * 4] / 255
-    float32[size * size + i] = data[i * 4 + 1] / 255
-    float32[size * size * 2 + i] = data[i * 4 + 2] / 255
+    if (originalWidth > originalHeight) {
+      width = size
+      height = Math.round((originalHeight * size) / originalWidth / 32) * 32
+    } else {
+      height = size
+      width = Math.round((originalWidth * size) / originalHeight / 32) * 32
+    }
+    width = Math.max(width, 32)
+    height = Math.max(height, 32)
   }
 
-  return new ort.Tensor("float32", float32, [1, 3, size, size])
+  const canvas = (globalThis as any).document.createElement("canvas")
+  canvas.width = width
+  canvas.height = height
+  const ctx = canvas.getContext("2d")!
+
+  ctx.drawImage(imgEl, 0, 0, width, height)
+
+  const { data } = ctx.getImageData(0, 0, width, height)
+  const float32 = new Float32Array(3 * width * height)
+
+  for (let i = 0; i < width * height; i++) {
+    let r = data[i * 4]
+    let g = data[i * 4 + 1]
+    let b = data[i * 4 + 2]
+
+    if (grayscale) {
+      // Standard luminance weights: 0.299R + 0.587G + 0.114B
+      const gray = 0.299 * r + 0.587 * g + 0.114 * b
+      r = g = b = gray
+    }
+
+    float32[i] = r / 255
+    float32[width * height + i] = g / 255
+    float32[width * height * 2 + i] = b / 255
+  }
+
+  return new ort.Tensor("float32", float32, [1, 3, height, width])
 }
 
 /**
@@ -192,4 +221,59 @@ export const tensorToImageData = (
 
     ctx.putImageData(imageData, 0, 0)
     canvas.toBlob((blob: any) => resolve(blob!), "image/png")
+  })
+
+/**
+ * High-detail post-processing for colorizers.
+ * Resizes the colorized tensor back to original size and blends it with the
+ * original image's luminance using the 'color' composite operation.
+ */
+export const applyColorToLuminance = (
+  tensor: any,
+  imgEl: any
+): Promise<Blob> =>
+  new Promise((resolve) => {
+    const ow = imgEl.naturalWidth
+    const oh = imgEl.naturalHeight
+
+    const tH = Number(tensor.dims[2]) || oh
+    const tW = Number(tensor.dims[3]) || ow
+
+    // 1. Create colorized canvas at model resolution
+    const colorCanvas = (globalThis as any).document.createElement("canvas")
+    colorCanvas.width = tW
+    colorCanvas.height = tH
+    const colorCtx = colorCanvas.getContext("2d")!
+    const colorImageData = colorCtx.createImageData(tW, tH)
+    const data = tensor.data as Float32Array
+    const size = tW * tH
+
+    for (let i = 0; i < size; i++) {
+      colorImageData.data[i * 4] = Math.max(0, Math.min(255, data[i] * 255))
+      colorImageData.data[i * 4 + 1] = Math.max(
+        0,
+        Math.min(255, data[size + i] * 255)
+      )
+      colorImageData.data[i * 4 + 2] = Math.max(
+        0,
+        Math.min(255, data[size * 2 + i] * 255)
+      )
+      colorImageData.data[i * 4 + 3] = 255
+    }
+    colorCtx.putImageData(colorImageData, 0, 0)
+
+    // 2. Composite onto original image
+    const outCanvas = (globalThis as any).document.createElement("canvas")
+    outCanvas.width = ow
+    outCanvas.height = oh
+    const outCtx = outCanvas.getContext("2d")!
+
+    // Draw original image (Luminance source)
+    outCtx.drawImage(imgEl, 0, 0)
+
+    // Blend colorized version (Color source)
+    outCtx.globalCompositeOperation = "color"
+    outCtx.drawImage(colorCanvas, 0, 0, ow, oh)
+
+    outCanvas.toBlob((blob: any) => resolve(blob!), "image/png")
   })
