@@ -1,3 +1,6 @@
+// Vercel OG Image Implementation - COMMENTED OUT
+// Uncomment to reactivate
+/*
 import { ImageResponse } from "next/og"
 import { NextRequest } from "next/server"
 
@@ -160,3 +163,4 @@ export async function GET(req: NextRequest) {
     })
   }
 }
+*/
