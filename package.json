@@ -49,6 +49,7 @@
     "react-dropzone": "^14.2.3",
     "react-dust-effect": "^0.0.7",
     "react-infinite-viewer": "^0.28.1",
+    "react-markdown": "^10.1.0",
     "sharp": "^0.32.6",
     "simple-background-remover": "^1.0.5",
     "sonner": "^1.4.41",

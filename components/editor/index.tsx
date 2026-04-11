@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { sendGAEvent } from "@next/third-parties/google"
 
 import { EditorCanvas } from "./components/EditorCanvas"
+import { ChangelogDialog } from "./components/ChangelogDialog"
 import { EditorProcessingDialog } from "./components/EditorProcessingDialog"
 import { EditorToolbar } from "./components/EditorToolbar"
 import { MobileRestriction } from "./components/MobileRestriction"
@@ -26,6 +27,7 @@ import type { ActiveTool, ModelKey, UpscalerModelKey } from "./types"
 
 const VALID_TOOLS: ActiveTool[] = ["remover", "upscaler", "colorizer"]
 const VALID_MODELS = Object.keys(MODELS) as ModelKey[]
+const APP_VERSION = "1.1.0"
 
 interface EditorProps {
   initialTool?: ActiveTool
@@ -44,6 +46,7 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
 
   const [showDust, setShowDust] = useState(false)
   const [zoom, setZoom] = useState(1)
+  const [showChangelog, setShowChangelog] = useState(false)
   const [activeTool, setActiveTool] = useState<ActiveTool>(initialTool)
   const [selectedModel, setSelectedModel] =
     useState<ModelKey>("birefnet_lite_fp16")
@@ -439,6 +442,19 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
 
       {/* ── Center Canvas ── */}
       <main className="relative z-10 flex flex-1 flex-col overflow-hidden">
+        {/* Floating version button */}
+        <button
+          onClick={() => setShowChangelog(true)}
+          className="pointer-events-auto absolute top-4 left-4 z-20 rounded-xl border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-medium text-white/50 shadow-2xl backdrop-blur-2xl transition-all hover:bg-white/10 hover:text-white"
+          style={{
+            boxShadow: `0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06), 0 0 40px ${accentColor}10`,
+            color: accentColor,
+          }}
+          title="View changelog"
+        >
+          v{APP_VERSION}
+        </button>
+
         <EditorCanvas
           imageData={queue.imageData}
           resultData={queue.resultData}
@@ -504,6 +520,14 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
 
       {/* Blocking inference modal */}
       <EditorProcessingDialog dialog={dialog} />
+
+      {/* Changelog dialog */}
+      <ChangelogDialog
+        open={showChangelog}
+        onOpenChange={setShowChangelog}
+        version={APP_VERSION}
+        accentColor={accentColor}
+      />
 
       {/* Mobile restriction overlay */}
       <MobileRestriction accentColor={accentColor} />
