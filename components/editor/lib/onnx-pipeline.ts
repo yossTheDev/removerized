@@ -1,5 +1,3 @@
-import { Tensor } from "onnxruntime-web"
-
 import { INFERENCE_SIZE, MODELS } from "../constants"
 import type { ModelKey } from "../types"
 
@@ -231,8 +229,8 @@ export const applyColorToLuminance = (
     const ow = imgEl.naturalWidth
     const oh = imgEl.naturalHeight
 
-    const tH = tensor.dims[2]
-    const tW = tensor.dims[3]
+    const tH = Number(tensor.dims[2])
+    const tW = Number(tensor.dims[3])
 
     // 1. Create colorized canvas at model resolution
     const colorCanvas = (globalThis as any).document.createElement("canvas")
