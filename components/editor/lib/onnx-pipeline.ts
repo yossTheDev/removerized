@@ -164,18 +164,25 @@ export const preprocessImageToImage = (
   canvas.height = height
   const ctx = canvas.getContext("2d")!
 
-  if (grayscale) {
-    ctx.filter = "grayscale(100%)"
-  }
   ctx.drawImage(imgEl, 0, 0, width, height)
 
   const { data } = ctx.getImageData(0, 0, width, height)
   const float32 = new Float32Array(3 * width * height)
 
   for (let i = 0; i < width * height; i++) {
-    float32[i] = data[i * 4] / 255
-    float32[width * height + i] = data[i * 4 + 1] / 255
-    float32[width * height * 2 + i] = data[i * 4 + 2] / 255
+    let r = data[i * 4]
+    let g = data[i * 4 + 1]
+    let b = data[i * 4 + 2]
+
+    if (grayscale) {
+      // Standard luminance weights: 0.299R + 0.587G + 0.114B
+      const gray = 0.299 * r + 0.587 * g + 0.114 * b
+      r = g = b = gray
+    }
+
+    float32[i] = r / 255
+    float32[width * height + i] = g / 255
+    float32[width * height * 2 + i] = b / 255
   }
 
   return new ort.Tensor("float32", float32, [1, 3, height, width])
@@ -229,8 +236,8 @@ export const applyColorToLuminance = (
     const ow = imgEl.naturalWidth
     const oh = imgEl.naturalHeight
 
-    const tH = Number(tensor.dims[2])
-    const tW = Number(tensor.dims[3])
+    const tH = Number(tensor.dims[2]) || oh
+    const tW = Number(tensor.dims[3]) || ow
 
     // 1. Create colorized canvas at model resolution
     const colorCanvas = (globalThis as any).document.createElement("canvas")
