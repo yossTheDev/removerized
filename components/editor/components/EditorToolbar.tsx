@@ -1,38 +1,30 @@
 import { Download, LoaderIcon, ScanEye, ZoomIn, ZoomOut } from "lucide-react"
-import InfiniteViewer from "react-infinite-viewer"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 
 interface EditorToolbarProps {
-  editorRef: React.RefObject<InfiniteViewer | null>
   canDownload: boolean
   onProcess: () => void
   onDownload: () => void
   accentColor: string
+  onZoomIn: () => void
+  onZoomOut: () => void
+  onZoomReset: () => void
+  zoom: number
 }
 
 export const EditorToolbar = ({
-  editorRef,
   canDownload,
   onProcess,
   onDownload,
   accentColor,
+  onZoomIn,
+  onZoomOut,
+  onZoomReset,
+  zoom,
 }: EditorToolbarProps) => {
-  const handleZoomIn = () => {
-    editorRef.current?.setZoom(editorRef.current.getZoom() + 0.2)
-  }
-
-  const handleZoomOut = () => {
-    editorRef.current?.setZoom(editorRef.current.getZoom() - 0.2)
-  }
-
-  const handleZoomReset = () => {
-    editorRef.current?.setZoom(1)
-    editorRef.current?.scrollCenter()
-  }
-
   return (
     <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-center pb-5">
       <div
@@ -78,9 +70,11 @@ export const EditorToolbar = ({
           <Download className="size-4" />
         </Button>
 
+        <div className="mx-1.5 h-4 w-px bg-white/10" />
+
         {/* Zoom in */}
         <Button
-          onClick={handleZoomIn}
+          onClick={onZoomIn}
           size="icon"
           variant="ghost"
           title="Zoom in"
@@ -89,9 +83,14 @@ export const EditorToolbar = ({
           <ZoomIn className="size-4" />
         </Button>
 
+        {/* Zoom level indicator */}
+        <span className="w-12 text-center text-xs text-white/50">
+          {Math.round(zoom * 100)}%
+        </span>
+
         {/* Zoom out */}
         <Button
-          onClick={handleZoomOut}
+          onClick={onZoomOut}
           size="icon"
           variant="ghost"
           title="Zoom out"
@@ -100,9 +99,9 @@ export const EditorToolbar = ({
           <ZoomOut className="size-4" />
         </Button>
 
-        {/* Reset zoom + recenter */}
+        {/* Reset zoom */}
         <Button
-          onClick={handleZoomReset}
+          onClick={onZoomReset}
           size="icon"
           variant="ghost"
           title="Reset zoom"

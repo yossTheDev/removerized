@@ -4,7 +4,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { sendGAEvent } from "@next/third-parties/google"
-import InfiniteViewer from "react-infinite-viewer"
 
 import { EditorCanvas } from "./components/EditorCanvas"
 import { EditorProcessingDialog } from "./components/EditorProcessingDialog"
@@ -35,7 +34,6 @@ interface EditorProps {
 export const Editor = ({ initialTool = "remover" }: EditorProps) => {
   const ortRef = useRef<typeof import("onnxruntime-web") | null>(null)
 
-  const editorRef = useRef<InfiniteViewer>(null)
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -45,6 +43,7 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
     useProcessingDialog()
 
   const [showDust, setShowDust] = useState(false)
+  const [zoom, setZoom] = useState(1)
   const [activeTool, setActiveTool] = useState<ActiveTool>(initialTool)
   const [selectedModel, setSelectedModel] =
     useState<ModelKey>("birefnet_lite_fp16")
@@ -103,8 +102,8 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
       activeTool === "remover"
         ? selectedModel
         : activeTool === "upscaler"
-        ? upscalerModel
-        : colorizerModel
+          ? upscalerModel
+          : colorizerModel
     isModelCached(currentModel)
       .then((cached) => onnx.setModelStatus(cached ? "ready" : "idle"))
       .catch(() => onnx.setModelStatus("idle"))
@@ -132,8 +131,8 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
         tool === "remover"
           ? selectedModel
           : tool === "upscaler"
-          ? upscalerModel
-          : colorizerModel
+            ? upscalerModel
+            : colorizerModel
       pushUrl(tool, model)
     },
     [selectedModel, upscalerModel, colorizerModel, pushUrl]
@@ -156,6 +155,19 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
   const triggerDust = useCallback(() => {
     setShowDust(true)
     setTimeout(() => setShowDust(false), 100)
+  }, [])
+
+  // Zoom handlers
+  const handleZoomIn = useCallback(() => {
+    setZoom((prev) => Math.min(prev + 0.2, 3))
+  }, [])
+
+  const handleZoomOut = useCallback(() => {
+    setZoom((prev) => Math.max(prev - 0.2, 0.5))
+  }, [])
+
+  const handleZoomReset = useCallback(() => {
+    setZoom(1)
   }, [])
 
   // Background composite
@@ -379,8 +391,8 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
     activeTool === "upscaler"
       ? !!upscaledData
       : activeTool === "colorizer"
-      ? !!colorizedData
-      : !!queue.resultsData.find((r) => r.name === queue.selectedImage)
+        ? !!colorizedData
+        : !!queue.resultsData.find((r) => r.name === queue.selectedImage)
 
   const accentColor = TOOL_ACCENTS[activeTool]
   const bgImage = queue.imageData || queue.resultData
@@ -428,17 +440,22 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
       {/* ── Center Canvas ── */}
       <main className="relative z-10 flex flex-1 flex-col overflow-hidden">
         <EditorCanvas
-          editorRef={editorRef}
           imageData={queue.imageData}
           resultData={queue.resultData}
           showDust={showDust}
+          zoom={zoom}
+          onZoomIn={handleZoomIn}
+          onZoomOut={handleZoomOut}
         />
         <EditorToolbar
-          editorRef={editorRef}
           canDownload={canDownload}
           onProcess={process}
           onDownload={handleDownload}
           accentColor={accentColor}
+          onZoomIn={handleZoomIn}
+          onZoomOut={handleZoomOut}
+          onZoomReset={handleZoomReset}
+          zoom={zoom}
         />
       </main>
 
