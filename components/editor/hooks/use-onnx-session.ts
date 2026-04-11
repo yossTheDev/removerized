@@ -144,12 +144,14 @@ export const useOnnxSession = (
       const isUpscaler = modelKey.includes("swin2sr") || modelKey.includes("realesrgan")
 
       onUpdate("Pre-processing…", 0)
+      // Note: The current DeOldify ONNX models have a fixed input size of 256x256.
+      const size = isColorizer ? 256 : (options.size || 512)
       const inputTensor = preprocessImageToImage(
         imgEl,
         ortRef.current,
-        options.size || 512,
+        size,
         {
-          keepAspectRatio: isColorizer,
+          keepAspectRatio: false, // Model expects square 256x256
           grayscale: isColorizer,
         }
       )
