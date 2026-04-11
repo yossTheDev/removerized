@@ -90,7 +90,7 @@ export const ModelSelectorDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="border border-white/10 bg-[#0a0a0a]/95 text-white shadow-2xl backdrop-blur-2xl sm:max-w-md max-h-[90vh] overflow-y-auto">
+      <DialogContent className="border flex flex-col overflow-x-hidden border-white/10 bg-[#0a0a0a]/95 text-white shadow-2xl backdrop-blur-2xl sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-base font-semibold text-white">
             Select AI Model
@@ -115,15 +115,15 @@ export const ModelSelectorDialog = ({
                   className={cn(
                     "group relative flex items-start gap-3.5 overflow-hidden rounded-xl border p-4 text-left transition-all duration-200",
                     !isSelected &&
-                      "border-white/[0.06] bg-white/[0.03] hover:border-white/12 hover:bg-white/[0.06]"
+                    "border-white/[0.06] bg-white/[0.03] hover:border-white/12 hover:bg-white/[0.06]"
                   )}
                   style={
                     isSelected
                       ? {
-                          borderColor: `${accentColor}50`,
-                          backgroundColor: `${accentColor}10`,
-                          boxShadow: `0 0 20px ${accentColor}15, inset 0 0 20px ${accentColor}05`,
-                        }
+                        borderColor: `${accentColor}50`,
+                        backgroundColor: `${accentColor}10`,
+                        boxShadow: `0 0 20px ${accentColor}15, inset 0 0 20px ${accentColor}05`,
+                      }
                       : undefined
                   }
                 >
@@ -141,13 +141,13 @@ export const ModelSelectorDialog = ({
                     style={
                       isSelected
                         ? {
-                            backgroundColor: `${accentColor}25`,
-                            color: accentColor,
-                          }
+                          backgroundColor: `${accentColor}25`,
+                          color: accentColor,
+                        }
                         : {
-                            backgroundColor: "rgba(255,255,255,0.06)",
-                            color: "rgba(255,255,255,0.35)",
-                          }
+                          backgroundColor: "rgba(255,255,255,0.06)",
+                          color: "rgba(255,255,255,0.35)",
+                        }
                     }
                   >
                     <Icon className="size-4" />
@@ -202,7 +202,7 @@ export const ModelSelectorDialog = ({
         <div className="h-px w-full bg-white/[0.06]" />
 
         {/* Dynamic Model Info Section */}
-        <div className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] px-3.5 py-3">
+        <div className="flex max-w-full items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] px-3.5 py-3">
           <div className="flex flex-col gap-1 min-w-0">
             <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-white/30">
               Selected Model Info

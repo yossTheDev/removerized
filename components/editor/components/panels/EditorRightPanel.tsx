@@ -121,16 +121,16 @@ export const EditorRightPanel = ({
               style={
                 activeTool === key
                   ? {
-                      backgroundColor: `${accentColor}18`,
-                      borderColor: `${accentColor}45`,
-                      color: "#fff",
-                      boxShadow: `0 0 14px ${accentColor}18`,
-                    }
+                    backgroundColor: `${accentColor}18`,
+                    borderColor: `${accentColor}45`,
+                    color: "#fff",
+                    boxShadow: `0 0 14px ${accentColor}18`,
+                  }
                   : {
-                      backgroundColor: "transparent",
-                      borderColor: "transparent",
-                      color: "rgba(255,255,255,0.35)",
-                    }
+                    backgroundColor: "transparent",
+                    borderColor: "transparent",
+                    color: "rgba(255,255,255,0.35)",
+                  }
               }
             >
               <Icon className="size-3.5" />
@@ -147,8 +147,8 @@ export const EditorRightPanel = ({
               activeTool === "remover"
                 ? selectedModel
                 : activeTool === "upscaler"
-                ? upscalerModel
-                : colorizerModel
+                  ? upscalerModel
+                  : colorizerModel
             const currentModel = MODELS[currentModelKey]
 
             return (
@@ -251,8 +251,8 @@ export const EditorRightPanel = ({
           activeTool === "remover"
             ? selectedModel
             : activeTool === "upscaler"
-            ? upscalerModel
-            : colorizerModel
+              ? upscalerModel
+              : colorizerModel
         }
         modelStatus={modelStatus}
         downloadProgress={downloadProgress}

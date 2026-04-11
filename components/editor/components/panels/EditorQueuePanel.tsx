@@ -83,15 +83,15 @@ export const EditorQueuePanel = ({
               <div
                 key={file.name + index}
                 className={cn(
-                  "group relative h-24 cursor-pointer overflow-hidden rounded-xl border-2 transition-all duration-200",
+                  "group relative h-24 min-h-24 cursor-pointer overflow-hidden rounded-xl border-2 transition-all duration-200",
                   isSelected ? "border-2 shadow-lg" : "border-transparent"
                 )}
                 style={
                   isSelected
                     ? {
-                        borderColor: accentColor,
-                        boxShadow: `0 0 16px ${accentColor}30`,
-                      }
+                      borderColor: accentColor,
+                      boxShadow: `0 0 16px ${accentColor}30`,
+                    }
                     : { borderColor: "rgba(255,255,255,0.06)" }
                 }
               >

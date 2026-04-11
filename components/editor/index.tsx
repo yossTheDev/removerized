@@ -460,7 +460,7 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
       </main>
 
       {/* ── Right Controls + Queue Sidebar ── */}
-      <aside className="relative z-10 w-[19rem] shrink-0">
+      <aside className="relative z-10 w-[24rem] shrink-0">
         <EditorRightPanel
           activeTool={activeTool}
           onToolChange={handleToolChange}
