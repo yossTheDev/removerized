@@ -1,19 +1,11 @@
-▲ Next.js 16.2.0 (Turbopack)
-- Local:         http://localhost:3000
-- Network:       http://192.168.0.2:3000
-✓ Ready in 1553ms
-Attention: Next.js now collects completely anonymous telemetry regarding usage.
-This information is used to shape Next.js' roadmap and prioritize features.
-You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
-https://nextjs.org/telemetry
+⚠ Port 3000 is in use by an unknown process, using available port 3001 instead.
+▲ Next.js 16.2.0 (webpack)
+- Local:         http://localhost:3001
+- Network:       http://192.168.0.2:3001
+✓ Ready in 1602ms
 
-Error: Turbopack build failed with 1 errors:
-./app
-Error: Next.js inferred your workspace root, but it may not be correct.
-    We couldn't find the Next.js package (next/package.json) from the project directory: /app/app
-     To fix this, set turbopack.root in your Next.js config, or ensure the Next.js package is resolvable from this directory.
-    Note: For security and performance reasons, files outside of the project directory will not be compiled.
-    See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
-
-    at ignore-listed frames
-[?25h
+○ Compiling / ...
+ GET / 200 in 16.6s (next.js: 16.0s, application-code: 609ms)
+[browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+ GET /?tool=upscaler&model=birefnet_lite_fp16 200 in 48ms (next.js: 10ms, application-code: 38ms)
