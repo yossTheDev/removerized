@@ -1,21 +1,23 @@
 import { MetadataRoute } from "next"
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://getremoverized.yoss.pro"
+
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: "https://removerized.pages.dev/removerized",
+      url: `${siteUrl}/removerized`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 1.0,
     },
     {
-      url: "https://removerized.pages.dev/upscaler",
+      url: `${siteUrl}/upscaler`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
-      url: "https://removerized.pages.dev/colorizer",
+      url: `${siteUrl}/colorizer`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,

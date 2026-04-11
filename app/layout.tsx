@@ -13,7 +13,7 @@ import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://removerized.pages.dev"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://removerized.pages.dev"),
   title: {
     default: `${siteConfig.name} — AI BG Remover, Upscaler & Colorizer`,
     template: `%s — ${siteConfig.name}`,
@@ -41,14 +41,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://removerized.pages.dev",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://removerized.pages.dev",
     siteName: siteConfig.name,
     title: `${siteConfig.name} — All-in-One AI Image Lab`,
     description:
       "Instant, private, and free AI tools: Background Removal, 4× Upscaling, and Photo Colorization. All running in your browser.",
     images: [
       {
-        url: "https://removerized.pages.dev/og.png",
+        url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://removerized.pages.dev"}/og.png`,
         width: 1200,
         height: 630,
         alt: "Removerizer AI Image Tools",
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     title: `${siteConfig.name} — Private AI Image Tools`,
     description:
       "Remove backgrounds, upscale, and colorize images locally with AI. No data leaves your device.",
-    images: ["https://removerized.pages.dev/og.png"],
+    images: [`${process.env.NEXT_PUBLIC_SITE_URL || "https://removerized.pages.dev"}/og.png`],
     creator: "@yossthedev",
   },
   icons: { icon: "/icon.ico" },
