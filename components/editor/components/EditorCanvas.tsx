@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import { ReactCompareSlider } from "react-compare-slider"
 // import DustEffect from "react-dust-effect"
@@ -26,6 +26,60 @@ export const EditorCanvas = ({
   onZoomOut,
 }: EditorCanvasProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
+  const [imageDimensions, setImageDimensions] = useState<{
+    width: number
+    height: number
+    aspectRatio: number
+  } | null>(null)
+
+  // Load image to get natural dimensions
+  useEffect(() => {
+    if (!imageData) {
+      setImageDimensions(null)
+      return
+    }
+
+    const img = new window.Image()
+    img.onload = () => {
+      const aspectRatio = img.naturalWidth / img.naturalHeight
+      setImageDimensions({
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+        aspectRatio,
+      })
+    }
+    img.onerror = () => {
+      console.error("Failed to load image dimensions")
+      setImageDimensions(null)
+    }
+    img.src = imageData
+  }, [imageData])
+
+  // Calculate display dimensions with max limits
+  const displayDimensions = (() => {
+    if (!imageDimensions) return null
+
+    const MAX_WIDTH = 800
+    const MAX_HEIGHT = 600
+
+    let displayWidth = imageDimensions.width
+    let displayHeight = imageDimensions.height
+
+    // Scale down if image is too large
+    if (displayWidth > MAX_WIDTH) {
+      const scale = MAX_WIDTH / displayWidth
+      displayWidth = MAX_WIDTH
+      displayHeight = displayHeight * scale
+    }
+
+    if (displayHeight > MAX_HEIGHT) {
+      const scale = MAX_HEIGHT / displayHeight
+      displayHeight = MAX_HEIGHT
+      displayWidth = displayWidth * scale
+    }
+
+    return { width: displayWidth, height: displayHeight }
+  })()
 
   useEffect(() => {
     const container = containerRef.current
@@ -60,15 +114,26 @@ export const EditorCanvas = ({
       >
         <div className="flex size-full items-center justify-center gap-16 p-4">
           <ReactCompareSlider
-            className="aspect-square max-w-xl rounded-xl lg:aspect-video"
-            style={{ width: "100%", height: "auto" }}
+            className="rounded-xl transition-all duration-300 ease-in-out"
+            style={{
+              width: displayDimensions?.width || "100%",
+              height: displayDimensions?.height || "auto",
+              maxWidth: "100%",
+              maxHeight: "100%",
+            }}
             aria-label="Image comparison slider"
             itemOne={
               imageData ? (
                 <Image
-                  width={300}
-                  height={150}
-                  className="flex max-h-80 w-full rounded-xl bg-white"
+                  width={displayDimensions?.width || 300}
+                  height={displayDimensions?.height || 150}
+                  className="rounded-xl bg-white"
+                  style={{
+                    width: displayDimensions?.width || "100%",
+                    height: displayDimensions?.height || "auto",
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                  }}
                   src={imageData}
                   alt="Original image"
                 />
@@ -90,9 +155,15 @@ export const EditorCanvas = ({
                   aria-label="Processed image result"
                 >
                   <Image
-                    width={300}
-                    height={150}
-                    className="grid-pattern flex max-h-80 w-full rounded-xl"
+                    width={displayDimensions?.width || 300}
+                    height={displayDimensions?.height || 150}
+                    className="grid-pattern rounded-xl"
+                    style={{
+                      width: displayDimensions?.width || "100%",
+                      height: displayDimensions?.height || "auto",
+                      maxWidth: "100%",
+                      maxHeight: "100%",
+                    }}
                     src={resultData}
                     alt="Processed image"
                   />

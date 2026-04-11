@@ -12,6 +12,9 @@ All notable changes to this project will be documented in this file.
 - Custom zoom controls for canvas (zoom in, zoom out, reset)
 - Zoom level indicator showing current zoom percentage
 - Keyboard shortcut support: Ctrl/Cmd + mouse wheel for zoom
+- Floating version button on canvas that displays changelog dialog
+- Changelog dialog with GitHub link button
+- Dynamic CHANGELOG loading from public folder using fetch
 
 ### 🔄 Changed
 
@@ -19,12 +22,16 @@ All notable changes to this project will be documented in this file.
 - Implemented custom canvas zoom using CSS transforms
 - Canvas now centered with flexbox instead of InfiniteViewer
 - Zoom range limited between 0.5x and 3x with 0.2x increments
+- Canvas now adapts to image aspect ratio instead of forcing rectangular shape
+- Canvas dimensions limited to max 800x600 for very large images
 
 ### 🧠 Improved
 
 - Cross-platform zoom support (Ctrl for Windows/Linux, Cmd for Mac)
 - Smooth zoom transitions with CSS animations
 - Better canvas performance without external viewer library
+- Smooth transitions for canvas dimension changes
+- React-markdown configured with custom components for better changelog rendering
 
 ---
 
