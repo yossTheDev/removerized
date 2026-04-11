@@ -3,11 +3,11 @@ import { useCallback, useRef, useState } from "react"
 import { MODELS } from "../constants"
 import { checkAndDownloadModel } from "../lib/idb"
 import {
-  applyColorToLuminance,
   applyMaskAsAlpha,
   preprocessImage,
   preprocessImageToImage,
   tensorToImageData,
+  upscaleColorizerTensorToOriginal,
 } from "../lib/onnx-pipeline"
 import type { ModelKey, ModelStatus, ProgressCallback } from "../types"
 
@@ -152,7 +152,8 @@ export const useOnnxSession = (
         size,
         {
           keepAspectRatio: false, // Model expects square 256x256
-          grayscale: isColorizer,
+          grayscale: false,
+          useByteRange: isColorizer,
         }
       )
 
@@ -164,7 +165,7 @@ export const useOnnxSession = (
       const outputTensor = results[session.outputNames[0]]
 
       if (isColorizer) {
-        return applyColorToLuminance(outputTensor, imgEl)
+        return upscaleColorizerTensorToOriginal(outputTensor, imgEl)
       }
 
       // For upscaler, output size is usually input * 4

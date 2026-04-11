@@ -137,9 +137,14 @@ export const preprocessImageToImage = (
   imgEl: any,
   ort: Ort,
   size: number = 512,
-  options: { keepAspectRatio?: boolean; grayscale?: boolean } = {}
+  options: {
+    keepAspectRatio?: boolean
+    grayscale?: boolean
+    useByteRange?: boolean
+  } = {}
 ) => {
-  const { keepAspectRatio = false, grayscale = false } = options
+  const { keepAspectRatio = false, grayscale = false, useByteRange = false } =
+    options
 
   let width = size
   let height = size
@@ -180,6 +185,13 @@ export const preprocessImageToImage = (
       r = g = b = gray
     }
 
+    if (useByteRange) {
+      float32[i] = r
+      float32[width * height + i] = g
+      float32[width * height * 2 + i] = b
+      continue
+    }
+
     float32[i] = r / 255
     float32[width * height + i] = g / 255
     float32[width * height * 2 + i] = b / 255
@@ -194,9 +206,11 @@ export const preprocessImageToImage = (
 export const tensorToImageData = (
   tensor: any,
   width: number,
-  height: number
+  height: number,
+  options: { valueMode?: "unit" | "byte" } = {}
 ): Promise<Blob> =>
   new Promise((resolve) => {
+    const { valueMode = "unit" } = options
     const canvas = (globalThis as any).document.createElement("canvas")
     canvas.width = width
     canvas.height = height
@@ -205,16 +219,17 @@ export const tensorToImageData = (
 
     const data = tensor.data as Float32Array
     const size = width * height
+    const scale = valueMode === "byte" ? 1 : 255
 
     for (let i = 0; i < size; i++) {
-      imageData.data[i * 4] = Math.max(0, Math.min(255, data[i] * 255))
+      imageData.data[i * 4] = Math.max(0, Math.min(255, data[i] * scale))
       imageData.data[i * 4 + 1] = Math.max(
         0,
-        Math.min(255, data[size + i] * 255)
+        Math.min(255, data[size + i] * scale)
       )
       imageData.data[i * 4 + 2] = Math.max(
         0,
-        Math.min(255, data[size * 2 + i] * 255)
+        Math.min(255, data[size * 2 + i] * scale)
       )
       imageData.data[i * 4 + 3] = 255
     }
@@ -228,7 +243,7 @@ export const tensorToImageData = (
  * Resizes the colorized tensor back to original size and blends it with the
  * original image's luminance using the 'color' composite operation.
  */
-export const applyColorToLuminance = (
+export const upscaleColorizerTensorToOriginal = (
   tensor: any,
   imgEl: any
 ): Promise<Blob> =>
@@ -239,7 +254,6 @@ export const applyColorToLuminance = (
     const tH = Number(tensor.dims[2]) || oh
     const tW = Number(tensor.dims[3]) || ow
 
-    // 1. Create colorized canvas at model resolution
     const colorCanvas = (globalThis as any).document.createElement("canvas")
     colorCanvas.width = tW
     colorCanvas.height = tH
@@ -249,30 +263,23 @@ export const applyColorToLuminance = (
     const size = tW * tH
 
     for (let i = 0; i < size; i++) {
-      colorImageData.data[i * 4] = Math.max(0, Math.min(255, data[i] * 255))
+      colorImageData.data[i * 4] = Math.max(0, Math.min(255, data[i]))
       colorImageData.data[i * 4 + 1] = Math.max(
         0,
-        Math.min(255, data[size + i] * 255)
+        Math.min(255, data[size + i])
       )
       colorImageData.data[i * 4 + 2] = Math.max(
         0,
-        Math.min(255, data[size * 2 + i] * 255)
+        Math.min(255, data[size * 2 + i])
       )
       colorImageData.data[i * 4 + 3] = 255
     }
     colorCtx.putImageData(colorImageData, 0, 0)
 
-    // 2. Composite onto original image
     const outCanvas = (globalThis as any).document.createElement("canvas")
     outCanvas.width = ow
     outCanvas.height = oh
     const outCtx = outCanvas.getContext("2d")!
-
-    // Draw original image (Luminance source)
-    outCtx.drawImage(imgEl, 0, 0)
-
-    // Blend colorized version (Color source)
-    outCtx.globalCompositeOperation = "color"
     outCtx.drawImage(colorCanvas, 0, 0, ow, oh)
 
     outCanvas.toBlob((blob: any) => resolve(blob!), "image/png")
