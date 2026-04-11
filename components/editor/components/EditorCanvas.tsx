@@ -41,7 +41,8 @@ export const EditorCanvas = ({
         <div className="rounded-2xl p-4">
           <div className="flex size-full items-center justify-center gap-16 p-4">
             <ReactCompareSlider
-              className="max-w-xl rounded-xl"
+              className="aspect-square max-w-xl rounded-xl lg:aspect-video"
+              style={{ width: "100%", height: "auto" }}
               aria-label="Image comparison slider"
               itemOne={
                 imageData ? (
