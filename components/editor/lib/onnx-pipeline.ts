@@ -148,20 +148,20 @@ export const preprocessImageToImage = (
 
   let width = size
   let height = size
+  let drawWidth = width
+  let drawHeight = height
+  let offsetX = 0
+  let offsetY = 0
 
   if (keepAspectRatio) {
     const originalWidth = imgEl.naturalWidth
     const originalHeight = imgEl.naturalHeight
+    const ratio = Math.min(size / originalWidth, size / originalHeight)
 
-    if (originalWidth > originalHeight) {
-      width = size
-      height = Math.round((originalHeight * size) / originalWidth / 32) * 32
-    } else {
-      height = size
-      width = Math.round((originalWidth * size) / originalHeight / 32) * 32
-    }
-    width = Math.max(width, 32)
-    height = Math.max(height, 32)
+    drawWidth = Math.max(1, Math.round(originalWidth * ratio))
+    drawHeight = Math.max(1, Math.round(originalHeight * ratio))
+    offsetX = Math.round((width - drawWidth) / 2)
+    offsetY = Math.round((height - drawHeight) / 2)
   }
 
   const canvas = (globalThis as any).document.createElement("canvas")
@@ -169,7 +169,9 @@ export const preprocessImageToImage = (
   canvas.height = height
   const ctx = canvas.getContext("2d")!
 
-  ctx.drawImage(imgEl, 0, 0, width, height)
+  ctx.fillStyle = "black"
+  ctx.fillRect(0, 0, width, height)
+  ctx.drawImage(imgEl, offsetX, offsetY, drawWidth, drawHeight)
 
   const { data } = ctx.getImageData(0, 0, width, height)
   const float32 = new Float32Array(3 * width * height)
@@ -239,11 +241,11 @@ export const tensorToImageData = (
   })
 
 /**
- * High-detail post-processing for colorizers.
- * Resizes the colorized tensor back to original size and blends it with the
- * original image's luminance using the 'color' composite operation.
+ * Reuses the model output as low-resolution chroma and keeps the original
+ * image luminance/detail. This mirrors how other DeOldify integrations avoid
+ * mushy results on non-square images.
  */
-export const upscaleColorizerTensorToOriginal = (
+export const applyColorizerChromaToOriginal = (
   tensor: any,
   imgEl: any
 ): Promise<Blob> =>
@@ -280,7 +282,47 @@ export const upscaleColorizerTensorToOriginal = (
     outCanvas.width = ow
     outCanvas.height = oh
     const outCtx = outCanvas.getContext("2d")!
-    outCtx.drawImage(colorCanvas, 0, 0, ow, oh)
+    const ratio = Math.min(tW / ow, tH / oh)
+    const contentWidth = Math.max(1, Math.round(ow * ratio))
+    const contentHeight = Math.max(1, Math.round(oh * ratio))
+    const cropX = Math.max(0, Math.round((tW - contentWidth) / 2))
+    const cropY = Math.max(0, Math.round((tH - contentHeight) / 2))
+
+    const resizedColorCanvas = (globalThis as any).document.createElement(
+      "canvas"
+    )
+    resizedColorCanvas.width = ow
+    resizedColorCanvas.height = oh
+    const resizedColorCtx = resizedColorCanvas.getContext("2d")!
+    resizedColorCtx.imageSmoothingEnabled = true
+    ;(resizedColorCtx as any).imageSmoothingQuality = "high"
+    resizedColorCtx.drawImage(
+      colorCanvas,
+      cropX,
+      cropY,
+      contentWidth,
+      contentHeight,
+      0,
+      0,
+      ow,
+      oh
+    )
+
+    // Slightly blur only the chroma source to reduce blockiness from 256x256 inference.
+    const blurredColorCanvas = (globalThis as any).document.createElement(
+      "canvas"
+    )
+    blurredColorCanvas.width = ow
+    blurredColorCanvas.height = oh
+    const blurredColorCtx = blurredColorCanvas.getContext("2d")!
+    blurredColorCtx.filter = "blur(1.25px)"
+    blurredColorCtx.drawImage(resizedColorCanvas, 0, 0)
+
+    // Start from the original image so all fine luminance detail remains intact.
+    outCtx.drawImage(imgEl, 0, 0, ow, oh)
+    outCtx.globalCompositeOperation = "color"
+    outCtx.drawImage(blurredColorCanvas, 0, 0, ow, oh)
+    outCtx.globalCompositeOperation = "source-over"
 
     outCanvas.toBlob((blob: any) => resolve(blob!), "image/png")
   })
