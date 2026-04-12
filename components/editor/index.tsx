@@ -50,7 +50,7 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
   const [showChangelog, setShowChangelog] = useState(false)
   const [activeTool, setActiveTool] = useState<ActiveTool>(initialTool)
   const [selectedModel, setSelectedModel] =
-    useState<ModelKey>("birefnet_lite_fp16")
+    useState<ModelKey>("ormbg_quantized")
   const [upscalerModel, setUpscalerModel] = useState<ModelKey>(
     "swin2sr_quantized"
   )
