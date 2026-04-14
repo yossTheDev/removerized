@@ -39,3 +39,10 @@ yarn-error.log*
 
 .contentlayer
 .env
+
+# Yarn PnP
+.pnp.cjs
+.pnp.loader.mjs
+
+# Build artifacts
+tsconfig.tsbuildinfo
