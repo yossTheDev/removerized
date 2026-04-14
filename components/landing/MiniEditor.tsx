@@ -274,13 +274,20 @@ export function MiniEditor({ tool = "remover" }: MiniEditorProps) {
                    {isProcessing ? <Loader2 className="animate-spin" /> : `RUN ${tool.toUpperCase()}`}
                  </Button>
                ) : (
-                 <Button
-                   onClick={() => { setImage(null); setResult(null); }}
-                   variant="outline"
-                   className="w-full h-12 rounded-xl border-white/10 bg-white/5 font-bold text-sm text-white"
-                 >
-                   RESET
-                 </Button>
+                 <div className="flex flex-col gap-3">
+                   <Link href={`/editor/${tool === 'remover' ? 'removerized' : tool}`} className="w-full">
+                     <Button className="w-full h-12 rounded-xl font-bold text-sm text-white bg-blue-600 hover:bg-blue-700 shadow-lg">
+                        OPEN FULL EDITOR
+                     </Button>
+                   </Link>
+                   <Button
+                     onClick={() => { setImage(null); setResult(null); }}
+                     variant="outline"
+                     className="w-full h-12 rounded-xl border-white/10 bg-white/5 font-bold text-sm text-white"
+                   >
+                     RESET
+                   </Button>
+                 </div>
                )}
                <p className="text-[9px] text-center text-white/20 leading-relaxed uppercase tracking-tighter font-medium">
                   Free · Unlimited · 100% Client-side
