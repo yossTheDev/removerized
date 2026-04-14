@@ -4,7 +4,7 @@ import { LandingHeader } from "@/components/landing/LandingHeader"
 import { LandingFooter } from "@/components/landing/LandingFooter"
 import { Hero } from "@/components/landing/Hero"
 import { MiniEditor } from "@/components/landing/MiniEditor"
-import { Trash2, Maximize, Palette, Shield, Zap, Sparkles } from "lucide-react"
+import { Trash2, Maximize, Palette, Shield, Zap, Sparkles, ArrowRight, HelpCircle, Lock, Cpu, Monitor } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
@@ -74,6 +74,72 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* Privacy Deep Dive */}
+        <section className="px-6 py-24">
+           <div className="mx-auto max-w-7xl">
+              <div className="rounded-3xl border border-white/5 bg-gradient-to-br from-blue-500/5 to-purple-500/5 p-8 md:p-16">
+                 <div className="grid gap-12 lg:grid-cols-2 items-center">
+                    <div>
+                       <div className="mb-6 inline-flex size-14 items-center justify-center rounded-2xl bg-blue-500/10 text-blue-500">
+                          <Lock className="size-7" />
+                       </div>
+                       <h2 className="text-3xl font-bold font-museo mb-6 md:text-5xl">Privacy by architecture</h2>
+                       <p className="text-white/60 text-lg leading-relaxed mb-8">
+                          Traditional AI tools upload your sensitive photos to remote servers. We don't. By running models locally via ONNX Runtime Web, your data never leaves your browser.
+                       </p>
+                       <div className="space-y-4">
+                          <PrivacyItem icon={Shield} text="Your images stay on your RAM/CPU/GPU" />
+                          <PrivacyItem icon={Cpu} text="No registration required to use tools" />
+                          <PrivacyItem icon={Sparkles} text="Works even when you're offline" />
+                       </div>
+                    </div>
+                    <div className="relative aspect-video rounded-2xl border border-white/10 bg-black/40 overflow-hidden">
+                       {/* Abstract privacy visualization */}
+                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.1)_0,transparent_100%)]" />
+                       <div className="flex h-full w-full items-center justify-center">
+                          <div className="flex flex-col items-center gap-4">
+                             <div className="relative">
+                                <Monitor className="size-16 text-white/20" />
+                                <div className="absolute -top-2 -right-2 size-6 rounded-full bg-green-500 flex items-center justify-center border-4 border-[#050505]">
+                                   <div className="size-1.5 rounded-full bg-white animate-pulse" />
+                                </div>
+                             </div>
+                             <div className="text-xs font-mono text-white/30 uppercase tracking-[0.2em]">Local execution only</div>
+                          </div>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="px-6 py-24 bg-white/[0.02]">
+           <div className="mx-auto max-w-3xl">
+              <div className="text-center mb-16">
+                 <h2 className="font-museo text-3xl font-bold md:text-5xl">Common Questions</h2>
+              </div>
+              <div className="space-y-6">
+                 <FAQItem
+                   question="Is it really free?"
+                   answer="Yes. We don't have server costs for processing since your computer does the work. You can use it as much as you want without limits."
+                 />
+                 <FAQItem
+                   question="Which browsers are supported?"
+                   answer="Any modern browser that supports WebAssembly and WebGL/WebGPU. We recommend Chrome, Edge, or Brave for the best performance."
+                 />
+                 <FAQItem
+                   question="Do you store any of my data?"
+                   answer="Absolutely not. We don't even have a database for your images. All processing is 100% ephemeral and local."
+                 />
+                 <FAQItem
+                   question="How fast is the processing?"
+                   answer="It depends on your hardware. High-end CPUs and GPUs will process images in seconds, while older mobile devices might take a bit longer."
+                 />
+              </div>
+           </div>
+        </section>
+
         {/* Features Section */}
         <section className="px-6 py-24">
           <div className="mx-auto max-w-7xl">
@@ -136,18 +202,27 @@ function FeatureItem({ icon: Icon, title, description }: { icon: any, title: str
   )
 }
 
-function ArrowRight({ className }: { className?: string }) {
+function PrivacyItem({ icon: Icon, text }: { icon: any, text: string }) {
   return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M5 12h14m-7-7 7 7-7 7" />
-    </svg>
+    <div className="flex items-center gap-4">
+       <div className="flex size-6 items-center justify-center rounded-full bg-blue-500/20 text-blue-500">
+          <Icon className="size-3" />
+       </div>
+       <span className="text-white/70 font-medium">{text}</span>
+    </div>
+  )
+}
+
+function FAQItem({ question, answer }: { question: string, answer: string }) {
+  return (
+    <div className="rounded-2xl border border-white/5 bg-white/[0.03] p-6">
+       <div className="flex gap-4">
+          <HelpCircle className="size-6 text-blue-500 flex-shrink-0" />
+          <div>
+             <h3 className="text-lg font-bold mb-2">{question}</h3>
+             <p className="text-white/40 leading-relaxed text-sm">{answer}</p>
+          </div>
+       </div>
+    </div>
   )
 }

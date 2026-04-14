@@ -4,7 +4,7 @@ import { LandingHeader } from "@/components/landing/LandingHeader"
 import { LandingFooter } from "@/components/landing/LandingFooter"
 import { MiniEditor } from "@/components/landing/MiniEditor"
 import { Button } from "@/components/ui/button"
-import { Palette, Shield, Zap, CheckCircle2, History, Users, Heart } from "lucide-react"
+import { Palette, Shield, Zap, CheckCircle2, History, Users, Heart, Camera, Brush, Sparkles } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "AI Photo Colorizer — Bring Old Photos to Life",
@@ -43,23 +43,60 @@ export default function ColorizerLandingPage() {
         {/* Use Cases Section */}
         <section className="px-6 py-24 bg-white/[0.02]">
            <div className="mx-auto max-w-7xl">
-              <h2 className="text-center font-museo text-3xl font-bold mb-16">See the past in color</h2>
+              <div className="text-center mb-16">
+                <h2 className="text-center font-museo text-3xl font-bold md:text-5xl">See the past in color</h2>
+                <p className="text-white/40 mt-4">Transform your black and white memories into vivid stories.</p>
+              </div>
               <div className="grid gap-8 md:grid-cols-3">
                  <UseCaseCard
                    icon={History}
                    title="Family Archives"
-                   description="Relive your family history by colorizing photos of ancestors and childhood memories."
+                   description="Relive your family history by colorizing photos of ancestors and childhood memories. Bring a new dimension to your heritage."
                  />
                  <UseCaseCard
                    icon={Users}
                    title="Historical Research"
-                   description="Gain a new perspective on historical events and figures with realistic colorization."
+                   description="Gain a new perspective on historical events and figures with realistic colorization that respects the context."
                  />
                  <UseCaseCard
                    icon={Heart}
                    title="Sentimental Gifts"
-                   description="Create unique and emotional gifts by restoring and colorizing cherished old photos."
+                   description="Create unique and emotional gifts by restoring and colorizing cherished old photos for your loved ones."
                  />
+              </div>
+           </div>
+        </section>
+
+        {/* Pro Tips Section */}
+        <section className="px-6 py-24 border-y border-white/5">
+           <div className="mx-auto max-w-7xl">
+              <div className="text-center mb-16">
+                 <h2 className="text-3xl font-bold font-museo md:text-5xl">Pro-level restoration</h2>
+                 <p className="text-white/40 mt-4">Tips for getting the best colorization results.</p>
+              </div>
+              <div className="grid gap-12 lg:grid-cols-2">
+                 <div className="flex gap-6">
+                    <div className="flex-shrink-0 size-12 rounded-2xl bg-pink-500/10 flex items-center justify-center text-pink-500">
+                       <Camera className="size-6" />
+                    </div>
+                    <div>
+                       <h3 className="text-xl font-bold mb-3">Clean the input</h3>
+                       <p className="text-white/50 leading-relaxed">
+                          For best results, use an upscaled or cleaned version of your photo. The AI works best when the input image is sharp and free of heavy grain.
+                       </p>
+                    </div>
+                 </div>
+                 <div className="flex gap-6">
+                    <div className="flex-shrink-0 size-12 rounded-2xl bg-pink-500/10 flex items-center justify-center text-pink-500">
+                       <Brush className="size-6" />
+                    </div>
+                    <div>
+                       <h3 className="text-xl font-bold mb-3">Artistic vs Stable</h3>
+                       <p className="text-white/50 leading-relaxed">
+                          Our editor offers different models. Choose the 'Artistic' model for more vibrant colors, or 'Stable' for more consistent results across different types of images.
+                       </p>
+                    </div>
+                 </div>
               </div>
            </div>
         </section>
@@ -69,15 +106,16 @@ export default function ColorizerLandingPage() {
            <div className="mx-auto max-w-7xl">
               <div className="grid gap-16 md:grid-cols-2 items-center">
                  <div>
-                    <h2 className="text-3xl font-bold mb-6">Historical Accuracy</h2>
+                    <h2 className="text-3xl font-bold mb-6 font-museo">Historical Accuracy</h2>
                     <p className="text-white/50 mb-8 leading-relaxed">
                       Using DeOldify, one of the most advanced colorization models, our tool identifies objects, textures, and contexts to apply the most plausible and natural colors to your vintage images.
                     </p>
                     <ul className="space-y-4">
-                       <ListItem text="Natural skin tones" />
-                       <ListItem text="Deep learning for complex scenes" />
-                       <ListItem text="Preserves original image details" />
-                       <ListItem text="Perfect for family archives" />
+                       <ListItem text="Natural skin tones and environmental colors" />
+                       <ListItem text="Deep learning trained on millions of color photos" />
+                       <ListItem text="Preserves original image details and contrast" />
+                       <ListItem text="Perfect for scanned family archives" />
+                       <ListItem text="Multiple model options for varied results" />
                     </ul>
                  </div>
                  <div className="grid gap-6 sm:grid-cols-2">
@@ -87,8 +125,8 @@ export default function ColorizerLandingPage() {
                       description="Keep your personal memories private. No images are ever uploaded to a server."
                     />
                     <FeatureCard
-                      icon={Zap}
-                      title="Instant Preview"
+                      icon={Sparkles}
+                      title="Vibrant Results"
                       description="See your photos come to life in real-time as the AI processes them."
                     />
                  </div>
