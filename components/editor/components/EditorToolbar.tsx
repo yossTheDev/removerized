@@ -3,6 +3,11 @@ import { Download, LoaderIcon, ScanEye, ZoomIn, ZoomOut } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 interface EditorToolbarProps {
   canDownload: boolean
@@ -44,44 +49,65 @@ export const EditorToolbar = ({
         <div className="mx-1.5 h-4 w-px bg-white/10" />
 
         {/* Batch process queue */}
-        <Button
-          onClick={onProcess}
-          size="icon"
-          variant="ghost"
-          title="Process all images in queue"
-          className={cn(
-            "size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white"
-          )}
-        >
-          <LoaderIcon className="size-4" />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={onProcess}
+              size="icon"
+              variant="ghost"
+              aria-label="Process all images in queue"
+              className={cn(
+                "size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white"
+              )}
+            >
+              <LoaderIcon className="size-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Process all images</p>
+          </TooltipContent>
+        </Tooltip>
 
         <div className="mx-1.5 h-4 w-px bg-white/10" />
 
         {/* Download result */}
-        <Button
-          disabled={!canDownload}
-          onClick={onDownload}
-          size="icon"
-          variant="ghost"
-          title="Download result"
-          className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white disabled:opacity-20"
-        >
-          <Download className="size-4" />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              disabled={!canDownload}
+              onClick={onDownload}
+              size="icon"
+              variant="ghost"
+              aria-label="Download result"
+              className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white disabled:opacity-20"
+            >
+              <Download className="size-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Download result</p>
+          </TooltipContent>
+        </Tooltip>
 
         <div className="mx-1.5 h-4 w-px bg-white/10" />
 
         {/* Zoom in */}
-        <Button
-          onClick={onZoomIn}
-          size="icon"
-          variant="ghost"
-          title="Zoom in"
-          className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white"
-        >
-          <ZoomIn className="size-4" />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={onZoomIn}
+              size="icon"
+              variant="ghost"
+              aria-label="Zoom in"
+              className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white"
+            >
+              <ZoomIn className="size-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Zoom in</p>
+          </TooltipContent>
+        </Tooltip>
 
         {/* Zoom level indicator */}
         <span className="w-12 text-center text-xs text-white/50">
@@ -89,26 +115,40 @@ export const EditorToolbar = ({
         </span>
 
         {/* Zoom out */}
-        <Button
-          onClick={onZoomOut}
-          size="icon"
-          variant="ghost"
-          title="Zoom out"
-          className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white"
-        >
-          <ZoomOut className="size-4" />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={onZoomOut}
+              size="icon"
+              variant="ghost"
+              aria-label="Zoom out"
+              className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white"
+            >
+              <ZoomOut className="size-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Zoom out</p>
+          </TooltipContent>
+        </Tooltip>
 
         {/* Reset zoom */}
-        <Button
-          onClick={onZoomReset}
-          size="icon"
-          variant="ghost"
-          title="Reset zoom"
-          className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white"
-        >
-          <ScanEye className="size-4" />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={onZoomReset}
+              size="icon"
+              variant="ghost"
+              aria-label="Reset zoom"
+              className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white"
+            >
+              <ScanEye className="size-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Reset zoom</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
     </div>
   )
