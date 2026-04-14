@@ -1,54 +1,44 @@
 import { Metadata } from "next"
-import { Suspense } from "react"
-import { Editor } from "@/components/editor"
+import Link from "next/link"
+import { LandingHeader } from "@/components/landing/LandingHeader"
+import { LandingFooter } from "@/components/landing/LandingFooter"
+import { MiniEditor } from "@/components/landing/MiniEditor"
+import { Button } from "@/components/ui/button"
+import { Maximize, Shield, Zap, CheckCircle2 } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "AI Image Upscaler",
-  description: "Enhance image resolution up to 4x with on-device AI. Zero cloud dependency, 100% private.",
-  openGraph: {
-    title: "AI Image Upscaler — Removerized",
-    description: "Super-resolution AI that upscales images locally in your browser.",
-    images: [
-      {
-        url: "/og.png",
-        width: 1200,
-        height: 630,
-        alt: "Removerized AI Image Upscaler",
-      },
-    ],
-  },
+  title: "AI Image Upscaler — 4x Super Resolution",
+  description: "Enhance your images with 4x AI upscaling. Sharp details, low noise, and completely private browser-based processing.",
 }
 
-export default function UpscalerPage() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "Removerized Image Upscaler",
-    "operatingSystem": "Web",
-    "applicationCategory": "MultimediaApplication",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD",
-    },
-    "description": "Super-resolution AI upscales images up to 4× with on-device AI — zero cloud dependency.",
-  }
-
+export default function UpscalerLandingPage() {
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <Suspense
-        fallback={
-          <div className="flex h-screen w-screen items-center justify-center bg-[#050505]">
-            <p className="text-sm text-white/30">Loading…</p>
-          </div>
-        }
-      >
-        <Editor initialTool="upscaler" />
-      </Suspense>
-    </>
+    <div className="flex min-h-screen flex-col bg-[#050505] text-white">
+      <LandingHeader />
+      <main className="flex-1">
+        <section className="px-6 pt-20 pb-12 text-center">
+           <div className="mx-auto max-w-4xl">
+              <div className="mb-6 inline-flex size-16 items-center justify-center rounded-2xl border border-purple-500/20 bg-purple-500/10 text-purple-500">
+                <Maximize className="size-8" />
+              </div>
+              <h1 className="font-museo text-4xl font-bold md:text-6xl">AI Image Upscaler</h1>
+              <p className="mt-6 text-lg text-white/50 md:text-xl max-w-2xl mx-auto">
+                Turn low-resolution images into high-definition masterpieces with 4x super-resolution AI.
+              </p>
+              <div className="mt-10 flex flex-center justify-center">
+                <MiniEditor tool="upscaler" />
+              </div>
+              <div className="mt-12">
+                <Link href="/editor/upscaler">
+                  <Button size="lg" className="h-14 rounded-2xl bg-purple-600 px-12 text-lg font-bold hover:bg-purple-700">
+                    Upscale Image Now
+                  </Button>
+                </Link>
+              </div>
+           </div>
+        </section>
+      </main>
+      <LandingFooter />
+    </div>
   )
 }
