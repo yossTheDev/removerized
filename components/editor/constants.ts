@@ -70,7 +70,7 @@ export const MODELS: Record<
   },
   birefnet_lite: {
     tool: "remover",
-    url: "https://huggingface.co/onnx-community/BiRefNet_lite-ONNX/blob/main/onnx/model.onnx",
+    url: "https://huggingface.co/onnx-community/BiRefNet_lite-ONNX/resolve/main/onnx/model.onnx",
     hfUrl: "https://huggingface.co/onnx-community/BiRefNet_lite-ONNX",
     cacheKey: "birefnet_lite_v1",
     label: "BiRefNet v2 Lite (FP32)",
@@ -83,7 +83,7 @@ export const MODELS: Record<
   },
   birefnet_lite_fp16: {
     tool: "remover",
-    url: "https://huggingface.co/onnx-community/BiRefNet_lite-ONNX/blob/main/onnx/model_fp16.onnx",
+    url: "https://huggingface.co/onnx-community/BiRefNet_lite-ONNX/resolve/main/onnx/model_fp16.onnx",
     hfUrl: "https://huggingface.co/onnx-community/BiRefNet_lite-ONNX",
     cacheKey: "birefnet_lite_fp16_v2",
     label: "BiRefNet Lite (FP16)",
