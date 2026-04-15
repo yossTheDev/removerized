@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 ### 🔄 Changed
 
 - Changed the default remover model to `ormbg_quantized`.
+- Updated BiRefNet Lite model URLs to use the new `BiRefNet_lite-ONNX` repository from ONNX Community.
 
 ---
 
