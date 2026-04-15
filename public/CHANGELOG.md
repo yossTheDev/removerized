@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 
 ### 🧠 Improved
 
+- Add border to image settings panel for better component organization
 - Optimized image compression by switching from PNG to WebP format for all processed images. This significantly reduces file sizes while maintaining visual quality, especially for images with transparency.
 - Made WebP the default export format for new images.
 - Moved quality control to per-image settings via ImageSettings component, allowing individual quality adjustment per image instead of global quality.
