@@ -13,6 +13,26 @@ import type { ModelKey, ModelStatus, ProgressCallback } from "../types"
 
 type Ort = typeof import("onnxruntime-web")
 type InferenceSession = Awaited<ReturnType<Ort["InferenceSession"]["create"]>>
+const SESSION_CREATE_TIMEOUT_MS = 90 * 1000
+const INFERENCE_TIMEOUT_MS = 120 * 1000
+
+const withTimeout = async <T,>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  timeoutMessage: string
+): Promise<T> => {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(() => reject(new Error(timeoutMessage)), timeoutMs)
+      }),
+    ])
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId)
+  }
+}
 
 /** Hook return contract */
 export interface UseOnnxSessionReturn {
@@ -79,10 +99,14 @@ export const useOnnxSession = (
 
       onUpdate("Loading session…", 100)
 
-      const session = await ort.InferenceSession.create(buffer, {
-        executionProviders: ["wasm"],
-        graphOptimizationLevel: "all",
-      })
+      const session = await withTimeout(
+        ort.InferenceSession.create(buffer, {
+          executionProviders: ["wasm"],
+          graphOptimizationLevel: "all",
+        }),
+        SESSION_CREATE_TIMEOUT_MS,
+        "Session initialization timed out."
+      )
 
       sessionCache.current[modelKey] = session
       setModelStatus("ready")
@@ -113,7 +137,11 @@ export const useOnnxSession = (
 
       onUpdate("Running inference…", 0)
       const inputType = MODELS[modelKey].inputType
-      const results = await session.run({ [inputType]: inputTensor })
+      const results = await withTimeout(
+        session.run({ [inputType]: inputTensor }),
+        INFERENCE_TIMEOUT_MS,
+        "Inference timed out."
+      )
 
       onUpdate("Post-processing…", 0)
       const maskTensor = results[session.outputNames[0]]
@@ -159,7 +187,11 @@ export const useOnnxSession = (
 
       onUpdate("Running inference…", 0)
       const inputType = MODELS[modelKey].inputType
-      const results = await session.run({ [inputType]: inputTensor })
+      const results = await withTimeout(
+        session.run({ [inputType]: inputTensor }),
+        INFERENCE_TIMEOUT_MS,
+        "Inference timed out."
+      )
 
       onUpdate("Post-processing…", 0)
       const outputTensor = results[session.outputNames[0]]

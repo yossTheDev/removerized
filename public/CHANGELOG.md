@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.1.1] - Upscaler Stability Fixes
+
+### 🐛 Fixed
+
+- Fixed an issue where Upscaler could hang indefinitely during model download when the network stalled.
+- Fixed an issue where Upscaler could remain stuck during ONNX session creation or inference without timing out.
+- Added timeout and abort handling for model download, model stream reads, session initialization, and inference execution.
+
+### 🔄 Changed
+
+- Changed the default remover model to `ormbg_quantized`.
+
+---
+
 ## [1.1.0] - Canvas Improvements & Colorizer & PWA
 
 ### ✨ Added
