@@ -7,10 +7,12 @@ import {
   Zap,
 } from "lucide-react"
 
+import type { ImageSetting } from "@/types/image-settings"
 import { cn } from "@/lib/utils"
 
 import { UPSCALER_MODELS } from "../../constants"
 import type { UpscalerModelKey } from "../../types"
+import ImageSettings from "@/components/settings/ImageSettings"
 
 interface UpscalerTabProps {
   hasImage: boolean
@@ -21,6 +23,9 @@ interface UpscalerTabProps {
   accentColor: string
   selectedUpscalerSettings: UpscalerModelKey
   onUpscalerSettingsChange: (key: UpscalerModelKey) => void
+  localSettings: ImageSetting | null
+  onSettingsChange: (updated: ImageSetting) => void
+  onDownloadSingle?: () => void
 }
 
 const MODEL_ICONS: Record<UpscalerModelKey, React.ElementType> = {
@@ -38,9 +43,21 @@ export const UpscalerTab = ({
   accentColor,
   selectedUpscalerSettings,
   onUpscalerSettingsChange,
+  localSettings,
+  onSettingsChange,
+  onDownloadSingle,
 }: UpscalerTabProps) => {
   return (
     <div className="flex flex-col gap-4">
+      {/* Per-image settings */}
+      {localSettings ? (
+        <ImageSettings settings={localSettings} onChange={onSettingsChange} onDownload={onDownloadSingle} />
+      ) : (
+        <p className="py-2 text-center text-xs text-white/30">
+          Select an image to edit settings
+        </p>
+      )}
+
       {/* Model selector */}
       <div className="flex flex-col gap-2">
         <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-white/30">
@@ -60,15 +77,15 @@ export const UpscalerTab = ({
                 className={cn(
                   "flex items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-all duration-200",
                   !isSelected &&
-                    "border-white/[0.06] bg-white/[0.03] hover:border-white/[0.1] hover:bg-white/[0.06]"
+                  "border-white/[0.06] bg-white/[0.03] hover:border-white/[0.1] hover:bg-white/[0.06]"
                 )}
                 style={
                   isSelected
                     ? {
-                        borderColor: `${accentColor}50`,
-                        backgroundColor: `${accentColor}12`,
-                        boxShadow: `0 0 16px ${accentColor}12`,
-                      }
+                      borderColor: `${accentColor}50`,
+                      backgroundColor: `${accentColor}12`,
+                      boxShadow: `0 0 16px ${accentColor}12`,
+                    }
                     : undefined
                 }
               >
@@ -77,13 +94,13 @@ export const UpscalerTab = ({
                   style={
                     isSelected
                       ? {
-                          backgroundColor: `${accentColor}25`,
-                          color: accentColor,
-                        }
+                        backgroundColor: `${accentColor}25`,
+                        color: accentColor,
+                      }
                       : {
-                          backgroundColor: "rgba(255,255,255,0.06)",
-                          color: "rgba(255,255,255,0.35)",
-                        }
+                        backgroundColor: "rgba(255,255,255,0.06)",
+                        color: "rgba(255,255,255,0.35)",
+                      }
                   }
                 >
                   <Icon className="size-3.5" />
@@ -99,9 +116,9 @@ export const UpscalerTab = ({
                       style={
                         isSelected
                           ? {
-                              backgroundColor: `${accentColor}20`,
-                              color: `${accentColor}cc`,
-                            }
+                            backgroundColor: `${accentColor}20`,
+                            color: `${accentColor}cc`,
+                          }
                           : { backgroundColor: "rgba(255,255,255,0.04)" }
                       }
                     >
@@ -140,14 +157,14 @@ export const UpscalerTab = ({
         style={
           hasImage
             ? {
-                background: `linear-gradient(135deg, ${accentColor}cc, ${accentColor}99)`,
-                borderColor: `${accentColor}60`,
-                boxShadow: `0 0 20px ${accentColor}30, 0 4px 12px rgba(0,0,0,0.3)`,
-              }
+              background: `linear-gradient(135deg, ${accentColor}cc, ${accentColor}99)`,
+              borderColor: `${accentColor}60`,
+              boxShadow: `0 0 20px ${accentColor}30, 0 4px 12px rgba(0,0,0,0.3)`,
+            }
             : {
-                backgroundColor: "rgba(255,255,255,0.06)",
-                borderColor: "transparent",
-              }
+              backgroundColor: "rgba(255,255,255,0.06)",
+              borderColor: "transparent",
+            }
         }
       >
         <Sparkles className="size-4" />

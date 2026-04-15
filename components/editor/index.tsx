@@ -181,12 +181,12 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
     async (blob: Blob): Promise<Blob> => {
       if (!applyBgColor) return blob
       const objUrl = URL.createObjectURL(blob)
-      const quality = (queue.localSettings?.quality ?? 80) / 100
+      const quality = 0.9 // Use standard quality during processing
       const composited = await compositeOnColor(objUrl, bgColor, quality)
       URL.revokeObjectURL(objUrl)
       return base64ToBlob(composited)
     },
-    [applyBgColor, bgColor, queue.localSettings]
+    [applyBgColor, bgColor]
   )
 
   // Remove background
@@ -198,7 +198,7 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
 
     try {
       const imgEl = await loadImage(queue.imageData)
-      const quality = (queue.localSettings?.quality ?? 80) / 100
+      const quality = 0.85 // Use standard quality during processing
       const rawBlob = await onnx.runInference(
         imgEl,
         selectedModel,
@@ -256,7 +256,7 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
         const label = setting.name.slice(0, 22)
         const imgEl = await loadImage(URL.createObjectURL(file))
 
-        const quality = (setting.quality ?? 80) / 100
+        const quality = 0.85 // Use standard quality during processing
         const rawBlob = await onnx.runInference(
           imgEl,
           selectedModel,
@@ -310,7 +310,7 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
     try {
       const imgEl = await loadImage(source)
 
-      const quality = (queue.localSettings?.quality ?? 80) / 100
+      const quality = 0.85 // Use standard quality during processing
       const blob = await onnx.runImageToImage(
         imgEl,
         upscalerModel,
@@ -349,7 +349,7 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
     try {
       const imgEl = await loadImage(source)
 
-      const quality = (queue.localSettings?.quality ?? 80) / 100
+      const quality = 0.85 // Use standard quality during processing
       const blob = await onnx.runImageToImage(
         imgEl,
         colorizerModel,

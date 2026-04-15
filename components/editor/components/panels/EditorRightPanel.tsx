@@ -216,6 +216,9 @@ export const EditorRightPanel = ({
               accentColor={accentColor}
               selectedUpscalerSettings={selectedUpscalerSettings}
               onUpscalerSettingsChange={onUpscalerSettingsChange}
+              localSettings={localSettings}
+              onSettingsChange={onSettingsChange}
+              onDownloadSingle={onDownloadSingle}
             />
           )}
           {activeTool === "colorizer" && (
@@ -226,6 +229,9 @@ export const EditorRightPanel = ({
               onColorize={onColorize}
               onDownload={onDownload}
               accentColor={accentColor}
+              localSettings={localSettings}
+              onSettingsChange={onSettingsChange}
+              onDownloadSingle={onDownloadSingle}
             />
           )}
 

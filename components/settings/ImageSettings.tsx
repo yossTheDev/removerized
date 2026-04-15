@@ -90,7 +90,7 @@ export default function ImageSettings({
       {onDownload && (
         <Button
           onClick={onDownload}
-          className="w-full"
+          className="w-full bg-white/10 hover:bg-white/15 text-white border-white/20 hover:border-white/30"
           variant="outline"
         >
           <Download className="mr-2 size-4" />

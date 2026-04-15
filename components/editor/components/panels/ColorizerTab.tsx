@@ -1,6 +1,8 @@
 import { Download, Palette, Wand2 } from "lucide-react"
 
+import type { ImageSetting } from "@/types/image-settings"
 import { cn } from "@/lib/utils"
+import ImageSettings from "@/components/settings/ImageSettings"
 
 interface ColorizerTabProps {
   hasImage: boolean
@@ -9,6 +11,9 @@ interface ColorizerTabProps {
   onColorize: () => void
   onDownload: () => void
   accentColor: string
+  localSettings: ImageSetting | null
+  onSettingsChange: (updated: ImageSetting) => void
+  onDownloadSingle?: () => void
 }
 
 export const ColorizerTab = ({
@@ -18,9 +23,21 @@ export const ColorizerTab = ({
   onColorize,
   onDownload,
   accentColor,
+  localSettings,
+  onSettingsChange,
+  onDownloadSingle,
 }: ColorizerTabProps) => {
   return (
     <div className="flex flex-col gap-4">
+      {/* Per-image settings */}
+      {localSettings ? (
+        <ImageSettings settings={localSettings} onChange={onSettingsChange} onDownload={onDownloadSingle} />
+      ) : (
+        <p className="py-2 text-center text-xs text-white/30">
+          Select an image to edit settings
+        </p>
+      )}
+
       {/* Context hint */}
       {hasImage && (
         <p className="text-center text-[10px] leading-relaxed text-white/30">
@@ -43,30 +60,19 @@ export const ColorizerTab = ({
         style={
           hasImage
             ? {
-                background: `linear-gradient(135deg, ${accentColor}cc, ${accentColor}99)`,
-                borderColor: `${accentColor}60`,
-                boxShadow: `0 0 20px ${accentColor}30, 0 4px 12px rgba(0,0,0,0.3)`,
-              }
+              background: `linear-gradient(135deg, ${accentColor}cc, ${accentColor}99)`,
+              borderColor: `${accentColor}60`,
+              boxShadow: `0 0 20px ${accentColor}30, 0 4px 12px rgba(0,0,0,0.3)`,
+            }
             : {
-                backgroundColor: "rgba(255,255,255,0.06)",
-                borderColor: "transparent",
-              }
+              backgroundColor: "rgba(255,255,255,0.06)",
+              borderColor: "transparent",
+            }
         }
       >
         <Palette className="size-4" />
         Colorize Image
       </button>
-
-      {/* Download — after successful colorization */}
-      {hasColorized && (
-        <button
-          onClick={onDownload}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.05] px-4 py-2.5 text-sm font-medium text-white/70 transition-all duration-200 hover:border-white/20 hover:bg-white/10 hover:text-white active:scale-[0.98]"
-        >
-          <Download className="size-4" />
-          Download Colorized
-        </button>
-      )}
 
       {/* Info section */}
       <div className="mt-1 flex items-center justify-between gap-3 rounded-xl border border-white/[0.05] bg-white/[0.02] px-3 py-2.5">

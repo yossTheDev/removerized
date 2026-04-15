@@ -64,11 +64,14 @@ export const useImageQueue = () => {
     setLocalSettings(
       settings.find((s) => s.name === selectedImage) ?? null
     )
+  }, [selectedImage, settings])
 
+  // Sync resultData only when selection or resultsData changes (not when settings change)
+  useEffect(() => {
     // Reflect the already-processed result if it exists.
     const existing = resultsData.find((r) => r.name === selectedImage)
     setResultData(existing ? URL.createObjectURL(existing.data) : null)
-  }, [resultsData, selectedImage, settings])
+  }, [resultsData, selectedImage])
 
   // ── Actions ───────────────────────────────────────────────────────────────
 

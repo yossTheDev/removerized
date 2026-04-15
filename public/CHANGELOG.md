@@ -27,6 +27,12 @@ All notable changes to this project will be documented in this file.
 - Download button now performs real format conversion using Canvas, converting images to their configured format (WebP, PNG, or JPEG) at download time with their individual quality settings.
 - Added individual download button in ImageSettings panel to download specific image with its configured format and quality.
 - Download button tooltip updated to "Download all images" to reflect mass download functionality.
+- ImageSettings now available in all tool tabs (Remover, Colorizer, Upscaler) for consistent per-image configuration.
+- Image processing now uses standard quality (85%) independent of per-image settings. Settings (format and quality) are only applied at download time for maximum flexibility.
+
+### 🐛 Fixed
+
+- Fixed bug where changing image settings in Colorizer or Upscaler tabs would cause the processed result to disappear from the canvas. This was caused by a useEffect dependency on settings array that incorrectly cleared resultData.
 
 ---
 
