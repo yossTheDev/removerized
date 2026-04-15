@@ -88,7 +88,7 @@ export const MODELS: Record<
     cacheKey: "birefnet_lite_fp16_v2",
     label: "BiRefNet Lite (FP16)",
     title: "BiRefNet Lite — Bilateral Reference Image Segmentation",
-    description: "Surgical precision for professional use",
+    description: "Half precision with 50% less memory usage. Faster inference on modern GPUs and mobile processors.",
     size: "~115 MB",
     author: "ONNX Community",
     license: "MIT",
