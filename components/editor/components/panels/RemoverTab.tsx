@@ -47,10 +47,11 @@ export const RemoverTab = ({
 
           <button
             role="switch"
+            aria-label="Toggle solid background"
             aria-checked={applyBgColor}
             onClick={onToggleBgColor}
             className={cn(
-              "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus-visible:outline-none"
+              "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-2"
             )}
             style={{
               backgroundColor: applyBgColor
@@ -91,7 +92,7 @@ export const RemoverTab = ({
         onClick={onRemove}
         disabled={!hasImage}
         className={cn(
-          "flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-semibold text-white transition-all duration-200",
+          "flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-semibold text-white transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-2",
           hasImage
             ? "cursor-pointer hover:opacity-90 active:scale-[0.98]"
             : "cursor-not-allowed opacity-30"

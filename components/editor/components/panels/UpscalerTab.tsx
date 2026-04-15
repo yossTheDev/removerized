@@ -58,7 +58,7 @@ export const UpscalerTab = ({
                 key={mk}
                 onClick={() => onUpscalerSettingsChange(mk)}
                 className={cn(
-                  "flex items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-all duration-200",
+                  "flex items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-2",
                   !isSelected &&
                     "border-white/[0.06] bg-white/[0.03] hover:border-white/[0.1] hover:bg-white/[0.06]"
                 )}
@@ -132,7 +132,7 @@ export const UpscalerTab = ({
         onClick={onUpscale}
         disabled={!hasImage}
         className={cn(
-          "flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200",
+          "flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-2",
           hasImage
             ? "cursor-pointer hover:brightness-110 active:scale-[0.98]"
             : "cursor-not-allowed opacity-25"
@@ -158,7 +158,7 @@ export const UpscalerTab = ({
       {hasUpscaled && (
         <button
           onClick={onDownload}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.05] px-4 py-2.5 text-sm font-medium text-white/70 transition-all duration-200 hover:border-white/20 hover:bg-white/10 hover:text-white active:scale-[0.98]"
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.05] px-4 py-2.5 text-sm font-medium text-white/70 transition-all duration-200 hover:border-white/20 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-2 active:scale-[0.98]"
         >
           <Download className="size-4" />
           Download Upscaled
