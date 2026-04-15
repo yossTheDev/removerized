@@ -79,7 +79,7 @@ export const MODELS: Record<
     size: "224 MB",
     author: "ONNX Community",
     license: "MIT",
-    inputType: "pixel_values",
+    inputType: "input_image",
   },
   birefnet_lite_fp16: {
     tool: "remover",
@@ -92,7 +92,7 @@ export const MODELS: Record<
     size: "~115 MB",
     author: "ONNX Community",
     license: "MIT",
-    inputType: "pixel_values",
+    inputType: "input_image",
   },
   rmbg_1_4_quantized: {
     tool: "remover",
