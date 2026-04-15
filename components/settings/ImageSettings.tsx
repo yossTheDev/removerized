@@ -1,4 +1,4 @@
-import { Download, Info } from "lucide-react"
+import { Download, Info, Settings } from "lucide-react"
 
 import { ImageSetting } from "@/types/image-settings"
 
@@ -30,7 +30,12 @@ export default function ImageSettings({
   }
 
   return (
-    <div className="flex h-full flex-col gap-4 overflow-y-auto overflow-x-hidden">
+    <div className="flex border border-neutral-900 rounded-2xl py-4 px-4 h-full flex-col gap-4 overflow-y-auto overflow-x-hidden">
+      <div className="text-sm flex gap-2 items-center text-muted-foreground">
+        <Settings className="size-4" />
+        <p>Settings</p>
+      </div>
+
       <div className="flex flex-col gap-2">
         <label className="text-sm font-medium">Image Name</label>
         <Input disabled value={settings.name} placeholder="Image name" />
