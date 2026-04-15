@@ -5,7 +5,7 @@ export type ModelKey =
   | "ormbg_fp16"
   | "isnet_quantized"
   | "isnet_fp16"
-  | "birefnet_lite_quantized"
+  | "birefnet_lite"
   | "birefnet_lite_fp16"
   | "rmbg_1_4_quantized"
   | "rmbg_1_4_fp16"

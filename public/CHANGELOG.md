@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 
 - Changed the default remover model to `ormbg_quantized`.
 - Updated BiRefNet Lite model URLs to use the new `BiRefNet_lite-ONNX` repository from ONNX Community.
+- Renamed `birefnet_lite_quantized` to `birefnet_lite` (FP32) with updated size (224 MB) and description for standard precision without fidelity loss.
 
 ---
 
