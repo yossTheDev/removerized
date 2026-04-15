@@ -61,7 +61,7 @@ export const base64ToBlob = (base64: string): Blob => {
  * @param color - Any CSS colour string accepted by `fillStyle` (e.g. "#ff0000").
  * @returns     - A PNG data URL with the colour background applied.
  */
-export const compositeOnColor = (src: string, color: string): Promise<string> =>
+export const compositeOnColor = (src: string, color: string, quality: number = 0.9): Promise<string> =>
   new Promise((resolve) => {
     const img = new (globalThis as any).Image()
     img.onload = () => {
@@ -73,7 +73,8 @@ export const compositeOnColor = (src: string, color: string): Promise<string> =>
       ctx.fillStyle = color
       ctx.fillRect(0, 0, canvas.width, canvas.height)
       ctx.drawImage(img, 0, 0)
-      resolve(canvas.toDataURL("image/png"))
+      // Use WebP for better compression when applying solid background
+      resolve(canvas.toDataURL("image/webp", quality))
     }
     img.src = src
   })

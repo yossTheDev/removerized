@@ -39,6 +39,7 @@
     "framer-motion": "^11.0.28",
     "framework-utils": "^1.1.0",
     "html2canvas": "^1.4.1",
+    "image-resize-compress": "^2.1.1",
     "lucide-react": "^0.456.0",
     "luxon": "^3.4.4",
     "next": "16.2.3",

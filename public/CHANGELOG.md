@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [1.1.1] - Upscaler Stability Fixes
+## [1.1.1] - Some Stability Fixes
 
 ### 🐛 Fixed
 
@@ -17,6 +17,16 @@ All notable changes to this project will be documented in this file.
 - Changed the default remover model to `ormbg_quantized`.
 - Updated BiRefNet Lite model URLs to use the new `BiRefNet_lite-ONNX` repository from ONNX Community.
 - Renamed `birefnet_lite_quantized` to `birefnet_lite` (FP32) with updated size (224 MB) and description for standard precision without fidelity loss.
+
+### 🧠 Improved
+
+- Optimized image compression by switching from PNG to WebP format for all processed images. This significantly reduces file sizes while maintaining visual quality, especially for images with transparency.
+- Made WebP the default export format for new images.
+- Moved quality control to per-image settings via ImageSettings component, allowing individual quality adjustment per image instead of global quality.
+- Quality slider now appears in ImageSettings panel with range 50-100% and default 80%.
+- Download button now performs real format conversion using Canvas, converting images to their configured format (WebP, PNG, or JPEG) at download time with their individual quality settings.
+- Added individual download button in ImageSettings panel to download specific image with its configured format and quality.
+- Download button tooltip updated to "Download all images" to reflect mass download functionality.
 
 ---
 

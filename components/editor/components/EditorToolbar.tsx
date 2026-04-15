@@ -85,7 +85,7 @@ export const EditorToolbar = ({
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Download result</p>
+            <p>Download all images</p>
           </TooltipContent>
         </Tooltip>
 

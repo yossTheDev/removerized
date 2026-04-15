@@ -93,7 +93,7 @@ export const useImageQueue = () => {
           duplicates.push(file.name)
           return acc
         }
-        acc.push({ format: "image/png", name: file.name, quality: 100 })
+        acc.push({ format: "image/webp", name: file.name, quality: 80 })
         return acc
       }, [])
 

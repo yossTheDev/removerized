@@ -14,6 +14,7 @@ interface RemoverTabProps {
   hasImage: boolean
   onRemove: () => void
   accentColor: string
+  onDownload?: () => void
 }
 
 export const RemoverTab = ({
@@ -26,12 +27,13 @@ export const RemoverTab = ({
   hasImage,
   onRemove,
   accentColor,
+  onDownload,
 }: RemoverTabProps) => {
   return (
     <div className="flex flex-col gap-4">
       {/* Per-image settings */}
       {localSettings ? (
-        <ImageSettings settings={localSettings} onChange={onSettingsChange} />
+        <ImageSettings settings={localSettings} onChange={onSettingsChange} onDownload={onDownload} />
       ) : (
         <p className="py-2 text-center text-xs text-white/30">
           Select an image to edit settings

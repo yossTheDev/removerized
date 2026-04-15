@@ -1,7 +1,8 @@
-import { Info } from "lucide-react"
+import { Download, Info } from "lucide-react"
 
 import { ImageSetting } from "@/types/image-settings"
 
+import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import {
   Select,
@@ -13,13 +14,17 @@ import {
 import { Slider } from "../ui/slider"
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
 
+interface ImageSettingsProps {
+  settings: ImageSetting
+  onChange: (newSettings: ImageSetting) => void
+  onDownload?: () => void
+}
+
 export default function ImageSettings({
   settings,
   onChange,
-}: {
-  settings: ImageSetting
-  onChange: (newSettings: ImageSetting) => void
-}) {
+  onDownload,
+}: ImageSettingsProps) {
   const handleChange = (field: keyof ImageSetting, value: unknown) => {
     onChange({ ...settings, [field]: value })
   }
@@ -39,19 +44,19 @@ export default function ImageSettings({
               <Info className="ml-2 size-4 text-gray-500" />
             </TooltipTrigger>
             <TooltipContent>
-              <p>Adjust the output image quality (higher = better quality).</p>
+              <p>Adjust the output image quality (higher = better quality, larger file size).</p>
             </TooltipContent>
           </Tooltip>
         </label>
         <Slider
-          value={[settings.quality ?? 100]}
-          min={10}
+          value={[settings.quality ?? 80]}
+          min={50}
           max={100}
-          step={10}
+          step={5}
           onValueChange={(value) => handleChange("quality", value[0])}
         />
         <span className="text-right text-xs text-neutral-400">
-          {settings.quality ?? 100}%
+          {settings.quality ?? 80}%
         </span>
       </div>
 
@@ -63,7 +68,7 @@ export default function ImageSettings({
               <Info className="ml-2 size-4 text-gray-500" />
             </TooltipTrigger>
             <TooltipContent>
-              <p>Select the output format. PNG preserves transparency.</p>
+              <p>Select the output format. WebP is recommended for best compression.</p>
             </TooltipContent>
           </Tooltip>
         </label>
@@ -75,12 +80,23 @@ export default function ImageSettings({
             <SelectValue placeholder="Select format" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="image/webp">WebP (Recommended)</SelectItem>
             <SelectItem value="image/png">PNG</SelectItem>
             <SelectItem value="image/jpeg">JPEG</SelectItem>
-            <SelectItem value="image/webp">WebP</SelectItem>
           </SelectContent>
         </Select>
       </div>
+
+      {onDownload && (
+        <Button
+          onClick={onDownload}
+          className="w-full"
+          variant="outline"
+        >
+          <Download className="mr-2 size-4" />
+          Download this image
+        </Button>
+      )}
     </div>
   )
 }

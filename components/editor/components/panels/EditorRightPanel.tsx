@@ -41,6 +41,7 @@ interface EditorRightPanelProps {
   hasColorized: boolean
   onColorize: () => void
   onDownload: () => void
+  onDownloadSingle: () => void
   selectedUpscalerSettings: UpscalerModelKey
   onUpscalerSettingsChange: (key: UpscalerModelKey) => void
   upscalerModel: ModelKey
@@ -90,6 +91,7 @@ export const EditorRightPanel = ({
   hasColorized,
   onColorize,
   onDownload,
+  onDownloadSingle,
   selectedUpscalerSettings,
   onUpscalerSettingsChange,
   upscalerModel,
@@ -201,6 +203,7 @@ export const EditorRightPanel = ({
               hasImage={hasImage}
               onRemove={onRemove}
               accentColor={accentColor}
+              onDownload={onDownloadSingle}
             />
           )}
           {activeTool === "upscaler" && (

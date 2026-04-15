@@ -75,7 +75,8 @@ export const preprocessImage = (imgEl: any, ort: Ort) => {
  */
 export const applyMaskAsAlpha = (
   maskTensor: any,
-  imgEl: any
+  imgEl: any,
+  quality: number = 0.9
 ): Promise<Blob> =>
   new Promise((resolve) => {
     const ow = imgEl.naturalWidth
@@ -127,7 +128,8 @@ export const applyMaskAsAlpha = (
     outCanvas.width = ow
     outCanvas.height = oh
     outCanvas.getContext("2d")!.putImageData(origPx, 0, 0)
-    outCanvas.toBlob((blob: any) => resolve(blob!), "image/png")
+    // Use WebP for better compression with transparency
+    outCanvas.toBlob((blob: any) => resolve(blob!), "image/webp", quality)
   })
 
 /**
@@ -209,10 +211,10 @@ export const tensorToImageData = (
   tensor: any,
   width: number,
   height: number,
-  options: { valueMode?: "unit" | "byte" } = {}
+  options: { valueMode?: "unit" | "byte"; quality?: number } = {}
 ): Promise<Blob> =>
   new Promise((resolve) => {
-    const { valueMode = "unit" } = options
+    const { valueMode = "unit", quality = 0.9 } = options
     const canvas = (globalThis as any).document.createElement("canvas")
     canvas.width = width
     canvas.height = height
@@ -237,7 +239,8 @@ export const tensorToImageData = (
     }
 
     ctx.putImageData(imageData, 0, 0)
-    canvas.toBlob((blob: any) => resolve(blob!), "image/png")
+    // Use WebP for better compression
+    canvas.toBlob((blob: any) => resolve(blob!), "image/webp", quality)
   })
 
 /**
@@ -247,7 +250,8 @@ export const tensorToImageData = (
  */
 export const applyColorizerChromaToOriginal = (
   tensor: any,
-  imgEl: any
+  imgEl: any,
+  quality: number = 0.9
 ): Promise<Blob> =>
   new Promise((resolve) => {
     const ow = imgEl.naturalWidth
@@ -295,7 +299,7 @@ export const applyColorizerChromaToOriginal = (
     resizedColorCanvas.height = oh
     const resizedColorCtx = resizedColorCanvas.getContext("2d")!
     resizedColorCtx.imageSmoothingEnabled = true
-    ;(resizedColorCtx as any).imageSmoothingQuality = "high"
+      ; (resizedColorCtx as any).imageSmoothingQuality = "high"
     resizedColorCtx.drawImage(
       colorCanvas,
       cropX,
@@ -324,5 +328,6 @@ export const applyColorizerChromaToOriginal = (
     outCtx.drawImage(blurredColorCanvas, 0, 0, ow, oh)
     outCtx.globalCompositeOperation = "source-over"
 
-    outCanvas.toBlob((blob: any) => resolve(blob!), "image/png")
+    // Use WebP for better compression
+    outCanvas.toBlob((blob: any) => resolve(blob!), "image/webp", quality)
   })

@@ -41,13 +41,14 @@ export interface UseOnnxSessionReturn {
   runInference: (
     imgEl: HTMLImageElement,
     modelKey: ModelKey,
-    onUpdate: ProgressCallback
+    onUpdate: ProgressCallback,
+    quality?: number
   ) => Promise<Blob>
   runImageToImage: (
     imgEl: HTMLImageElement,
     modelKey: ModelKey,
     onUpdate: ProgressCallback,
-    options?: { size?: number }
+    options?: { size?: number; quality?: number }
   ) => Promise<Blob>
   setModelStatus: (status: ModelStatus) => void
 }
@@ -123,7 +124,8 @@ export const useOnnxSession = (
     async (
       imgEl: HTMLImageElement,
       modelKey: ModelKey,
-      onUpdate: ProgressCallback
+      onUpdate: ProgressCallback,
+      quality: number = 0.9
     ): Promise<Blob> => {
       // Check if the session is ready before running inference
       if (!ortRef.current) {
@@ -145,7 +147,7 @@ export const useOnnxSession = (
 
       onUpdate("Post-processing…", 0)
       const maskTensor = results[session.outputNames[0]]
-      const blob = await applyMaskAsAlpha(maskTensor, imgEl)
+      const blob = await applyMaskAsAlpha(maskTensor, imgEl, quality)
 
       return blob
     },
@@ -160,7 +162,7 @@ export const useOnnxSession = (
       imgEl: HTMLImageElement,
       modelKey: ModelKey,
       onUpdate: ProgressCallback,
-      options: { size?: number } = {}
+      options: { size?: number; quality?: number } = {}
     ): Promise<Blob> => {
       if (!ortRef.current) {
         throw new Error("ONNX Runtime not initialized")
@@ -170,6 +172,7 @@ export const useOnnxSession = (
 
       const isColorizer = modelKey.includes("deoldify")
       const isUpscaler = modelKey.includes("swin2sr") || modelKey.includes("realesrgan")
+      const quality = options.quality ?? 0.9
 
       onUpdate("Pre-processing…", 0)
       // Note: The current DeOldify ONNX models have a fixed input size of 256x256.
@@ -197,14 +200,14 @@ export const useOnnxSession = (
       const outputTensor = results[session.outputNames[0]]
 
       if (isColorizer) {
-        return applyColorizerChromaToOriginal(outputTensor, imgEl)
+        return applyColorizerChromaToOriginal(outputTensor, imgEl, quality)
       }
 
       // For upscaler, output size is usually input * 4
       const outW = (outputTensor.dims[3] as number) || (options.size || 512) * (isUpscaler ? 4 : 1)
       const outH = (outputTensor.dims[2] as number) || (options.size || 512) * (isUpscaler ? 4 : 1)
 
-      const blob = await tensorToImageData(outputTensor, outW, outH)
+      const blob = await tensorToImageData(outputTensor, outW, outH, { quality })
 
       return blob
     },

@@ -23,6 +23,7 @@ import { useImageQueue } from "./hooks/use-image-queue"
 import { useOnnxSession } from "./hooks/use-onnx-session"
 import { useProcessingDialog } from "./hooks/use-processing-dialog"
 import { isModelCached } from "./lib/idb"
+import { convertImageFormat } from "./lib/image-converter"
 import { base64ToBlob, compositeOnColor, loadImage } from "./lib/image-utils"
 import type { ActiveTool, ModelKey, UpscalerModelKey } from "./types"
 
@@ -63,6 +64,7 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
   const [bgColor, setBgColor] = useState("#ffffff")
   const [upscaledData, setUpscaledData] = useState<string | null>(null)
   const [colorizedData, setColorizedData] = useState<string | null>(null)
+  const [exportQuality, setExportQuality] = useState(0.8)
 
   // WASM init
   useEffect(() => {
@@ -179,11 +181,12 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
     async (blob: Blob): Promise<Blob> => {
       if (!applyBgColor) return blob
       const objUrl = URL.createObjectURL(blob)
-      const composited = await compositeOnColor(objUrl, bgColor)
+      const quality = (queue.localSettings?.quality ?? 80) / 100
+      const composited = await compositeOnColor(objUrl, bgColor, quality)
       URL.revokeObjectURL(objUrl)
       return base64ToBlob(composited)
     },
-    [applyBgColor, bgColor]
+    [applyBgColor, bgColor, queue.localSettings]
   )
 
   // Remove background
@@ -195,10 +198,12 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
 
     try {
       const imgEl = await loadImage(queue.imageData)
+      const quality = (queue.localSettings?.quality ?? 80) / 100
       const rawBlob = await onnx.runInference(
         imgEl,
         selectedModel,
-        updateDialog
+        updateDialog,
+        quality
       )
       const blob = await maybeComposite(rawBlob)
       const url = URL.createObjectURL(blob)
@@ -251,6 +256,7 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
         const label = setting.name.slice(0, 22)
         const imgEl = await loadImage(URL.createObjectURL(file))
 
+        const quality = (setting.quality ?? 80) / 100
         const rawBlob = await onnx.runInference(
           imgEl,
           selectedModel,
@@ -259,7 +265,8 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
               `[${i + 1}/${queue.settings.length}] ${label} — ${text}`,
               pct
             )
-          }
+          },
+          quality
         )
 
         const blob = await maybeComposite(rawBlob)
@@ -303,12 +310,14 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
     try {
       const imgEl = await loadImage(source)
 
+      const quality = (queue.localSettings?.quality ?? 80) / 100
       const blob = await onnx.runImageToImage(
         imgEl,
         upscalerModel,
         updateDialog,
         {
           size: 512,
+          quality: quality,
         }
       )
       const url = URL.createObjectURL(blob)
@@ -340,11 +349,12 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
     try {
       const imgEl = await loadImage(source)
 
+      const quality = (queue.localSettings?.quality ?? 80) / 100
       const blob = await onnx.runImageToImage(
         imgEl,
         colorizerModel,
         updateDialog,
-        { size: 512 }
+        { size: 512, quality: quality }
       )
       const url = URL.createObjectURL(blob)
 
@@ -365,30 +375,61 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
   }, [queue, openDialog, onnx, colorizerModel, updateDialog, closeDialog])
 
   // Download
-  const handleDownload = useCallback(() => {
-    const link = (globalThis as any).document.createElement("a")
-
+  const handleDownload = useCallback(async () => {
     if (activeTool === "upscaler" && upscaledData) {
-      link.href = upscaledData
-      link.download = `removerized-upscaled-${Date.now()}.png`
+      const setting = queue.settings.find((s) => s.name === queue.selectedImage)
+      const format = setting?.format || "image/webp"
+      const quality = (setting?.quality ?? 80) / 100
+
+      // Fetch and convert format
+      const response = await fetch(upscaledData)
+      const blob = await response.blob()
+      const convertedBlob = await convertImageFormat(blob, format, quality)
+
+      const link = (globalThis as any).document.createElement("a")
+      link.href = URL.createObjectURL(convertedBlob)
+      const ext = format === "image/webp" ? "webp" : format === "image/jpeg" ? "jpg" : "png"
+      link.download = `removerized-upscaled-${Date.now()}.${ext}`
       link.click()
       return
     }
 
     if (activeTool === "colorizer" && colorizedData) {
-      link.href = colorizedData
-      link.download = `removerized-colorized-${Date.now()}.png`
+      const setting = queue.settings.find((s) => s.name === queue.selectedImage)
+      const format = setting?.format || "image/webp"
+      const quality = (setting?.quality ?? 80) / 100
+
+      // Fetch and convert format
+      const response = await fetch(colorizedData)
+      const blob = await response.blob()
+      const convertedBlob = await convertImageFormat(blob, format, quality)
+
+      const link = (globalThis as any).document.createElement("a")
+      link.href = URL.createObjectURL(convertedBlob)
+      const ext = format === "image/webp" ? "webp" : format === "image/jpeg" ? "jpg" : "png"
+      link.download = `removerized-colorized-${Date.now()}.${ext}`
       link.click()
       return
     }
 
-    const result = queue.resultsData.find((r) => r.name === queue.selectedImage)
-    if (result) {
-      link.href = URL.createObjectURL(result.data)
-      link.download = `removerized-${Date.now()}.png`
+    // Download all images in the queue with their respective formats
+    for (const result of queue.resultsData) {
+      const setting = queue.settings.find((s) => s.name === result.name)
+      const format = setting?.format || "image/webp"
+      const quality = (setting?.quality ?? 80) / 100
+
+      // Convert format
+      const convertedBlob = await convertImageFormat(result.data, format, quality)
+
+      const link = (globalThis as any).document.createElement("a")
+      link.href = URL.createObjectURL(convertedBlob)
+      const ext = format === "image/webp" ? "webp" : format === "image/jpeg" ? "jpg" : "png"
+
+      const nameWithoutExt = result.name.replace(/\.[^/.]+$/, "")
+      link.download = `${nameWithoutExt}.${ext}`
       link.click()
     }
-  }, [activeTool, upscaledData, colorizedData, queue.resultsData, queue.selectedImage])
+  }, [activeTool, upscaledData, colorizedData, queue.resultsData, queue.settings, queue.selectedImage])
 
   // Derived
   const canDownload =
@@ -502,6 +543,7 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
           hasColorized={!!colorizedData}
           onColorize={colorize}
           onDownload={handleDownload}
+          onDownloadSingle={handleDownload}
           files={queue.files}
           settings={queue.settings}
           selectedImage={queue.selectedImage}
