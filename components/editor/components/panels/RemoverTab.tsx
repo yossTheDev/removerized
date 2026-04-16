@@ -74,15 +74,17 @@ export const RemoverTab = ({
             <input
               type="color"
               value={bgColor}
+              aria-label="Background color picker"
               onChange={(e) => onBgColorChange((e.target as any).value)}
-              className="size-9 cursor-pointer rounded-lg border border-white/10 bg-transparent p-0.5"
+              className="size-9 cursor-pointer rounded-lg border border-white/10 bg-transparent p-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
             />
             <input
               type="text"
               value={bgColor}
               maxLength={7}
+              aria-label="Background color hex code"
               onChange={(e) => onBgColorChange((e.target as any).value)}
-              className="flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 font-mono text-xs text-white/80 focus:outline-none focus:border-white/20"
+              className="flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 font-mono text-xs text-white/80 focus:outline-none focus:border-white/20 focus-visible:ring-2 focus-visible:ring-white/20"
             />
           </div>
         )}

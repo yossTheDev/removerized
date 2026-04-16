@@ -5,6 +5,11 @@ import type { ImageSetting } from "@/types/image-settings"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import {
   FileInput,
   FileUploader,
   FileUploaderContent,
@@ -82,16 +87,26 @@ export const EditorQueuePanel = ({
             return (
               <div
                 key={file.name + index}
+                role="button"
+                tabIndex={0}
+                aria-label={`Select ${file.name}`}
+                onClick={() => onSelectImage(url, file.name)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault()
+                    onSelectImage(url, file.name)
+                  }
+                }}
                 className={cn(
-                  "group relative h-24 min-h-24 cursor-pointer overflow-hidden rounded-xl border-2 transition-all duration-200",
+                  "group relative h-24 min-h-24 cursor-pointer overflow-hidden rounded-xl border-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20",
                   isSelected ? "border-2 shadow-lg" : "border-transparent"
                 )}
                 style={
                   isSelected
                     ? {
-                      borderColor: accentColor,
-                      boxShadow: `0 0 16px ${accentColor}30`,
-                    }
+                        borderColor: accentColor,
+                        boxShadow: `0 0 16px ${accentColor}30`,
+                      }
                     : { borderColor: "rgba(255,255,255,0.06)" }
                 }
               >
@@ -99,7 +114,6 @@ export const EditorQueuePanel = ({
                   className="h-full w-full rounded-[10px] object-cover"
                   alt={`Queue item ${index + 1}: ${file.name}`}
                   src={url}
-                  onClick={() => onSelectImage(url, file.name)}
                 />
 
                 {/* Gradient overlay */}
@@ -118,15 +132,25 @@ export const EditorQueuePanel = ({
                 )}
 
                 {/* Remove button */}
-                <Button
-                  onClick={() => onRemoveFile(file)}
-                  className="absolute right-1.5 top-1.5 size-6 rounded-full bg-black/60 p-0 text-white/70 opacity-0 transition-all hover:bg-black/80 hover:text-white group-hover:opacity-100"
-                  variant="ghost"
-                  size="icon"
-                  title={`Remove ${file.name}`}
-                >
-                  <Trash className="size-3" />
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onRemoveFile(file)
+                      }}
+                      className="absolute right-1.5 top-1.5 size-6 rounded-full bg-black/60 p-0 text-white/70 opacity-0 transition-all hover:bg-black/80 hover:text-white group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100"
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Remove ${file.name} from queue`}
+                    >
+                      <Trash className="size-3" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Remove from queue</p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
             )
           })}
