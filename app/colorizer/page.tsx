@@ -5,6 +5,9 @@ import { Editor } from "@/components/editor"
 export const metadata: Metadata = {
   title: "AI Image Colorizer",
   description: "Restore old black and white photos instantly with AI. Professional results, locally processed.",
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || "https://removerized.pages.dev"}/colorizer`,
+  },
   openGraph: {
     title: "AI Image Colorizer — Removerized",
     description: "Deep learning colorization that restores old photos in your browser.",

@@ -39,6 +39,9 @@ export const metadata: Metadata = {
     title: siteConfig.name,
   },
   manifest: "/manifest.json",
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_SITE_URL || "https://removerized.pages.dev",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",

@@ -5,6 +5,9 @@ import { Editor } from "@/components/editor"
 export const metadata: Metadata = {
   title: "AI Image Upscaler",
   description: "Enhance image resolution up to 4x with on-device AI. Zero cloud dependency, 100% private.",
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || "https://removerized.pages.dev"}/upscaler`,
+  },
   openGraph: {
     title: "AI Image Upscaler — Removerized",
     description: "Super-resolution AI that upscales images locally in your browser.",

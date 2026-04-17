@@ -5,6 +5,9 @@ import { Editor } from "@/components/editor"
 export const metadata: Metadata = {
   title: "AI Background Remover",
   description: "Remove backgrounds from any image with on-device AI. 100% private, free, and works offline.",
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || "https://removerized.pages.dev"}/removerized`,
+  },
   openGraph: {
     title: "AI Background Remover — Removerized",
     description: "Instant and private background removal in your browser.",
