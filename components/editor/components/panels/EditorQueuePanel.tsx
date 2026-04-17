@@ -3,7 +3,23 @@ import { Layers, Trash } from "lucide-react"
 
 import type { ImageSetting } from "@/types/image-settings"
 import { cn } from "@/lib/utils"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import {
   FileInput,
   FileUploader,
@@ -82,16 +98,26 @@ export const EditorQueuePanel = ({
             return (
               <div
                 key={file.name + index}
+                role="button"
+                tabIndex={0}
+                aria-label={`Select ${file.name}`}
+                onClick={() => onSelectImage(url, file.name)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault()
+                    onSelectImage(url, file.name)
+                  }
+                }}
                 className={cn(
-                  "group relative h-24 min-h-24 cursor-pointer overflow-hidden rounded-xl border-2 transition-all duration-200",
+                  "group relative h-24 min-h-24 cursor-pointer overflow-hidden rounded-xl border-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20",
                   isSelected ? "border-2 shadow-lg" : "border-transparent"
                 )}
                 style={
                   isSelected
                     ? {
-                      borderColor: accentColor,
-                      boxShadow: `0 0 16px ${accentColor}30`,
-                    }
+                        borderColor: accentColor,
+                        boxShadow: `0 0 16px ${accentColor}30`,
+                      }
                     : { borderColor: "rgba(255,255,255,0.06)" }
                 }
               >
@@ -99,7 +125,6 @@ export const EditorQueuePanel = ({
                   className="h-full w-full rounded-[10px] object-cover"
                   alt={`Queue item ${index + 1}: ${file.name}`}
                   src={url}
-                  onClick={() => onSelectImage(url, file.name)}
                 />
 
                 {/* Gradient overlay */}
@@ -118,15 +143,25 @@ export const EditorQueuePanel = ({
                 )}
 
                 {/* Remove button */}
-                <Button
-                  onClick={() => onRemoveFile(file)}
-                  className="absolute right-1.5 top-1.5 size-6 rounded-full bg-black/60 p-0 text-white/70 opacity-0 transition-all hover:bg-black/80 hover:text-white group-hover:opacity-100"
-                  variant="ghost"
-                  size="icon"
-                  title={`Remove ${file.name}`}
-                >
-                  <Trash className="size-3" />
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onRemoveFile(file)
+                      }}
+                      className="absolute right-1.5 top-1.5 size-6 rounded-full bg-black/60 p-0 text-white/70 opacity-0 transition-all hover:bg-black/80 hover:text-white group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100"
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Remove ${file.name} from queue`}
+                    >
+                      <Trash className="size-3" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Remove from queue</p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
             )
           })}
@@ -135,14 +170,37 @@ export const EditorQueuePanel = ({
 
       {/* Clear Queue */}
       {files.length > 0 && (
-        <Button
-          onClick={onClearQueue}
-          variant="ghost"
-          className="w-full rounded-xl border border-white/[0.06] bg-white/[0.03] text-xs text-white/40 transition-all hover:border-white/10 hover:bg-white/[0.06] hover:text-white/70"
-        >
-          <Trash className="mr-2 size-3" />
-          Clear Queue
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              className="w-full rounded-xl border border-white/[0.06] bg-white/[0.03] text-xs text-white/40 transition-all hover:border-white/10 hover:bg-white/[0.06] hover:text-white/70"
+            >
+              <Trash className="mr-2 size-3" />
+              Clear Queue
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="border-white/10 bg-[#0a0a0a]/95 text-white shadow-2xl backdrop-blur-2xl">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription className="text-white/50">
+                This will remove all images from the queue and reset any
+                processed results. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="border-white/10 bg-white/5 hover:bg-white/10 hover:text-white">
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={onClearQueue}
+                className="bg-red-600 text-white hover:bg-red-700"
+              >
+                Clear Everything
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
     </div>
   )
