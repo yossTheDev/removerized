@@ -488,12 +488,13 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
         <div className="pointer-events-auto absolute top-4 left-4 z-20 flex gap-2">
           <button
             onClick={() => setShowChangelog(true)}
-            className="rounded-xl border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-medium text-white/50 shadow-2xl backdrop-blur-2xl transition-all hover:bg-white/10 hover:text-white"
+            className="rounded-xl border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-medium text-white/50 shadow-2xl backdrop-blur-2xl transition-all hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
             style={{
               boxShadow: `0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06), 0 0 40px ${accentColor}10`,
               color: accentColor,
             }}
             title="View changelog"
+            aria-label="View changelog"
           >
             v{APP_VERSION}
           </button>

@@ -52,7 +52,7 @@ export const ColorizerTab = ({
         onClick={onColorize}
         disabled={!hasImage}
         className={cn(
-          "flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200",
+          "flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20",
           hasImage
             ? "cursor-pointer hover:brightness-110 active:scale-[0.98]"
             : "cursor-not-allowed opacity-25"
