@@ -55,7 +55,7 @@ export const EditorToolbar = ({
               onClick={onProcess}
               size="icon"
               variant="ghost"
-              aria-label="Process all images in queue"
+              aria-label="Process all images in queue (Ctrl + Enter)"
               className={cn(
                 "size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white"
               )}
@@ -64,7 +64,7 @@ export const EditorToolbar = ({
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Process all images</p>
+            <p>Process all images <span className="ml-1 text-white/40">(Ctrl + Enter)</span></p>
           </TooltipContent>
         </Tooltip>
 
@@ -94,41 +94,58 @@ export const EditorToolbar = ({
         {/* Zoom in */}
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button
-              onClick={onZoomIn}
-              size="icon"
-              variant="ghost"
-              aria-label="Zoom in"
-              className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white"
-            >
-              <ZoomIn className="size-4" />
-            </Button>
+            <div className="flex h-8 items-center">
+              <Button
+                onClick={onZoomIn}
+                disabled={zoom >= 3}
+                size="icon"
+                variant="ghost"
+                aria-label="Zoom in (Ctrl +)"
+                className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white disabled:opacity-20"
+              >
+                <ZoomIn className="size-4" />
+              </Button>
+            </div>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Zoom in</p>
+            <p>Zoom in <span className="ml-1 text-white/40">(Ctrl +)</span></p>
           </TooltipContent>
         </Tooltip>
 
-        {/* Zoom level indicator */}
-        <span className="w-12 text-center text-xs text-white/50">
-          {Math.round(zoom * 100)}%
-        </span>
+        {/* Zoom level indicator (also resets zoom) */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={onZoomReset}
+              className="w-12 rounded-md text-center text-xs font-medium text-white/40 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
+              aria-label={`Current zoom ${Math.round(zoom * 100)}%. Click to reset.`}
+            >
+              {Math.round(zoom * 100)}%
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Reset zoom <span className="ml-1 text-white/40">(Ctrl 0)</span></p>
+          </TooltipContent>
+        </Tooltip>
 
         {/* Zoom out */}
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button
-              onClick={onZoomOut}
-              size="icon"
-              variant="ghost"
-              aria-label="Zoom out"
-              className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white"
-            >
-              <ZoomOut className="size-4" />
-            </Button>
+            <div className="flex h-8 items-center">
+              <Button
+                onClick={onZoomOut}
+                disabled={zoom <= 0.5}
+                size="icon"
+                variant="ghost"
+                aria-label="Zoom out (Ctrl -)"
+                className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white disabled:opacity-20"
+              >
+                <ZoomOut className="size-4" />
+              </Button>
+            </div>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Zoom out</p>
+            <p>Zoom out <span className="ml-1 text-white/40">(Ctrl -)</span></p>
           </TooltipContent>
         </Tooltip>
 
@@ -139,14 +156,14 @@ export const EditorToolbar = ({
               onClick={onZoomReset}
               size="icon"
               variant="ghost"
-              aria-label="Reset zoom"
+              aria-label="Reset zoom (Ctrl 0)"
               className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white"
             >
               <ScanEye className="size-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Reset zoom</p>
+            <p>Reset zoom <span className="ml-1 text-white/40">(Ctrl 0)</span></p>
           </TooltipContent>
         </Tooltip>
       </div>

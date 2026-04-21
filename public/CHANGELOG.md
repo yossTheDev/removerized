@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.1.2] - 2026-04-21
+
+### ✨ Added
+- 🎨 **Palette**: Implemented keyboard shortcuts for essential editor actions:
+  - `Ctrl/Cmd +` or `Ctrl/Cmd =` for Zoom In
+  - `Ctrl/Cmd -` for Zoom Out
+  - `Ctrl/Cmd 0` for Reset Zoom
+  - `Ctrl/Cmd + Enter` for Process All (Batch processing)
+
+### 🧠 Improved
+- 🎨 **Palette**: Added keyboard shortcut hints to tooltips in the Editor Toolbar.
+- 🎨 **Palette**: Zoom buttons now visually indicate when limits (50% and 300%) are reached by disabling.
+- 🎨 **Palette**: The zoom level indicator is now an interactive button that allows resetting the zoom to 100%.
+- 🎨 **Palette**: Enhanced accessibility by ensuring tooltips remain functional for disabled buttons.
+
+---
+
 ## [1.1.1] - Some Stability Fixes
 
 ### 🐛 Fixed

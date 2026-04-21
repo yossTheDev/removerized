@@ -29,7 +29,7 @@ import type { ActiveTool, ModelKey, UpscalerModelKey } from "./types"
 
 const VALID_TOOLS: ActiveTool[] = ["remover", "upscaler", "colorizer"]
 const VALID_MODELS = Object.keys(MODELS) as ModelKey[]
-const APP_VERSION = "1.1.0"
+const APP_VERSION = "1.1.2"
 
 interface EditorProps {
   initialTool?: ActiveTool
@@ -176,6 +176,8 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
     setZoom(1)
   }, [])
 
+
+
   // Background composite
   const maybeComposite = useCallback(
     async (blob: Blob): Promise<Blob> => {
@@ -188,55 +190,6 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
     },
     [applyBgColor, bgColor]
   )
-
-  // Remove background
-  const remove = useCallback(async () => {
-    if (!queue.imageData) return
-
-    const start = performance.now()
-    openDialog("Starting…")
-
-    try {
-      const imgEl = await loadImage(queue.imageData)
-      const quality = 0.85 // Use standard quality during processing
-      const rawBlob = await onnx.runInference(
-        imgEl,
-        selectedModel,
-        updateDialog,
-        quality
-      )
-      const blob = await maybeComposite(rawBlob)
-      const url = URL.createObjectURL(blob)
-
-      queue.setResultsData((prev) => [
-        ...prev.filter((r) => r.name !== queue.selectedImage),
-        { data: blob, name: queue.selectedImage! },
-      ])
-      queue.setResultData(url)
-      triggerDust()
-
-      sendGAEvent({ event: "remove-background", value: "success" })
-      const elapsed = Math.floor((performance.now() - start) / 1000)
-      const { toast } = await import("sonner")
-      toast.success(`🚀 Done in ${elapsed} s`)
-    } catch (err) {
-      console.error("[remove]", err)
-      onnx.setModelStatus("error")
-      const { toast } = await import("sonner")
-      toast.error("Background removal failed.")
-    } finally {
-      closeDialog()
-    }
-  }, [
-    queue,
-    onnx,
-    selectedModel,
-    updateDialog,
-    openDialog,
-    closeDialog,
-    maybeComposite,
-    triggerDust,
-  ])
 
   // Batch process
   const process = useCallback(async () => {
@@ -285,6 +238,55 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
       console.error("[process]", err)
       const { toast } = await import("sonner")
       toast.error("Batch processing failed.")
+    } finally {
+      closeDialog()
+    }
+  }, [
+    queue,
+    onnx,
+    selectedModel,
+    updateDialog,
+    openDialog,
+    closeDialog,
+    maybeComposite,
+    triggerDust,
+  ])
+
+  // Remove background
+  const remove = useCallback(async () => {
+    if (!queue.imageData) return
+
+    const start = performance.now()
+    openDialog("Starting…")
+
+    try {
+      const imgEl = await loadImage(queue.imageData)
+      const quality = 0.85 // Use standard quality during processing
+      const rawBlob = await onnx.runInference(
+        imgEl,
+        selectedModel,
+        updateDialog,
+        quality
+      )
+      const blob = await maybeComposite(rawBlob)
+      const url = URL.createObjectURL(blob)
+
+      queue.setResultsData((prev) => [
+        ...prev.filter((r) => r.name !== queue.selectedImage),
+        { data: blob, name: queue.selectedImage! },
+      ])
+      queue.setResultData(url)
+      triggerDust()
+
+      sendGAEvent({ event: "remove-background", value: "success" })
+      const elapsed = Math.floor((performance.now() - start) / 1000)
+      const { toast } = await import("sonner")
+      toast.success(`🚀 Done in ${elapsed} s`)
+    } catch (err) {
+      console.error("[remove]", err)
+      onnx.setModelStatus("error")
+      const { toast } = await import("sonner")
+      toast.error("Background removal failed.")
     } finally {
       closeDialog()
     }
@@ -373,6 +375,32 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
       closeDialog()
     }
   }, [queue, openDialog, onnx, colorizerModel, updateDialog, closeDialog])
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: globalThis.KeyboardEvent) => {
+      const isMod = e.ctrlKey || e.metaKey
+
+      if (isMod) {
+        if (e.key === "=" || e.key === "+") {
+          e.preventDefault()
+          handleZoomIn()
+        } else if (e.key === "-") {
+          e.preventDefault()
+          handleZoomOut()
+        } else if (e.key === "0") {
+          e.preventDefault()
+          handleZoomReset()
+        } else if (e.key === "Enter") {
+          e.preventDefault()
+          process()
+        }
+      }
+    }
+
+    globalThis.addEventListener("keydown", handleKeyDown)
+    return () => globalThis.removeEventListener("keydown", handleKeyDown)
+  }, [handleZoomIn, handleZoomOut, handleZoomReset, process])
 
   // Download
   const handleDownload = useCallback(async () => {
