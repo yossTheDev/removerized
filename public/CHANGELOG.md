@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.1.2] - 2026-04-22
+### Added
+- 🎨 **Palette**: Added global keyboard shortcuts for editor controls (Zoom In, Zoom Out, Reset Zoom, and Batch Process).
+- Added keyboard shortcut hints to tooltips in the Editor Toolbar.
+
+---
+
 ## [1.1.1] - Some Stability Fixes
 
 ### 🐛 Fixed

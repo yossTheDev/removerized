@@ -29,7 +29,7 @@ import type { ActiveTool, ModelKey, UpscalerModelKey } from "./types"
 
 const VALID_TOOLS: ActiveTool[] = ["remover", "upscaler", "colorizer"]
 const VALID_MODELS = Object.keys(MODELS) as ModelKey[]
-const APP_VERSION = "1.1.0"
+const APP_VERSION = "1.1.2"
 
 interface EditorProps {
   initialTool?: ActiveTool
@@ -430,6 +430,32 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
       link.click()
     }
   }, [activeTool, upscaledData, colorizedData, queue.resultsData, queue.settings, queue.selectedImage])
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: any) => {
+      const isMod = e.ctrlKey || e.metaKey
+
+      if (isMod) {
+        if (e.key === "=" || e.key === "+") {
+          e.preventDefault()
+          handleZoomIn()
+        } else if (e.key === "-") {
+          e.preventDefault()
+          handleZoomOut()
+        } else if (e.key === "0") {
+          e.preventDefault()
+          handleZoomReset()
+        } else if (e.key === "Enter") {
+          e.preventDefault()
+          process()
+        }
+      }
+    }
+
+    globalThis.addEventListener("keydown", handleKeyDown)
+    return () => globalThis.removeEventListener("keydown", handleKeyDown)
+  }, [handleZoomIn, handleZoomOut, handleZoomReset, process])
 
   // Derived
   const canDownload =
