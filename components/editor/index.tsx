@@ -29,7 +29,7 @@ import type { ActiveTool, ModelKey, UpscalerModelKey } from "./types"
 
 const VALID_TOOLS: ActiveTool[] = ["remover", "upscaler", "colorizer"]
 const VALID_MODELS = Object.keys(MODELS) as ModelKey[]
-const APP_VERSION = "1.1.0"
+const APP_VERSION = "1.1.2"
 
 interface EditorProps {
   initialTool?: ActiveTool
@@ -298,6 +298,42 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
     maybeComposite,
     triggerDust,
   ])
+
+  // Global keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable
+      ) {
+        return
+      }
+
+      const isMod = e.ctrlKey || e.metaKey
+
+      if (isMod) {
+        if (e.key === "=" || e.key === "+") {
+          e.preventDefault()
+          handleZoomIn()
+        } else if (e.key === "-") {
+          e.preventDefault()
+          handleZoomOut()
+        } else if (e.key === "0") {
+          e.preventDefault()
+          handleZoomReset()
+        } else if (e.key === "Enter") {
+          e.preventDefault()
+          process()
+        }
+      }
+    }
+
+    const target = globalThis as any
+    target.window?.addEventListener("keydown", handleKeyDown)
+    return () => target.window?.removeEventListener("keydown", handleKeyDown)
+  }, [handleZoomIn, handleZoomOut, handleZoomReset, process])
 
   // Upscale
   const upscale = useCallback(async () => {

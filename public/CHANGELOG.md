@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.1.2] - 2025-05-14
+
+### Added
+- 🎨 **Palette**: Added global keyboard shortcuts for enhanced accessibility and productivity.
+- Supported `Ctrl/Cmd +` or `Ctrl/Cmd =` for Zoom In.
+- Supported `Ctrl/Cmd -` for Zoom Out.
+- Supported `Ctrl/Cmd 0` for Reset Zoom.
+- Supported `Ctrl/Cmd + Enter` for Batch Processing.
+- Added shortcut hints to toolbar tooltips for better discoverability.
+
+---
+
 ## [1.1.1] - Some Stability Fixes
 
 ### 🐛 Fixed
