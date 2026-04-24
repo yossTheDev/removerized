@@ -2,12 +2,12 @@ import { Download, LoaderIcon, ScanEye, ZoomIn, ZoomOut } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Icons } from "@/components/icons"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { Icons } from "@/components/icons"
 
 interface EditorToolbarProps {
   canDownload: boolean
@@ -64,7 +64,7 @@ export const EditorToolbar = ({
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Process all images</p>
+            <p>Process all images (Ctrl + Enter)</p>
           </TooltipContent>
         </Tooltip>
 
@@ -105,7 +105,7 @@ export const EditorToolbar = ({
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Zoom in</p>
+            <p>Zoom in (Ctrl +)</p>
           </TooltipContent>
         </Tooltip>
 
@@ -128,7 +128,7 @@ export const EditorToolbar = ({
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Zoom out</p>
+            <p>Zoom out (Ctrl -)</p>
           </TooltipContent>
         </Tooltip>
 
@@ -146,7 +146,7 @@ export const EditorToolbar = ({
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Reset zoom</p>
+            <p>Reset zoom (Ctrl 0)</p>
           </TooltipContent>
         </Tooltip>
       </div>

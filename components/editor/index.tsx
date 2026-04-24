@@ -5,8 +5,8 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { sendGAEvent } from "@next/third-parties/google"
 
-import { EditorCanvas } from "./components/EditorCanvas"
 import { ChangelogDialog } from "./components/ChangelogDialog"
+import { EditorCanvas } from "./components/EditorCanvas"
 import { EditorProcessingDialog } from "./components/EditorProcessingDialog"
 import { EditorToolbar } from "./components/EditorToolbar"
 import { MobileRestriction } from "./components/MobileRestriction"
@@ -52,9 +52,8 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
   const [activeTool, setActiveTool] = useState<ActiveTool>(initialTool)
   const [selectedModel, setSelectedModel] =
     useState<ModelKey>("ormbg_quantized")
-  const [upscalerModel, setUpscalerModel] = useState<ModelKey>(
-    "swin2sr_quantized"
-  )
+  const [upscalerModel, setUpscalerModel] =
+    useState<ModelKey>("swin2sr_quantized")
   const [colorizerModel, setColorizerModel] = useState<ModelKey>(
     "deoldify_artistic_quantized"
   )
@@ -108,8 +107,8 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
       activeTool === "remover"
         ? selectedModel
         : activeTool === "upscaler"
-          ? upscalerModel
-          : colorizerModel
+        ? upscalerModel
+        : colorizerModel
     isModelCached(currentModel)
       .then((cached) => onnx.setModelStatus(cached ? "ready" : "idle"))
       .catch(() => onnx.setModelStatus("idle"))
@@ -137,8 +136,8 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
         tool === "remover"
           ? selectedModel
           : tool === "upscaler"
-            ? upscalerModel
-            : colorizerModel
+          ? upscalerModel
+          : colorizerModel
       pushUrl(tool, model)
     },
     [selectedModel, upscalerModel, colorizerModel, pushUrl]
@@ -388,7 +387,12 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
 
       const link = (globalThis as any).document.createElement("a")
       link.href = URL.createObjectURL(convertedBlob)
-      const ext = format === "image/webp" ? "webp" : format === "image/jpeg" ? "jpg" : "png"
+      const ext =
+        format === "image/webp"
+          ? "webp"
+          : format === "image/jpeg"
+          ? "jpg"
+          : "png"
       link.download = `removerized-upscaled-${Date.now()}.${ext}`
       link.click()
       return
@@ -406,7 +410,12 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
 
       const link = (globalThis as any).document.createElement("a")
       link.href = URL.createObjectURL(convertedBlob)
-      const ext = format === "image/webp" ? "webp" : format === "image/jpeg" ? "jpg" : "png"
+      const ext =
+        format === "image/webp"
+          ? "webp"
+          : format === "image/jpeg"
+          ? "jpg"
+          : "png"
       link.download = `removerized-colorized-${Date.now()}.${ext}`
       link.click()
       return
@@ -419,25 +428,67 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
       const quality = (setting?.quality ?? 80) / 100
 
       // Convert format
-      const convertedBlob = await convertImageFormat(result.data, format, quality)
+      const convertedBlob = await convertImageFormat(
+        result.data,
+        format,
+        quality
+      )
 
       const link = (globalThis as any).document.createElement("a")
       link.href = URL.createObjectURL(convertedBlob)
-      const ext = format === "image/webp" ? "webp" : format === "image/jpeg" ? "jpg" : "png"
+      const ext =
+        format === "image/webp"
+          ? "webp"
+          : format === "image/jpeg"
+          ? "jpg"
+          : "png"
 
       const nameWithoutExt = result.name.replace(/\.[^/.]+$/, "")
       link.download = `${nameWithoutExt}.${ext}`
       link.click()
     }
-  }, [activeTool, upscaledData, colorizedData, queue.resultsData, queue.settings, queue.selectedImage])
+  }, [
+    activeTool,
+    upscaledData,
+    colorizedData,
+    queue.resultsData,
+    queue.settings,
+    queue.selectedImage,
+  ])
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: any) => {
+      const isMod = e.ctrlKey || e.metaKey
+
+      if (isMod) {
+        if (e.key === "=" || e.key === "+") {
+          e.preventDefault()
+          handleZoomIn()
+        } else if (e.key === "-") {
+          e.preventDefault()
+          handleZoomOut()
+        } else if (e.key === "0") {
+          e.preventDefault()
+          handleZoomReset()
+        } else if (e.key === "Enter") {
+          e.preventDefault()
+          process()
+        }
+      }
+    }
+
+    globalThis.addEventListener("keydown", handleKeyDown)
+    return () => globalThis.removeEventListener("keydown", handleKeyDown)
+  }, [handleZoomIn, handleZoomOut, handleZoomReset, process])
 
   // Derived
   const canDownload =
     activeTool === "upscaler"
       ? !!upscaledData
       : activeTool === "colorizer"
-        ? !!colorizedData
-        : !!queue.resultsData.find((r) => r.name === queue.selectedImage)
+      ? !!colorizedData
+      : !!queue.resultsData.find((r) => r.name === queue.selectedImage)
 
   const accentColor = TOOL_ACCENTS[activeTool]
   const bgImage = queue.imageData || queue.resultData

@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.1.2] - 2025-05-15
+
+### ✨ Added
+
+- 🎨 **Palette**: Added global keyboard shortcuts for editor controls.
+  - `Ctrl/Cmd +` or `Ctrl/Cmd =`: Zoom In
+  - `Ctrl/Cmd -`: Zoom Out
+  - `Ctrl/Cmd 0`: Reset Zoom
+  - `Ctrl/Cmd Enter`: Process all images in queue
+- 🎨 **Palette**: Added keyboard shortcut hints to toolbar tooltips for better discoverability.
+
+---
+
 ## [1.1.1] - Some Stability Fixes
 
 ### 🐛 Fixed
