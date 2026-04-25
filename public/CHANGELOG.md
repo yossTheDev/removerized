@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.1.2] - 2025-03-24
+### Added
+- 🎨 **Palette**: Added keyboard shortcuts and tooltip hints for core editor actions.
+- [Technical note: Added support for Ctrl/Cmd +, -, 0, and Enter shortcuts in the editor].
+
 ## [1.1.1] - Some Stability Fixes
 
 ### 🐛 Fixed
