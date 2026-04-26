@@ -78,14 +78,14 @@ export const EditorToolbar = ({
               onClick={onDownload}
               size="icon"
               variant="ghost"
-              aria-label="Download result"
+              aria-label="Download all images"
               className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white disabled:opacity-20"
             >
               <Download className="size-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Download all images</p>
+            <p>Download all images (Ctrl + S)</p>
           </TooltipContent>
         </Tooltip>
 

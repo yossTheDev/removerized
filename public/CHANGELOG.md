@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.1.3] - 2025-03-24
+### Changed
+- 🎨 **Palette**: Added `Ctrl + S` keyboard shortcut for downloading processed images and updated the tooltip hint.
+- [Technical note: Implemented `Ctrl + S` shortcut in `Editor` and updated `EditorToolbar` tooltip].
+
 ## [1.1.2] - 2025-03-24
 ### Added
 - 🎨 **Palette**: Added keyboard shortcuts and tooltip hints for core editor actions.
