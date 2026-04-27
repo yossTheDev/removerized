@@ -29,7 +29,7 @@ import type { ActiveTool, ModelKey, UpscalerModelKey } from "./types"
 
 const VALID_TOOLS: ActiveTool[] = ["remover", "upscaler", "colorizer"]
 const VALID_MODELS = Object.keys(MODELS) as ModelKey[]
-const APP_VERSION = "1.1.2"
+const APP_VERSION = "1.1.3"
 
 interface EditorProps {
   initialTool?: ActiveTool
@@ -460,13 +460,16 @@ export const Editor = ({ initialTool = "remover" }: EditorProps) => {
         } else if (e.key === "Enter") {
           e.preventDefault()
           process()
+        } else if (e.key === "s" || e.key === "S") {
+          e.preventDefault()
+          handleDownload()
         }
       }
     }
 
     globalThis.addEventListener("keydown", handleKeyDown)
     return () => globalThis.removeEventListener("keydown", handleKeyDown)
-  }, [handleZoomIn, handleZoomOut, handleZoomReset, process])
+  }, [handleZoomIn, handleZoomOut, handleZoomReset, process, handleDownload])
 
   return (
     <div
