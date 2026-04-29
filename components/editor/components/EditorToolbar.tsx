@@ -11,6 +11,7 @@ import {
 
 interface EditorToolbarProps {
   canDownload: boolean
+  canProcess: boolean
   onProcess: () => void
   onDownload: () => void
   accentColor: string
@@ -22,6 +23,7 @@ interface EditorToolbarProps {
 
 export const EditorToolbar = ({
   canDownload,
+  canProcess,
   onProcess,
   onDownload,
   accentColor,
@@ -51,17 +53,20 @@ export const EditorToolbar = ({
         {/* Batch process queue */}
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button
-              onClick={onProcess}
-              size="icon"
-              variant="ghost"
-              aria-label="Process all images in queue"
-              className={cn(
-                "size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white"
-              )}
-            >
-              <LoaderIcon className="size-4" />
-            </Button>
+            <div className="flex">
+              <Button
+                onClick={onProcess}
+                disabled={!canProcess}
+                size="icon"
+                variant="ghost"
+                aria-label="Process all images in queue"
+                className={cn(
+                  "size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 disabled:opacity-20"
+                )}
+              >
+                <LoaderIcon className="size-4" />
+              </Button>
+            </div>
           </TooltipTrigger>
           <TooltipContent>
             <p>Process all images (Ctrl + Enter)</p>
@@ -73,19 +78,21 @@ export const EditorToolbar = ({
         {/* Download result */}
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button
-              disabled={!canDownload}
-              onClick={onDownload}
-              size="icon"
-              variant="ghost"
-              aria-label="Download result"
-              className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white disabled:opacity-20"
-            >
-              <Download className="size-4" />
-            </Button>
+            <div className="flex">
+              <Button
+                disabled={!canDownload}
+                onClick={onDownload}
+                size="icon"
+                variant="ghost"
+                aria-label="Download result"
+                className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 disabled:opacity-20"
+              >
+                <Download className="size-4" />
+              </Button>
+            </div>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Download all images</p>
+            <p>Download all images (Ctrl + S)</p>
           </TooltipContent>
         </Tooltip>
 
@@ -99,7 +106,7 @@ export const EditorToolbar = ({
               size="icon"
               variant="ghost"
               aria-label="Zoom in"
-              className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white"
+              className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
             >
               <ZoomIn className="size-4" />
             </Button>
@@ -118,11 +125,14 @@ export const EditorToolbar = ({
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              onClick={onZoomOut}
+              onClick={e => {
+                e.preventDefault()
+                onZoomOut()
+              }}
               size="icon"
               variant="ghost"
               aria-label="Zoom out"
-              className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white"
+              className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
             >
               <ZoomOut className="size-4" />
             </Button>
@@ -140,7 +150,7 @@ export const EditorToolbar = ({
               size="icon"
               variant="ghost"
               aria-label="Reset zoom"
-              className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white"
+              className="size-8 rounded-xl text-white/50 transition-all hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
             >
               <ScanEye className="size-4" />
             </Button>

@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.1.3] - 2025-03-25
+### Added
+- 🎨 **Palette**: Added `Ctrl/Cmd + S` keyboard shortcut for image downloads.
+- 🎨 **Palette**: Added shortcut hints to tooltips in the editor toolbar for better discoverability.
+
+### Improved
+- 🎨 **Palette**: Enhanced accessibility by adding visible focus rings to toolbar buttons and tool switcher tabs.
+- 🎨 **Palette**: Improved toolbar state management by disabling the process button when the queue is empty, with functional tooltips for disabled states.
+
 ## [1.1.2] - 2025-03-24
 ### Added
 - 🎨 **Palette**: Added keyboard shortcuts and tooltip hints for core editor actions.
