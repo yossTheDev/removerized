@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.1.3] - 2025-05-14
+### Added
+- 🎨 **Palette**: Added Ctrl+S keyboard shortcut for downloading results.
+- 🎨 **Palette**: Enhanced focus visibility for core interactive elements (tab switcher, model selector, background toggle).
+- [Technical note: Updated Tooltip hints and added focus-visible rings for better accessibility].
+
 ## [1.1.2] - 2025-03-24
 ### Added
 - 🎨 **Palette**: Added keyboard shortcuts and tooltip hints for core editor actions.

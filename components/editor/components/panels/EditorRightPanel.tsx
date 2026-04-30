@@ -118,7 +118,7 @@ export const EditorRightPanel = ({
               key={key}
               onClick={() => onToolChange(key)}
               className={cn(
-                "flex flex-1 items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-medium transition-all duration-200"
+                "flex flex-1 items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
               )}
               style={
                 activeTool === key
@@ -157,7 +157,7 @@ export const EditorRightPanel = ({
               <>
                 <button
                   onClick={() => setModelDialogOpen(true)}
-                  className="group flex w-full items-center justify-between rounded-xl border border-white/[0.07] bg-white/[0.03] px-3.5 py-3 text-left transition-all duration-200 hover:border-white/[0.14] hover:bg-white/[0.06]"
+                  className="group flex w-full items-center justify-between rounded-xl border border-white/[0.07] bg-white/[0.03] px-3.5 py-3 text-left transition-all duration-200 hover:border-white/[0.14] hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
                 >
                   <div className="flex flex-col gap-0.5">
                     <span className="text-[9px] font-semibold uppercase tracking-[0.15em] text-white/30">
